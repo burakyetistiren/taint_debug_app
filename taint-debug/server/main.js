@@ -192,7 +192,7 @@ function getFileLoc(nodeId, nodeMapping) {
 
 Meteor.methods({
   readFileContents(filePath) {
-    // var file = fs.readFileSync(filePath, 'utf8');
-    // return file;
+    var file = fs.readFileSync(path.join(PROJECT_PATH, filePath), 'utf8');
+    return file;
   }
 });

@@ -69,7 +69,7 @@ Meteor.startup(() => {
   const edges = [];
   const nodesSet = new Set();
 
-  Meteor.call('readFileContents', '/Users/burakyetistiren/Desktop/Projects/taint_debug_app/taint-debug/public/data/edge.facts', (error, result) => {
+  Meteor.call('readFileContents', '/public/data/edge.facts', (error, result) => {
     if (error) {
       console.error('Error reading file:', error);
     } else {
