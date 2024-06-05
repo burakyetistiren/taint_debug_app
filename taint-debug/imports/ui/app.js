@@ -4,6 +4,12 @@ import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import { createPopper } from '@popperjs/core';
 
+import { Paths, Libs } from '../api/paths.js';
+
+window.Paths = Paths;
+window.Libs = Libs;
+console.log('Paths:', Paths);
+
 // Register the popper extension
 cytoscape.use(popper);
 
@@ -53,6 +59,10 @@ function makeTippy(ele, text) {
 
   return tip;
 }
+
+
+
+
 
 Meteor.startup(() => {
   const nodes = [];
