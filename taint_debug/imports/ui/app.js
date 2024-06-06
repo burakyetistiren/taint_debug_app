@@ -69,33 +69,23 @@ Meteor.startup(() => {
   const nodes = [];
   const edges = [];
   const nodesSet = new Set();
-
-  Meteor.call('readFileContents', '/public/data/edge.facts', (error, result) => {
+  
+  Meteor.defer(() => {
+  Meteor.call('readGraphData', (error, result) => {
     
     if (error) {
       console.error('Error reading file:', error);
     } else {
       console.log('File contents:', result);
 
-      const lines = result.split('\n');
-
-      for (let i = 0; lines && i < lines.length; i++) {
-        const line = lines[i].split('\t');
-        if (line.length === 3) {
-          const edgeId = `edge-${line[0]}`;  // Ensure unique edge ID
-          const sourceId = `src-${line[1]}`;
-          const targetId = `tgt-${line[2]}`;
-
-          edges.push({ data: { id: edgeId, source: sourceId, target: targetId } });
-          nodesSet.add(sourceId);
-          nodesSet.add(targetId);
-        } else {
-          console.warn(`Invalid line format at line ${i + 1}: ${lines[i]}`);
-        }
+      for (let i = 0; i < result.edges.length ; i++) {        
+          const edge = result.edges[i];
+          let warningNumber = edge.warningNumber;
+          edges.push({ data: { id: 'edge_' + edge.edgeId.toString() , source: 'node_' + edge.sourceId.toString(), target: 'node_' + edge.targetId.toString(), description: "Warning " + warningNumber + " id:" +edge.edgeId } });    
       }
 
-      nodesSet.forEach(node => {
-        nodes.push({ data: { id: node } });
+      result.nodes.forEach(node => {
+        nodes.push({ data: { id: 'node_' + node.nodeId.toString(), description: node.description } });
       });
 
       console.log('Nodes:', nodes);
@@ -108,7 +98,7 @@ Meteor.startup(() => {
           {
             selector: 'node',
             style: {
-              'label': 'data(id)',
+              'label': 'data(description)',
               'text-valign': 'center',
               'text-halign': 'center',
               'background-color': '#0074D9',
@@ -121,7 +111,7 @@ Meteor.startup(() => {
           {
             selector: 'edge',
             style: {
-              'label': 'data(id)',
+              'label': 'data(description)',
               'curve-style': 'bezier',
               'target-arrow-shape': 'triangle',
               'line-color': '#AAAAAA',
@@ -155,6 +145,11 @@ Meteor.startup(() => {
         }
       });
 
+      cy.on( 'tap', 'node', function(){
+        var node = this;
+        console.log( 'tapped ' + node.id() );
+      });
+
       // Log Cytoscape elements to verify all nodes and edges
       console.log('Cytoscape elements:', cy.elements().jsons());
 
@@ -176,6 +171,7 @@ Meteor.startup(() => {
         }
       });
       */
-    }
+      }
+    });
   });
 });
