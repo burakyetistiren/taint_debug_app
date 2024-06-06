@@ -12,12 +12,22 @@ ANALYSIS_PATH =  path.join(PROJECT_PATH, '..', 'analysis_files') + "/";
 
 Meteor.startup(() => {
   console.log('Server started');
+
+  // clear 
+  Paths.remove({});
+  Libs.remove({});
+
   // console.log(PROJECT_PATH)
   analysisData = setupAndReadAnalysisData();
-  // console.log(analysisData);
+  console.log(analysisData);
 
-  Paths.insert(analysisData['codeSets']);
-  Libs.insert(Array.from(analysisData.libSets.values()));
+  analysisData['codeSets'].forEach(codeSet => {
+    Paths.insert(codeSet);
+  });
+  analysisData['libSets'].forEach(libSet => {
+    Libs.insert(libSet);
+  });
+  // Libs.insert(Array.from(analysisData['libSets'].values()));
   // console.log('Inserted data into db', Paths.find().fetch(), Libs.find().fetch());
 
   
@@ -29,15 +39,16 @@ function readNodeMapping() {
   const lines = fs.readFileSync(ANALYSIS_PATH + "souffle_files/nodes.debug", "utf-8").split("\n");
   lines.forEach(line => {
     if (line.trim()) {
-      const [ nodeId, file, lineNum, column, endLineNum, endColNum ] = line.trim().split(",");
+      const [ nodeId, file, lineNum, column, endLineNum, endColNum, description ] = line.trim().split(",");
     
-      console.log(nodeId, file, lineNum, column, endLineNum, endColNum);
+      console.log(nodeId, file, lineNum, column, endLineNum, endColNum, description);
       nodeMapping[nodeId] = {
         'file': file,
         'line': Number(lineNum),
         'column': Number(column),
         'end_line': Number(endLineNum),
-        'end_column': Number(endColNum)
+        'end_column': Number(endColNum),
+        'description': description
       }
     }
   });
@@ -70,18 +81,22 @@ function setupAndReadAnalysisData() {
 
     paths.forEach(({ source, sink, nodeLibIndices }) => {
         codeSets.push({
+            warningNumber: codeSets.length,
             left: {
                 code: codeSnippetOfNodeWithHighlight(source.toString(), nodeMapping),
                 nodeId: source,
+                description: nodeMapping[source.toString()].description,
             },
             middle: nodeLibIndices.map(({ nodeId, lib }) => ({
                 code: codeSnippetOfNodeWithHighlight(nodeId.toString(), nodeMapping),
                 nodeId: nodeId,
                 lib: lib,
+                description: nodeMapping[nodeId.toString()].description,
             })),
             right: {
                 code: codeSnippetOfNodeWithHighlight(sink.toString(), nodeMapping),
                 nodeId: sink,
+                description: nodeMapping[sink.toString()].description,
             }
         });
     });
@@ -90,7 +105,7 @@ function setupAndReadAnalysisData() {
     modelDebugLines.forEach(line => {
         if (line.includes("model_node")) {
             const [name, lib] = line.split("model_node(")[1].slice(0, -1).split(",");
-            libSets.set(parseInt(lib), { name: name });
+            libSets.set(parseInt(lib), { name: name, libId: parseInt(lib)});
         }
     });
 
@@ -147,10 +162,10 @@ function setupAndReadAnalysisData() {
     return { codeSets, libSets };
 }
 
-function codeSnippetOfNodeWithHighlight(nodeId, nodeMapping, style = "bold red bg:white") {
+function codeSnippetOfNodeWithHighlight(nodeId, nodeMapping) {
   const { file, line, colNum, endColNum } =  getFileLoc(nodeId, nodeMapping);
 
-  console.log(file, line, colNum, endColNum);
+  // console.log(file, line, colNum, endColNum);
   const surroundingBef =  readLinesFromFile(file, line - 3, line - 1);
   var targetLine =  readLineFromFile(file, line);
   const surroundingAft =  readLinesFromFile(file, line + 1, line + 3);
@@ -158,9 +173,11 @@ function codeSnippetOfNodeWithHighlight(nodeId, nodeMapping, style = "bold red b
   const fileSuffix = file.split('/').pop();
   const metadataLines = `// File: ${fileSuffix}\n// Line: ${line}\n`;
 
-  targetLine = targetLine.substring(0, colNum) + '<span class="highlight" style="' + style + '">' + targetLine.substring(colNum, endColNum) + '</span>' + targetLine.substring(endColNum);
-  const modifiedCode = metadataLines + surroundingBef + targetLine + '\n' + surroundingAft;
+  
+  targetLine = targetLine.substring(0, colNum) + '---focus---' + targetLine.substring(colNum, endColNum) + '---/focus---' + targetLine.substring(endColNum);
+  const modifiedCode = metadataLines + surroundingBef + '\n' + targetLine + '\n' + surroundingAft;
 
+    // console.log(modifiedCode)
   return modifiedCode;
 }
 
@@ -168,13 +185,8 @@ function codeSnippetOfNodeWithHighlight(nodeId, nodeMapping, style = "bold red b
 function readLinesFromFile(file, startLine, endLine) {
   let lines = fs.readFileSync(file,
     { encoding: 'utf-8' }).split("\n");
-  let result = "";
-  for (let i = startLine; i <= endLine; i++) {
-    if (i < 0 || i >= lines.length) {
-      continue;
-    }
-    result += lines[i] + "\n";
-  }
+  
+  result = lines.slice(startLine - 1, endLine).join("\n");
   return result;
 }
 

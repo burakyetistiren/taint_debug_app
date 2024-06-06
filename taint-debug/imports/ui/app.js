@@ -70,6 +70,7 @@ Meteor.startup(() => {
   const nodesSet = new Set();
 
   Meteor.call('readFileContents', '/public/data/edge.facts', (error, result) => {
+    return;
     if (error) {
       console.error('Error reading file:', error);
     } else {

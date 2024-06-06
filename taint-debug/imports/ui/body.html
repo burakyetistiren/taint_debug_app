@@ -1,5 +1,11 @@
 <body>
-    <span>hello</span>
+    <span>{{message}}</span>
      
+    {{# each paths}}
+
+      {{> path}}
+
+    {{/each}}
+
   <div id="cy"></div>
 </body>

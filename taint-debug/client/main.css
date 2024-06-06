@@ -3,14 +3,14 @@ body {
   font-size: 14px
 }
 
-#cy {
+/* #cy {
   position: absolute;
   left: 0;
   top: 0;
   bottom: 0;
   right: 0;
   z-index: 1;
-}
+}  */
 
 h1 {
   opacity: 0.5;
@@ -21,4 +21,114 @@ h1 {
 /* makes sticky faster; disable if you want animated tippies */
 .tippy-popper {
   transition: none !important;
+}
+
+.hidden {
+  display: none;
+}
+
+
+
+.slider {
+  /* width: 50%; */
+  /* text-align: center; */
+  overflow: hidden;
+}
+
+.slides {
+  display: flex;
+  width: 80%;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  
+  padding-left:10%;
+  padding-right:10%;
+  
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  
+  /*
+  scroll-snap-points-x: repeat(300px);
+  scroll-snap-type: mandatory;
+  */
+}
+.slides::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.slides::-webkit-scrollbar-thumb {
+  background: black;
+  border-radius: 10px;
+}
+.slides::-webkit-scrollbar-track {
+  /* background: transparent; */
+}
+.slides > div {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+
+  width: 160ch;
+  height: 300px;
+  margin-right: 50px;
+  border-radius: 10px;
+
+  padding-left:5%;
+  
+  transform-origin: center center;
+  position: relative; 
+  
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+}
+
+.slider  a {
+  display: inline-flex;
+  width: 1.5rem;
+  height: 1.5rem;
+  background: grey;
+  text-decoration: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin: 0 0 0.5rem 0;
+  position: relative;
+  color: white;
+}
+.slider > a:active {
+  top: 1px;
+}
+.slider > a:focus {
+  background: #000;
+}
+
+/* Don't need button navigation */
+@supports (scroll-snap-type) {
+  .slider > a {
+    display: none;
+  }
+}
+
+.green-border {
+  border: 6px solid green;
+}
+
+.red-border {
+  border: 6px solid red;
+}
+
+.blue-border {
+  border: 6px solid blue;
+}
+
+.yellow-border {
+  border: 6px solid yellow;
+}
+
+.orange-border {
+  border: 6px solid orange;
+}
+
+.border {
+  border: 1px solid black;
 }
