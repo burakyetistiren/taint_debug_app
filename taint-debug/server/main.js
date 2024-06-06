@@ -72,6 +72,9 @@ function setupAndReadAnalysisData() {
     lines.forEach(line => {
         if (line.trim()) {
             const [source, sink, node, step, libIndex] = line.trim().split("\t").map(Number);
+            // ignore first and last step (corresponding to the source and sinks)
+            if (step == 0 || node == sink) return;
+
             const key = `${source},${sink}`;
             if (!pathsLibs.has(key)) {
                 pathsLibs.set(key, []);
