@@ -1,11 +1,15 @@
 <body>
-    <h1>Taint paths</h1>
-     
-    {{# each paths}}
+    <div class="taint-paths-view" style="height:50vh; overflow: scroll;">
+      <h1>Taint paths</h1>
+      
+      {{# each paths}}
 
-      {{> path}}
+        {{> path}}
 
-    {{/each}}
-
-  <div id="cy"></div>
+      {{/each}}
+    </div>
+    <div class="graph-view" style="height:50vh; overflow: scroll;">
+      <h1>Graph view</h1>
+      <div id="cy"></div>
+    </div>
 </body>

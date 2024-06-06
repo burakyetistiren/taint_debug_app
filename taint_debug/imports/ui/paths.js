@@ -224,7 +224,15 @@ Template.libraryImpact.helpers({
 Template.sourceSinkPair.helpers({
   codeFromNode(nodeId) {
     return Nodes.findOne({nodeId: nodeId}).code;
+  },
+
+  isReported() {  
+
+   // fetch
+    return Paths.findOne(Session.get('inspectedWarning')).reported? '': '<em>Unreported</em>'; 
+    
   }
+
 
 });
 
