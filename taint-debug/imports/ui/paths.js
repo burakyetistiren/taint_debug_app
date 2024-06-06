@@ -27,10 +27,13 @@ function isViewingLibraryImpact() {
 }
 
 Template.path.helpers({
+  warningDescription() {
+    // give information about where the path starts and ends
+    return  this.left.description + ' to ' + this.right.description;
+  },
   start() {
     return this.left.code;
   },
-
   
   topIntermediateCode() {
     return this.middle? this.middle[0].code: null;
@@ -47,8 +50,8 @@ Template.path.helpers({
   isViewingWhyNodeModel() {
     return Session.get('whyNodeModel') == this._id;
   },
-  isCurrentInspectedWarningAndViewingLibraryImpact() {
-    return isViewingLibraryImpact() && Session.get('inspectedWarning') == this._id;
+  showLibraryImpact() {
+    return isViewingLibraryImpact() && Session.get('whyNodeModel') == this._id && Session.get('inspectedWarning') == this._id;
   },
 
   
@@ -70,7 +73,7 @@ Template.path.onRendered(function() {
   // hljs on the left, right
   hljs.highlightBlock(this.find('.start'), {language: 'java'});
   this.findAll('.middle').forEach(function(middle) {
-    hljs.highlightBlock(middle);
+    hljs.highlightBlock(middle, {language: 'java'});
   });
   hljs.highlightBlock(this.find('.end'), {language: 'java'});
    // replace <focus> in the content of the .start blocks with <strong>
@@ -171,6 +174,7 @@ Template.questionChoices.events({
     
     // const path = Paths.findOne(Session.get('inspectedWarning'));
     Session.set('whyNodeModel', Session.get('inspectedWarning'));
+    Session.set('inspectedLib', '')
    
   }
 });
@@ -188,7 +192,7 @@ Template.libraryImpact.helpers({
     // enumerate over zip(libNode.sources and libNode.sinks)
     if (libNode) {
       for (var i = 0; i < libNode.sources.length; i++) {
-        results.push({start: libNode.sources[i], end: libNode.sinks[i]});
+        results.push({warningNumber: libNode.warningNumbers[i] ,start: libNode.sources[i], end: libNode.sinks[i]});
       }
     }
     return results;
@@ -210,7 +214,7 @@ Template.sourceSinkPair.onRendered(function() {
   // hljs on the left, right
   hljs.highlightBlock(this.find('.start'), {language: 'java'});
   this.findAll('.middle').forEach(function(middle) {
-    hljs.highlightBlock(middle);
+    hljs.highlightBlock(middle, {language: 'java'});
   });
   hljs.highlightBlock(this.find('.end'), {language: 'java'});
    // replace <focus> in the content of the .start blocks with <strong>

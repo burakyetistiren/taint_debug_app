@@ -139,22 +139,22 @@ function setupAndReadAnalysisData() {
         let left = codeSet.left;
         let right = codeSet.right;
 
-        [left, right].forEach(side => {
-            if (!('lib' in side) || !libSets.has(side.lib)) {
-                side.importance = 0;
-            } else {
-                side.importance = Math.round(libSets.get(side.lib).importance);
-                let libInfo = libSets.get(side.lib);
-                if (!libInfo.sources) libInfo.sources = [];
-                if (!libInfo.sinks) libInfo.sinks = [];
-                if (side.nodeId && !libInfo.sources.includes(side.nodeId)) {
-                    libInfo.sources.push(side.nodeId);
-                }
-                if (side.nodeId && !libInfo.sinks.includes(side.nodeId)) {
-                    libInfo.sinks.push(side.nodeId);
-                }
-            }
-        });
+        // [left, right].forEach(side => {
+        //     if (!('lib' in side) || !libSets.has(side.lib)) {
+        //         side.importance = 0;
+        //     } else {
+        //         side.importance = Math.round(libSets.get(side.lib).importance);
+        //         let libInfo = libSets.get(side.lib);
+        //         if (!libInfo.sources) libInfo.sources = [];
+        //         if (!libInfo.sinks) libInfo.sinks = [];
+        //         if (side.nodeId && !libInfo.sources.includes(side.nodeId)) {
+        //             libInfo.sources.push(side.nodeId);
+        //         }
+        //         if (side.nodeId && !libInfo.sinks.includes(side.nodeId)) {
+        //             libInfo.sinks.push(side.nodeId);
+        //         }
+        //     }
+        // });
 
         codeSet.middle.forEach(middleCode => {
             let lib = middleCode.lib;
@@ -165,12 +165,16 @@ function setupAndReadAnalysisData() {
                 middleCode.importance = Math.round(libInfo.importance);
                 if (!libInfo.sources) libInfo.sources = [];
                 if (!libInfo.sinks) libInfo.sinks = [];
-                if (!libInfo.sources.includes(codeSet.left.nodeId)) {
+                // if (!libInfo.sources.includes(codeSet.left.nodeId)) {
                     libInfo.sources.push(codeSet.left.nodeId);
-                }
-                if (!libInfo.sinks.includes(codeSet.right.nodeId)) {
+                // }
+                // if (!libInfo.sinks.includes(codeSet.right.nodeId)) {
                     libInfo.sinks.push(codeSet.right.nodeId);
-                }
+                // }
+                
+                // add warningNumber
+                if (!libInfo.warningNumbers) libInfo.warningNumbers = [];
+                libInfo.warningNumbers.push(codeSet.warningNumber);
             }
         });
     });
