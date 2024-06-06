@@ -4,10 +4,11 @@ import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import { createPopper } from '@popperjs/core';
 
-import { Paths, Libs } from '../api/paths.js';
+import { Paths, Libs, Nodes } from '../api/paths.js';
 
 window.Paths = Paths;
 window.Libs = Libs;
+window.Nodes = Nodes;
 console.log('Paths:', Paths);
 
 // Register the popper extension

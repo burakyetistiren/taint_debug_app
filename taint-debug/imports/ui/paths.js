@@ -1,7 +1,7 @@
 import { Template } from 'meteor/templating';
 import { Session } from 'meteor/session';
 
-import { Paths, Libs } from '../api/paths.js';
+import { Paths, Libs, Nodes } from '../api/paths.js';
 
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github-dark.css'
@@ -9,6 +9,22 @@ import javascript from 'highlight.js/lib/languages/javascript';
 
 
 import './paths.html';
+
+
+// misc helpers
+function isViewingLibraryImpact() {
+  // if Session.get('inspectedLib')  matches an lib in the current inspected warning
+  const path = Paths.findOne(Session.get('inspectedWarning'));
+  if (!path) {
+    return false;
+  }
+  const hasMatch = path.middle.some(node => node.lib == Session.get('inspectedLib'));
+  if (hasMatch){
+     return true;
+  } {
+    return false;
+  }
+}
 
 Template.path.helpers({
   start() {
@@ -31,19 +47,11 @@ Template.path.helpers({
   isViewingWhyNodeModel() {
     return Session.get('whyNodeModel') == this._id;
   },
-  isViewingLibraryImpact() {
-    // if Session.get('inspectedLib')  matches an lib in the current inspected warning
-    const path = Paths.findOne(Session.get('inspectedWarning'));
-    if (!path) {
-      return false;
-    }
-    const hasMatch = path.middle.some(node => node.lib == Session.get('inspectedLib'));
-    if (hasMatch){
-       return true;
-    } {
-      return false;
-    }
-  }
+  isCurrentInspectedWarningAndViewingLibraryImpact() {
+    return isViewingLibraryImpact() && Session.get('inspectedWarning') == this._id;
+  },
+
+  
 
 
 });
@@ -60,11 +68,11 @@ Template.path.events({
 Template.path.onRendered(function() {
 
   // hljs on the left, right
-  hljs.highlightBlock(this.find('.start'));
+  hljs.highlightBlock(this.find('.start'), {language: 'java'});
   this.findAll('.middle').forEach(function(middle) {
     hljs.highlightBlock(middle);
   });
-  hljs.highlightBlock(this.find('.end'));
+  hljs.highlightBlock(this.find('.end'), {language: 'java'});
    // replace <focus> in the content of the .start blocks with <strong>
   this.findAll('.start,.end,.middle').forEach(function(start) {
     start.innerHTML = start.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');   
@@ -134,7 +142,7 @@ Template.intermediateNodes.events({
 
 Template.intermediateNodes.onRendered(function() {
   this.findAll('.middle').forEach(function(middle) {
-    hljs.highlightBlock(middle);
+    hljs.highlightBlock(middle, {language: 'java'});
   });
   this.findAll('.start,.end,.middle').forEach(function(start) {
     start.innerHTML = start.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');   
@@ -192,9 +200,7 @@ Template.libraryImpact.helpers({
 
 Template.sourceSinkPair.helpers({
   codeFromNode(nodeId) {
-    const path = Paths.findOne(Session.get('inspectedWarning'));
-    const node = path.middle.find(node => node.nodeId == nodeId);
-    return node? node.code: '';
+    return Nodes.findOne({nodeId: nodeId}).code;
   }
 
 });
@@ -202,11 +208,11 @@ Template.sourceSinkPair.helpers({
 Template.sourceSinkPair.onRendered(function() {
 
   // hljs on the left, right
-  hljs.highlightBlock(this.find('.start'));
+  hljs.highlightBlock(this.find('.start'), {language: 'java'});
   this.findAll('.middle').forEach(function(middle) {
     hljs.highlightBlock(middle);
   });
-  hljs.highlightBlock(this.find('.end'));
+  hljs.highlightBlock(this.find('.end'), {language: 'java'});
    // replace <focus> in the content of the .start blocks with <strong>
   this.findAll('.start,.end,.middle').forEach(function(start) {
     start.innerHTML = start.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');   

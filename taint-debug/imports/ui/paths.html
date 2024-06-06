@@ -30,7 +30,7 @@
     {{> intermediateNodes}} 
   {{/if}}
 
-  {{#if isViewingLibraryImpact}}
+  {{#if isCurrentInspectedWarningAndViewingLibraryImpact}}
     {{> libraryImpact}}
   {{/if}}
 </div>
@@ -75,7 +75,7 @@
 
 <template name="libraryImpact">
 <div class="library-impact">
-  {{displaySelectedLibNode}}
+  <div>{{displaySelectedLibNode}}</div>
   {{#each paths}}
     {{>sourceSinkPair}}
   {{/each}}

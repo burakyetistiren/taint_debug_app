@@ -4,6 +4,7 @@ import path from 'path';
 
 export const Paths = new Mongo.Collection('paths');
 export const Libs = new Mongo.Collection('libs');
+export const Nodes = new Mongo.Collection('nodes');
 
 
 PROJECT_PATH = process.env.PWD;
@@ -16,10 +17,15 @@ Meteor.startup(() => {
   // clear 
   Paths.remove({});
   Libs.remove({});
+  Nodes.remove({});
 
   // console.log(PROJECT_PATH)
   analysisData = setupAndReadAnalysisData();
   console.log(analysisData);
+
+  // fetch nodes from analysisData
+  // insert into Nodes collection
+
 
   analysisData['codeSets'].forEach(codeSet => {
     Paths.insert(codeSet);
@@ -41,15 +47,17 @@ function readNodeMapping() {
     if (line.trim()) {
       const [ nodeId, file, lineNum, column, endLineNum, endColNum, description ] = line.trim().split(",");
     
-      console.log(nodeId, file, lineNum, column, endLineNum, endColNum, description);
-      nodeMapping[nodeId] = {
+      // console.log(nodeId, file, lineNum, column, endLineNum, endColNum, description);
+      nodeMapping[Number(nodeId)] = {
+        'nodeId': Number(nodeId),
         'file': file,
         'line': Number(lineNum),
         'column': Number(column),
         'end_line': Number(endLineNum),
         'end_column': Number(endColNum),
         'description': description
-      }
+      };
+
     }
   });
   return nodeMapping;
@@ -73,6 +81,14 @@ function setupAndReadAnalysisData() {
     });
 
     const nodeMapping = readNodeMapping();
+    // enumerate over nodeMapping
+    Object.keys(nodeMapping).forEach(nodeId => {
+        const code = codeSnippetOfNodeWithHighlight(nodeId, nodeMapping);
+        var node = nodeMapping[nodeId];
+        node.code = code;
+        console.log(node);
+        Nodes.insert(node);
+    });
 
     let paths = Array.from(pathsLibs, ([key, value]) => {
         const [source, sink] = key.split(",").map(Number);
@@ -83,20 +99,20 @@ function setupAndReadAnalysisData() {
         codeSets.push({
             warningNumber: codeSets.length,
             left: {
-                code: codeSnippetOfNodeWithHighlight(source.toString(), nodeMapping),
+                code: codeSnippetOfNodeWithHighlight(source, nodeMapping),
                 nodeId: source,
-                description: nodeMapping[source.toString()].description,
+                description: nodeMapping[source].description,
             },
             middle: nodeLibIndices.map(({ nodeId, lib }) => ({
-                code: codeSnippetOfNodeWithHighlight(nodeId.toString(), nodeMapping),
+                code: codeSnippetOfNodeWithHighlight(nodeId, nodeMapping),
                 nodeId: nodeId,
                 lib: lib,
-                description: nodeMapping[nodeId.toString()].description,
+                description: nodeMapping[nodeId].description,
             })),
             right: {
-                code: codeSnippetOfNodeWithHighlight(sink.toString(), nodeMapping),
+                code: codeSnippetOfNodeWithHighlight(sink, nodeMapping),
                 nodeId: sink,
-                description: nodeMapping[sink.toString()].description,
+                description: nodeMapping[sink].description,
             }
         });
     });
