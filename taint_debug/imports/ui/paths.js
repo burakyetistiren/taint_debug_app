@@ -39,6 +39,9 @@ Template.path.helpers({
     return this.middle? this.middle[0].code: null;
   },
 
+  numIntermediate() {
+    return this.middle? this.middle.length: 0;
+  },
   end() {
     return this.right.code;
   },
@@ -53,6 +56,10 @@ Template.path.helpers({
   showLibraryImpact() {
     return isViewingLibraryImpact() && Session.get('whyNodeModel') == this._id && Session.get('inspectedWarning') == this._id;
   },
+
+  isReported() {  
+    return this.reported? '': '<em>Unreported</em>';
+  }
 
   
 
@@ -130,6 +137,11 @@ Template.intermediateNodes.helpers({
 
   showIfHasLib() {
     return this.lib != -1? '': 'hidden';
+  },
+
+  libStateDescription() {
+    const reported = Paths.findOne(Session.get('inspectedWarning')).reported;
+    return reported? 'going through': 'ending because of';
   }
 
 
@@ -155,7 +167,8 @@ Template.intermediateNodes.onRendered(function() {
 
 Template.questionChoices.helpers({
   isOrIsNot() {
-    return 'is';
+    const reported = Paths.findOne(Session.get('inspectedWarning')).reported;
+    return reported? 'is' :'is not';
   },
   start() {
     // return the current inspected path
@@ -166,7 +179,8 @@ Template.questionChoices.helpers({
     const path = Paths.findOne(Session.get('inspectedWarning')).right;
     return path? path.description: '';
 
-  }
+  },
+
 });
 
 Template.questionChoices.events({
@@ -197,6 +211,11 @@ Template.libraryImpact.helpers({
     }
     return results;
   },
+
+  libStateDescription() {
+    const reported = Paths.findOne(Session.get('inspectedWarning')).reported;
+    return reported? 'going through': 'blocked because of';
+  }
 
 
 

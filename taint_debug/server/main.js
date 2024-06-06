@@ -67,6 +67,7 @@ function setupAndReadAnalysisData() {
     let pathsLibs = new Map();
     let codeSets = [];
     let libSets = new Map();
+    let warningToReported = new Map();
 
     const lines = fs.readFileSync(ANALYSIS_PATH + "warning_paths.csv", "utf-8").split("\n");
     lines.forEach(line => {
@@ -79,8 +80,24 @@ function setupAndReadAnalysisData() {
             if (!pathsLibs.has(key)) {
                 pathsLibs.set(key, []);
             }
-            pathsLibs.get(key).push({ nodeId: node, lib: libIndex });
+            pathsLibs.get(key).push({ nodeId: node, lib: libIndex});
+            warningToReported.set(key, true);
         }
+    });
+    plausible_lines = fs.readFileSync(ANALYSIS_PATH + "plausible_warning_paths.csv", "utf-8").split("\n");
+    plausible_lines.forEach(line => {
+      if (line.trim()) {
+        const [source, sink, node, step, libIndex] = line.trim().split("\t").map(Number);
+        // ignore first and last step (corresponding to the source and sinks)
+        if (step == 0 || node == sink) return;
+
+        const key = `${source},${sink}`;
+        if (!pathsLibs.has(key)) {
+            pathsLibs.set(key, []);
+        }
+        pathsLibs.get(key).push({ nodeId: node, lib: libIndex });
+        warningToReported.set(key, false);
+      }
     });
 
     const nodeMapping = readNodeMapping();
@@ -89,18 +106,20 @@ function setupAndReadAnalysisData() {
         const code = codeSnippetOfNodeWithHighlight(nodeId, nodeMapping);
         var node = nodeMapping[nodeId];
         node.code = code;
-        console.log(node);
+        // console.log(node);
+
         Nodes.insert(node);
     });
 
     let paths = Array.from(pathsLibs, ([key, value]) => {
         const [source, sink] = key.split(",").map(Number);
-        return { source, sink, nodeLibIndices: value };
+        return { source, sink, nodeLibIndices: value, reported : warningToReported.get(key)};
     });
 
-    paths.forEach(({ source, sink, nodeLibIndices }) => {
+    paths.forEach(({ source, sink, nodeLibIndices, reported }) => {
         codeSets.push({
             warningNumber: codeSets.length,
+            reported: reported,
             left: {
                 code: codeSnippetOfNodeWithHighlight(source, nodeMapping),
                 nodeId: source,
@@ -142,23 +161,6 @@ function setupAndReadAnalysisData() {
         let left = codeSet.left;
         let right = codeSet.right;
 
-        // [left, right].forEach(side => {
-        //     if (!('lib' in side) || !libSets.has(side.lib)) {
-        //         side.importance = 0;
-        //     } else {
-        //         side.importance = Math.round(libSets.get(side.lib).importance);
-        //         let libInfo = libSets.get(side.lib);
-        //         if (!libInfo.sources) libInfo.sources = [];
-        //         if (!libInfo.sinks) libInfo.sinks = [];
-        //         if (side.nodeId && !libInfo.sources.includes(side.nodeId)) {
-        //             libInfo.sources.push(side.nodeId);
-        //         }
-        //         if (side.nodeId && !libInfo.sinks.includes(side.nodeId)) {
-        //             libInfo.sinks.push(side.nodeId);
-        //         }
-        //     }
-        // });
-
         codeSet.middle.forEach(middleCode => {
             let lib = middleCode.lib;
             if (!libSets.has(lib)) {
@@ -168,14 +170,11 @@ function setupAndReadAnalysisData() {
                 middleCode.importance = Math.round(libInfo.importance);
                 if (!libInfo.sources) libInfo.sources = [];
                 if (!libInfo.sinks) libInfo.sinks = [];
-                // if (!libInfo.sources.includes(codeSet.left.nodeId)) {
-                    libInfo.sources.push(codeSet.left.nodeId);
-                // }
-                // if (!libInfo.sinks.includes(codeSet.right.nodeId)) {
-                    libInfo.sinks.push(codeSet.right.nodeId);
-                // }
+
+                libInfo.sources.push(codeSet.left.nodeId);
                 
-                // add warningNumber
+                libInfo.sinks.push(codeSet.right.nodeId);
+                
                 if (!libInfo.warningNumbers) libInfo.warningNumbers = [];
                 libInfo.warningNumbers.push(codeSet.warningNumber);
             }
