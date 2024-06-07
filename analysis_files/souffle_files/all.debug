@@ -164,253 +164,225 @@ node(103) -> 103 , node(103) -> ('file:///Users/hongjinkang/repos/codeql_exp/bur
 
 node(104) -> 104 , node(104) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:230:33:230:36', 'name')
 
-plausible_edge(0,0,18) -> 0	0	18 , plausible_edge(0,0,18) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:28:22:28:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:29:67:29:70', 'name : String')
+plausible_edge(0,53,72) -> 0	53	72 , plausible_edge(0,53,72) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:221:37:221:71', 'unmodelled(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:224:28:224:45', 'badlySanitizedName : String')
 
-plausible_edge(1,1,19) -> 1	1	19 , plausible_edge(1,1,19) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:37:22:37:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:39:67:39:70', 'name : String')
+edge(1,28,46) -> 1	28	46 , edge(1,28,46) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:123:65:123:68', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:123:38:123:69', 'unsafe2(...) : String')
 
-plausible_edge(2,2,20) -> 2	2	20 , plausible_edge(2,2,20) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:45:29:45:55', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:52:44:52:47', 'name : String')
+plausible_edge(2,72,79) -> 2	72	79 , plausible_edge(2,72,79) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:224:28:224:45', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:228:43:228:53', 'name : String')
 
-plausible_edge(3,3,21) -> 3	3	21 , plausible_edge(3,3,21) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:49:22:49:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:51:70:51:73', 'name : String')
+edge(3,6,24) -> 3	6	24 , edge(3,6,24) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:95:22:95:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:96:64:96:67', 'name : String')
 
-edge(4,4,22) -> 4	4	22 , edge(4,4,22) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:67:22:67:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:71:42:71:45', 'name : String')
+plausible_edge(4,15,33) -> 4	15	33 , plausible_edge(4,15,33) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:194:22:194:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:195:68:195:71', 'name : String')
 
-plausible_edge(5,5,23) -> 5	5	23 , plausible_edge(5,5,23) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:61:22:61:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:63:77:63:80', 'name : String')
+edge(5,24,42) -> 5	24	42 , edge(5,24,42) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:96:64:96:67', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:96:38:96:68', 'unsafe(...) : String')
 
-edge(6,6,24) -> 6	6	24 , edge(6,6,24) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:95:22:95:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:96:64:96:67', 'name : String')
+library_flow(5,411) -> 5	411 , library_flow(5,411) -> library_flow(hj.CustomZipAPI.unsafe(String)__arg0, hj.CustomZipAPI.unsafe__returnValue, 411)
 
-plausible_edge(7,7,25) -> 7	7	25 , plausible_edge(7,7,25) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:73:23:73:49', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:75:70:75:73', 'name : String')
+plausible_edge(6,49,99) -> 6	49	99 , plausible_edge(6,49,99) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:169:38:169:72', 'unmodelled(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:173:30:173:47', 'badlySanitizedName')
 
-edge(8,8,26) -> 8	8	26 , edge(8,8,26) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:104:22:104:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:105:64:105:67', 'name : String')
+plausible_edge(7,33,51) -> 7	33	51 , plausible_edge(7,33,51) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:195:68:195:71', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:195:38:195:72', 'unmodelled(...) : String')
 
-edge(9,9,27) -> 9	9	27 , edge(9,9,27) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:113:22:113:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:114:65:114:68', 'name : String')
+edge(8,44,63) -> 8	44	63 , edge(8,44,63) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:105:38:105:68', 'unsafe(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:106:58:106:75', 'badlySanitizedName : String')
 
-edge(10,10,28) -> 10	10	28 , edge(10,10,28) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:122:22:122:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:123:65:123:68', 'name : String')
+plausible_edge(9,29,47) -> 9	29	47 , plausible_edge(9,29,47) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:144:68:144:71', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:144:38:144:72', 'unmodelled(...) : String')
 
-plausible_edge(11,11,29) -> 11	11	29 , plausible_edge(11,11,29) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:143:22:143:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:144:68:144:71', 'name : String')
+plausible_edge(10,37,88) -> 10	37	88 , plausible_edge(10,37,88) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:39:39:39:71', 'sanitize(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:40:34:40:52', 'customSanitizedName')
 
-edge(12,12,30) -> 12	12	30 , edge(12,12,30) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:155:22:155:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:156:64:156:67', 'name : String')
+plausible_edge(11,83,85) -> 11	83	85 , plausible_edge(11,83,85) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:202:63:202:80', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:202:28:202:81', 'anotherSanitize(...) : String')
 
-plausible_edge(13,13,31) -> 13	13	31 , plausible_edge(13,13,31) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:168:22:168:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:169:68:169:71', 'name : String')
+edge(12,65,79) -> 12	65	79 , edge(12,65,79) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:125:29:125:46', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:228:43:228:53', 'name : String')
 
-plausible_edge(14,14,32) -> 14	14	32 , plausible_edge(14,14,32) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:180:22:180:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:181:68:181:71', 'name : String')
+plausible_edge(13,19,37) -> 13	19	37 , plausible_edge(13,19,37) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:39:67:39:70', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:39:39:39:71', 'sanitize(...) : String')
 
-plausible_edge(15,15,33) -> 15	15	33 , plausible_edge(15,15,33) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:194:22:194:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:195:68:195:71', 'name : String')
+plausible_edge(14,34,52) -> 14	34	52 , plausible_edge(14,34,52) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:211:68:211:71', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:211:38:211:72', 'unmodelled(...) : String')
 
-plausible_edge(16,16,34) -> 16	16	34 , plausible_edge(16,16,34) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:210:22:210:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:211:68:211:71', 'name : String')
+edge(15,42,93) -> 15	42	93 , edge(15,42,93) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:96:38:96:68', 'unsafe(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:97:34:97:51', 'badlySanitizedName')
 
-plausible_edge(17,17,35) -> 17	17	35 , plausible_edge(17,17,35) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:220:22:220:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:221:67:221:70', 'name : String')
+plausible_edge(16,2,20) -> 16	2	20 , plausible_edge(16,2,20) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:45:29:45:55', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:52:44:52:47', 'name : String')
 
-plausible_edge(18,18,36) -> 18	18	36 , plausible_edge(18,18,36) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:29:67:29:70', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:29:39:29:71', 'sanitize(...) : String')
+plausible_edge(17,11,29) -> 17	11	29 , plausible_edge(17,11,29) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:143:22:143:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:144:68:144:71', 'name : String')
 
-plausible_edge(19,19,37) -> 19	19	37 , plausible_edge(19,19,37) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:39:67:39:70', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:39:39:39:71', 'sanitize(...) : String')
+plausible_edge(18,43,94) -> 18	43	94 , plausible_edge(18,43,94) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:75:42:75:74', 'sanitize(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:76:37:76:55', 'customSanitizedName')
 
-plausible_edge(20,20,89) -> 20	20	89 , plausible_edge(20,20,89) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:52:44:52:47', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:54:42:54:45', 'name')
+plausible_edge(19,76,100) -> 19	76	100 , plausible_edge(19,76,100) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:182:31:182:75', 'unsafe(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:186:30:186:47', 'badlySanitizedName')
 
-plausible_edge(21,21,39) -> 21	21	39 , plausible_edge(21,21,39) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:51:70:51:73', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:51:42:51:74', 'sanitize(...) : String')
+plausible_edge(20,0,18) -> 20	0	18 , plausible_edge(20,0,18) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:28:22:28:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:29:67:29:70', 'name : String')
 
-edge(22,22,40) -> 22	22	40 , edge(22,22,40) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:71:42:71:45', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:71:16:71:46', 'unsafe(...) : String')
+edge(21,30,48) -> 21	30	48 , edge(21,30,48) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:156:64:156:67', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:156:38:156:68', 'unsafe(...) : String')
 
-library_flow(22,411) -> 22	411 , library_flow(22,411) -> library_flow(hj.CustomZipAPI.unsafe(String)__arg0, hj.CustomZipAPI.unsafe__returnValue, 411)
+library_flow(21,411) -> 21	411 , library_flow(21,411) -> library_flow(hj.CustomZipAPI.unsafe(String)__arg0, hj.CustomZipAPI.unsafe__returnValue, 411)
 
-edge(23,22,40) -> 23	22	40 , edge(23,22,40) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:71:42:71:45', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:71:16:71:46', 'unsafe(...) : String')
+plausible_edge(22,7,25) -> 22	7	25 , plausible_edge(22,7,25) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:73:23:73:49', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:75:70:75:73', 'name : String')
 
-library_flow(23,411) -> 23	411 , library_flow(23,411) -> library_flow(hj.CustomZipAPI.unsafe(String)__arg0, hj.CustomZipAPI.unsafe__returnValue, 411)
+plausible_edge(23,16,34) -> 23	16	34 , plausible_edge(23,16,34) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:210:22:210:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:211:68:211:71', 'name : String')
 
-plausible_edge(24,23,41) -> 24	23	41 , plausible_edge(24,23,41) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:63:77:63:80', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:63:42:63:81', 'anotherSanitize(...) : String')
+plausible_edge(24,20,89) -> 24	20	89 , plausible_edge(24,20,89) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:52:44:52:47', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:54:42:54:45', 'name')
 
-edge(25,24,42) -> 25	24	42 , edge(25,24,42) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:96:64:96:67', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:96:38:96:68', 'unsafe(...) : String')
+plausible_edge(25,25,43) -> 25	25	43 , plausible_edge(25,25,43) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:75:70:75:73', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:75:42:75:74', 'sanitize(...) : String')
 
-library_flow(25,411) -> 25	411 , library_flow(25,411) -> library_flow(hj.CustomZipAPI.unsafe(String)__arg0, hj.CustomZipAPI.unsafe__returnValue, 411)
-
-edge(26,24,42) -> 26	24	42 , edge(26,24,42) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:96:64:96:67', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:96:38:96:68', 'unsafe(...) : String')
+edge(26,26,44) -> 26	26	44 , edge(26,26,44) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:105:64:105:67', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:105:38:105:68', 'unsafe(...) : String')
 
 library_flow(26,411) -> 26	411 , library_flow(26,411) -> library_flow(hj.CustomZipAPI.unsafe(String)__arg0, hj.CustomZipAPI.unsafe__returnValue, 411)
 
-plausible_edge(27,25,43) -> 27	25	43 , plausible_edge(27,25,43) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:75:70:75:73', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:75:42:75:74', 'sanitize(...) : String')
+plausible_edge(27,39,90) -> 27	39	90 , plausible_edge(27,39,90) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:51:42:51:74', 'sanitize(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:52:37:52:55', 'customSanitizedName')
 
-edge(28,26,44) -> 28	26	44 , edge(28,26,44) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:105:64:105:67', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:105:38:105:68', 'unsafe(...) : String')
+plausible_edge(28,50,69) -> 28	50	69 , plausible_edge(28,50,69) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:181:38:181:72', 'unmodelled(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:182:57:182:74', 'badlySanitizedName : String')
 
-library_flow(28,411) -> 28	411 , library_flow(28,411) -> library_flow(hj.CustomZipAPI.unsafe(String)__arg0, hj.CustomZipAPI.unsafe__returnValue, 411)
+edge(29,12,30) -> 29	12	30 , edge(29,12,30) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:155:22:155:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:156:64:156:67', 'name : String')
 
-edge(29,26,44) -> 29	26	44 , edge(29,26,44) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:105:64:105:67', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:105:38:105:68', 'unsafe(...) : String')
+plausible_edge(30,3,21) -> 30	3	21 , plausible_edge(30,3,21) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:49:22:49:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:51:70:51:73', 'name : String')
 
-library_flow(29,411) -> 29	411 , library_flow(29,411) -> library_flow(hj.CustomZipAPI.unsafe(String)__arg0, hj.CustomZipAPI.unsafe__returnValue, 411)
+plausible_edge(31,51,70) -> 31	51	70 , plausible_edge(31,51,70) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:195:38:195:72', 'unmodelled(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:196:58:196:75', 'badlySanitizedName : String')
 
-edge(30,27,45) -> 30	27	45 , edge(30,27,45) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:114:65:114:68', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:114:38:114:69', 'unsafe2(...) : String')
+plausible_edge(32,35,53) -> 32	35	53 , plausible_edge(32,35,53) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:221:67:221:70', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:221:37:221:71', 'unmodelled(...) : String')
 
-edge(31,27,45) -> 31	27	45 , edge(31,27,45) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:114:65:114:68', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:114:38:114:69', 'unsafe2(...) : String')
+plausible_edge(33,69,76) -> 33	69	76 , plausible_edge(33,69,76) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:182:57:182:74', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:182:31:182:75', 'unsafe(...) : String')
 
-edge(32,28,46) -> 32	28	46 , edge(32,28,46) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:123:65:123:68', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:123:38:123:69', 'unsafe2(...) : String')
+hypothetical_library_flow(33,411) -> 33	411 , hypothetical_library_flow(33,411) -> library_flow(hj.CustomZipAPI.unsafe(String)__arg0, hj.CustomZipAPI.unsafe__returnValue, 411)
 
-edge(33,28,46) -> 33	28	46 , edge(33,28,46) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:123:65:123:68', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:123:38:123:69', 'unsafe2(...) : String')
+plausible_edge(34,77,83) -> 34	77	83 , plausible_edge(34,77,83) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:196:31:196:76', 'unsafe2(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:202:63:202:80', 'badlySanitizedName : String')
 
-plausible_edge(34,29,47) -> 34	29	47 , plausible_edge(34,29,47) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:144:68:144:71', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:144:38:144:72', 'unmodelled(...) : String')
+edge(35,46,65) -> 35	46	65 , edge(35,46,65) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:123:38:123:69', 'unsafe2(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:125:29:125:46', 'badlySanitizedName : String')
 
-edge(35,30,48) -> 35	30	48 , edge(35,30,48) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:156:64:156:67', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:156:38:156:68', 'unsafe(...) : String')
+plausible_edge(36,21,39) -> 36	21	39 , plausible_edge(36,21,39) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:51:70:51:73', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:51:42:51:74', 'sanitize(...) : String')
 
-library_flow(35,411) -> 35	411 , library_flow(35,411) -> library_flow(hj.CustomZipAPI.unsafe(String)__arg0, hj.CustomZipAPI.unsafe__returnValue, 411)
+edge(37,22,40) -> 37	22	40 , edge(37,22,40) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:71:42:71:45', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:71:16:71:46', 'unsafe(...) : String')
 
-edge(36,30,48) -> 36	30	48 , edge(36,30,48) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:156:64:156:67', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:156:38:156:68', 'unsafe(...) : String')
+library_flow(37,411) -> 37	411 , library_flow(37,411) -> library_flow(hj.CustomZipAPI.unsafe(String)__arg0, hj.CustomZipAPI.unsafe__returnValue, 411)
 
-library_flow(36,411) -> 36	411 , library_flow(36,411) -> library_flow(hj.CustomZipAPI.unsafe(String)__arg0, hj.CustomZipAPI.unsafe__returnValue, 411)
+plausible_edge(38,31,49) -> 38	31	49 , plausible_edge(38,31,49) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:169:68:169:71', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:169:38:169:72', 'unmodelled(...) : String')
 
-plausible_edge(37,31,49) -> 37	31	49 , plausible_edge(37,31,49) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:169:68:169:71', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:169:38:169:72', 'unmodelled(...) : String')
+plausible_edge(39,77,101) -> 39	77	101 , plausible_edge(39,77,101) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:196:31:196:76', 'unsafe2(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:200:30:200:47', 'badlySanitizedName')
 
-plausible_edge(38,32,50) -> 38	32	50 , plausible_edge(38,32,50) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:181:68:181:71', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:181:38:181:72', 'unmodelled(...) : String')
+plausible_edge(40,47,97) -> 40	47	97 , plausible_edge(40,47,97) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:144:38:144:72', 'unmodelled(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:145:34:145:51', 'badlySanitizedName')
 
-plausible_edge(39,33,51) -> 39	33	51 , plausible_edge(39,33,51) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:195:68:195:71', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:195:38:195:72', 'unmodelled(...) : String')
+edge(41,8,26) -> 41	8	26 , edge(41,8,26) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:104:22:104:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:105:64:105:67', 'name : String')
 
-plausible_edge(40,34,52) -> 40	34	52 , plausible_edge(40,34,52) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:211:68:211:71', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:211:38:211:72', 'unmodelled(...) : String')
+plausible_edge(42,17,35) -> 42	17	35 , plausible_edge(42,17,35) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:220:22:220:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:221:67:221:70', 'name : String')
 
-plausible_edge(41,35,53) -> 41	35	53 , plausible_edge(41,35,53) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:221:67:221:70', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:221:37:221:71', 'unmodelled(...) : String')
+edge(43,75,95) -> 43	75	95 , edge(43,75,95) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:106:31:106:76', 'unsafe2(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:107:34:107:51', 'badlySanitizedName')
 
-plausible_edge(42,36,87) -> 42	36	87 , plausible_edge(42,36,87) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:29:39:29:71', 'sanitize(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:30:34:30:52', 'customSanitizedName')
+edge(44,63,75) -> 44	63	75 , edge(44,63,75) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:106:58:106:75', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:106:31:106:76', 'unsafe2(...) : String')
 
-plausible_edge(43,37,88) -> 43	37	88 , plausible_edge(43,37,88) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:39:39:39:71', 'sanitize(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:40:34:40:52', 'customSanitizedName')
+edge(45,27,45) -> 45	27	45 , edge(45,27,45) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:114:65:114:68', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:114:38:114:69', 'unsafe2(...) : String')
 
-plausible_edge(44,39,90) -> 44	39	90 , plausible_edge(44,39,90) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:51:42:51:74', 'sanitize(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:52:37:52:55', 'customSanitizedName')
+plausible_edge(46,13,31) -> 46	13	31 , plausible_edge(46,13,31) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:168:22:168:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:169:68:169:71', 'name : String')
 
-edge(45,40,91) -> 45	40	91 , edge(45,40,91) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:71:16:71:46', 'unsafe(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:73:33:73:36', 'name')
+plausible_edge(47,85,102) -> 47	85	102 , plausible_edge(47,85,102) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:202:28:202:81', 'anotherSanitize(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:203:38:203:42', 'name2')
 
-plausible_edge(46,41,92) -> 46	41	92 , plausible_edge(46,41,92) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:63:42:63:81', 'anotherSanitize(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:64:37:64:55', 'customSanitizedName')
+edge(48,48,98) -> 48	48	98 , edge(48,48,98) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:156:38:156:68', 'unsafe(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:160:30:160:47', 'badlySanitizedName')
 
-edge(47,42,93) -> 47	42	93 , edge(47,42,93) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:96:38:96:68', 'unsafe(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:97:34:97:51', 'badlySanitizedName')
+plausible_edge(49,32,50) -> 49	32	50 , plausible_edge(49,32,50) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:181:68:181:71', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:181:38:181:72', 'unmodelled(...) : String')
 
-plausible_edge(48,43,94) -> 48	43	94 , plausible_edge(48,43,94) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:75:42:75:74', 'sanitize(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:76:37:76:55', 'customSanitizedName')
+plausible_edge(50,1,19) -> 50	1	19 , plausible_edge(50,1,19) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:37:22:37:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:39:67:39:70', 'name : String')
 
-edge(49,44,63) -> 49	44	63 , edge(49,44,63) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:105:38:105:68', 'unsafe(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:106:58:106:75', 'badlySanitizedName : String')
+edge(51,40,91) -> 51	40	91 , edge(51,40,91) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:71:16:71:46', 'unsafe(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:73:33:73:36', 'name')
 
-edge(50,45,96) -> 50	45	96 , edge(50,45,96) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:114:38:114:69', 'unsafe2(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:116:34:116:51', 'badlySanitizedName')
+plausible_edge(52,18,36) -> 52	18	36 , plausible_edge(52,18,36) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:29:67:29:70', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:29:39:29:71', 'sanitize(...) : String')
 
-edge(51,46,65) -> 51	46	65 , edge(51,46,65) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:123:38:123:69', 'unsafe2(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:125:29:125:46', 'badlySanitizedName : String')
+plausible_edge(53,70,77) -> 53	70	77 , plausible_edge(53,70,77) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:196:58:196:75', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:196:31:196:76', 'unsafe2(...) : String')
 
-plausible_edge(52,47,97) -> 52	47	97 , plausible_edge(52,47,97) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:144:38:144:72', 'unmodelled(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:145:34:145:51', 'badlySanitizedName')
+plausible_edge(54,71,103) -> 54	71	103 , plausible_edge(54,71,103) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:213:56:213:73', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:215:34:215:51', 'badlySanitizedName')
 
-edge(53,48,98) -> 53	48	98 , edge(53,48,98) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:156:38:156:68', 'unsafe(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:160:30:160:47', 'badlySanitizedName')
+edge(55,79,104) -> 55	79	104 , edge(55,79,104) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:228:43:228:53', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:230:33:230:36', 'name')
 
-plausible_edge(54,49,99) -> 54	49	99 , plausible_edge(54,49,99) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:169:38:169:72', 'unmodelled(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:173:30:173:47', 'badlySanitizedName')
+edge(56,4,22) -> 56	4	22 , edge(56,4,22) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:67:22:67:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:71:42:71:45', 'name : String')
 
-plausible_edge(55,50,69) -> 55	50	69 , plausible_edge(55,50,69) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:181:38:181:72', 'unmodelled(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:182:57:182:74', 'badlySanitizedName : String')
+plausible_edge(57,36,87) -> 57	36	87 , plausible_edge(57,36,87) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:29:39:29:71', 'sanitize(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:30:34:30:52', 'customSanitizedName')
 
-plausible_edge(56,51,70) -> 56	51	70 , plausible_edge(56,51,70) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:195:38:195:72', 'unmodelled(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:196:58:196:75', 'badlySanitizedName : String')
+plausible_edge(58,5,23) -> 58	5	23 , plausible_edge(58,5,23) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:61:22:61:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:63:77:63:80', 'name : String')
 
-plausible_edge(57,52,71) -> 57	52	71 , plausible_edge(57,52,71) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:211:38:211:72', 'unmodelled(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:213:56:213:73', 'badlySanitizedName : String')
+plausible_edge(59,14,32) -> 59	14	32 , plausible_edge(59,14,32) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:180:22:180:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:181:68:181:71', 'name : String')
 
-plausible_edge(58,53,72) -> 58	53	72 , plausible_edge(58,53,72) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:221:37:221:71', 'unmodelled(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:224:28:224:45', 'badlySanitizedName : String')
+edge(60,45,96) -> 60	45	96 , edge(60,45,96) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:114:38:114:69', 'unsafe2(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:116:34:116:51', 'badlySanitizedName')
 
-edge(59,63,75) -> 59	63	75 , edge(59,63,75) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:106:58:106:75', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:106:31:106:76', 'unsafe2(...) : String')
+plausible_edge(61,52,71) -> 61	52	71 , plausible_edge(61,52,71) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:211:38:211:72', 'unmodelled(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:213:56:213:73', 'badlySanitizedName : String')
 
-edge(60,63,75) -> 60	63	75 , edge(60,63,75) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:106:58:106:75', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:106:31:106:76', 'unsafe2(...) : String')
+plausible_edge(62,23,41) -> 62	23	41 , plausible_edge(62,23,41) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:63:77:63:80', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:63:42:63:81', 'anotherSanitize(...) : String')
 
-edge(61,65,79) -> 61	65	79 , edge(61,65,79) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:125:29:125:46', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:228:43:228:53', 'name : String')
+edge(63,9,27) -> 63	9	27 , edge(63,9,27) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:113:22:113:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:114:65:114:68', 'name : String')
 
-plausible_edge(62,69,76) -> 62	69	76 , plausible_edge(62,69,76) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:182:57:182:74', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:182:31:182:75', 'unsafe(...) : String')
+plausible_edge(64,41,92) -> 64	41	92 , plausible_edge(64,41,92) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:63:42:63:81', 'anotherSanitize(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:64:37:64:55', 'customSanitizedName')
 
-hypothetical_library_flow(62,411) -> 62	411 , hypothetical_library_flow(62,411) -> library_flow(hj.CustomZipAPI.unsafe(String)__arg0, hj.CustomZipAPI.unsafe__returnValue, 411)
+edge(65,10,28) -> 65	10	28 , edge(65,10,28) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:122:22:122:48', 'source(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:123:65:123:68', 'name : String')
 
-plausible_edge(63,69,76) -> 63	69	76 , plausible_edge(63,69,76) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:182:57:182:74', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:182:31:182:75', 'unsafe(...) : String')
+model_node(53, 412) -> 53	 412 , model_node(53, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:221:37:221:71', 'unmodelled(...) : String') , hj.CustomZipAPI.unmodelled (String)
 
-hypothetical_library_flow(63,411) -> 63	411 , hypothetical_library_flow(63,411) -> library_flow(hj.CustomZipAPI.unsafe(String)__arg0, hj.CustomZipAPI.unsafe__returnValue, 411)
+model_node(6, 413) -> 6	 413 , model_node(6, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:95:22:95:48', 'source(...) : String') , hj.CustomZipAPI.source ()
 
-plausible_edge(64,70,77) -> 64	70	77 , plausible_edge(64,70,77) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:196:58:196:75', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:196:31:196:76', 'unsafe2(...) : String')
+model_node(15, 413) -> 15	 413 , model_node(15, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:194:22:194:48', 'source(...) : String') , hj.CustomZipAPI.source ()
 
-plausible_edge(65,70,77) -> 65	70	77 , plausible_edge(65,70,77) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:196:58:196:75', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:196:31:196:76', 'unsafe2(...) : String')
-
-plausible_edge(66,71,103) -> 66	71	103 , plausible_edge(66,71,103) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:213:56:213:73', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:215:34:215:51', 'badlySanitizedName')
-
-plausible_edge(67,72,79) -> 67	72	79 , plausible_edge(67,72,79) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:224:28:224:45', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:228:43:228:53', 'name : String')
-
-edge(68,75,95) -> 68	75	95 , edge(68,75,95) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:106:31:106:76', 'unsafe2(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:107:34:107:51', 'badlySanitizedName')
-
-plausible_edge(69,76,100) -> 69	76	100 , plausible_edge(69,76,100) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:182:31:182:75', 'unsafe(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:186:30:186:47', 'badlySanitizedName')
-
-plausible_edge(70,77,83) -> 70	77	83 , plausible_edge(70,77,83) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:196:31:196:76', 'unsafe2(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:202:63:202:80', 'badlySanitizedName : String')
-
-plausible_edge(71,77,101) -> 71	77	101 , plausible_edge(71,77,101) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:196:31:196:76', 'unsafe2(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:200:30:200:47', 'badlySanitizedName')
-
-edge(72,79,104) -> 72	79	104 , edge(72,79,104) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:228:43:228:53', 'name : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:230:33:230:36', 'name')
-
-plausible_edge(73,83,85) -> 73	83	85 , plausible_edge(73,83,85) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:202:63:202:80', 'badlySanitizedName : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:202:28:202:81', 'anotherSanitize(...) : String')
-
-plausible_edge(74,85,102) -> 74	85	102 , plausible_edge(74,85,102) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:202:28:202:81', 'anotherSanitize(...) : String') -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:203:38:203:42', 'name2')
-
-model_node(0, 412) -> 0	 412 , model_node(0, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:28:22:28:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(1, 412) -> 1	 412 , model_node(1, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:37:22:37:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(2, 412) -> 2	 412 , model_node(2, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:45:29:45:55', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(3, 412) -> 3	 412 , model_node(3, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:49:22:49:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(4, 412) -> 4	 412 , model_node(4, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:67:22:67:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(5, 412) -> 5	 412 , model_node(5, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:61:22:61:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(6, 412) -> 6	 412 , model_node(6, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:95:22:95:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(7, 412) -> 7	 412 , model_node(7, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:73:23:73:49', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(8, 412) -> 8	 412 , model_node(8, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:104:22:104:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(9, 412) -> 9	 412 , model_node(9, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:113:22:113:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(10, 412) -> 10	 412 , model_node(10, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:122:22:122:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(11, 412) -> 11	 412 , model_node(11, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:143:22:143:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(12, 412) -> 12	 412 , model_node(12, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:155:22:155:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(13, 412) -> 13	 412 , model_node(13, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:168:22:168:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(14, 412) -> 14	 412 , model_node(14, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:180:22:180:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(15, 412) -> 15	 412 , model_node(15, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:194:22:194:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(16, 412) -> 16	 412 , model_node(16, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:210:22:210:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(17, 412) -> 17	 412 , model_node(17, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:220:22:220:48', 'source(...) : String') , hj.CustomZipAPI.source ()
-
-model_node(36, 413) -> 36	 413 , model_node(36, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:29:39:29:71', 'sanitize(...) : String') , hj.CustomZipAPI.sanitize (String)
-
-model_node(37, 413) -> 37	 413 , model_node(37, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:39:39:39:71', 'sanitize(...) : String') , hj.CustomZipAPI.sanitize (String)
-
-model_node(39, 413) -> 39	 413 , model_node(39, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:51:42:51:74', 'sanitize(...) : String') , hj.CustomZipAPI.sanitize (String)
-
-model_node(40, 414) -> 40	 414 , model_node(40, 414) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:71:16:71:46', 'unsafe(...) : String') , hj.CustomZipAPI.unsafe (String)
-
-model_node(41, 415) -> 41	 415 , model_node(41, 415) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:63:42:63:81', 'anotherSanitize(...) : String') , hj.CustomZipAPI.anotherSanitize (String)
-
-model_node(42, 414) -> 42	 414 , model_node(42, 414) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:96:38:96:68', 'unsafe(...) : String') , hj.CustomZipAPI.unsafe (String)
-
-model_node(43, 413) -> 43	 413 , model_node(43, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:75:42:75:74', 'sanitize(...) : String') , hj.CustomZipAPI.sanitize (String)
+model_node(49, 412) -> 49	 412 , model_node(49, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:169:38:169:72', 'unmodelled(...) : String') , hj.CustomZipAPI.unmodelled (String)
 
 model_node(44, 414) -> 44	 414 , model_node(44, 414) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:105:38:105:68', 'unsafe(...) : String') , hj.CustomZipAPI.unsafe (String)
 
-model_node(45, 416) -> 45	 416 , model_node(45, 416) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:114:38:114:69', 'unsafe2(...) : String') , hj.CustomZipAPI.unsafe2 (String)
+model_node(37, 415) -> 37	 415 , model_node(37, 415) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:39:39:39:71', 'sanitize(...) : String') , hj.CustomZipAPI.sanitize (String)
 
-model_node(46, 416) -> 46	 416 , model_node(46, 416) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:123:38:123:69', 'unsafe2(...) : String') , hj.CustomZipAPI.unsafe2 (String)
+model_node(42, 414) -> 42	 414 , model_node(42, 414) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:96:38:96:68', 'unsafe(...) : String') , hj.CustomZipAPI.unsafe (String)
 
-model_node(47, 417) -> 47	 417 , model_node(47, 417) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:144:38:144:72', 'unmodelled(...) : String') , hj.CustomZipAPI.unmodelled (String)
+model_node(2, 413) -> 2	 413 , model_node(2, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:45:29:45:55', 'source(...) : String') , hj.CustomZipAPI.source ()
 
-model_node(48, 414) -> 48	 414 , model_node(48, 414) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:156:38:156:68', 'unsafe(...) : String') , hj.CustomZipAPI.unsafe (String)
+model_node(11, 413) -> 11	 413 , model_node(11, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:143:22:143:48', 'source(...) : String') , hj.CustomZipAPI.source ()
 
-model_node(49, 417) -> 49	 417 , model_node(49, 417) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:169:38:169:72', 'unmodelled(...) : String') , hj.CustomZipAPI.unmodelled (String)
-
-model_node(50, 417) -> 50	 417 , model_node(50, 417) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:181:38:181:72', 'unmodelled(...) : String') , hj.CustomZipAPI.unmodelled (String)
-
-model_node(51, 417) -> 51	 417 , model_node(51, 417) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:195:38:195:72', 'unmodelled(...) : String') , hj.CustomZipAPI.unmodelled (String)
-
-model_node(52, 417) -> 52	 417 , model_node(52, 417) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:211:38:211:72', 'unmodelled(...) : String') , hj.CustomZipAPI.unmodelled (String)
-
-model_node(53, 417) -> 53	 417 , model_node(53, 417) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:221:37:221:71', 'unmodelled(...) : String') , hj.CustomZipAPI.unmodelled (String)
-
-model_node(75, 416) -> 75	 416 , model_node(75, 416) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:106:31:106:76', 'unsafe2(...) : String') , hj.CustomZipAPI.unsafe2 (String)
+model_node(43, 415) -> 43	 415 , model_node(43, 415) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:75:42:75:74', 'sanitize(...) : String') , hj.CustomZipAPI.sanitize (String)
 
 model_node(76, 414) -> 76	 414 , model_node(76, 414) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:182:31:182:75', 'unsafe(...) : String') , hj.CustomZipAPI.unsafe (String)
 
+model_node(0, 413) -> 0	 413 , model_node(0, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:28:22:28:48', 'source(...) : String') , hj.CustomZipAPI.source ()
+
+model_node(7, 413) -> 7	 413 , model_node(7, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:73:23:73:49', 'source(...) : String') , hj.CustomZipAPI.source ()
+
+model_node(16, 413) -> 16	 413 , model_node(16, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:210:22:210:48', 'source(...) : String') , hj.CustomZipAPI.source ()
+
+model_node(39, 415) -> 39	 415 , model_node(39, 415) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:51:42:51:74', 'sanitize(...) : String') , hj.CustomZipAPI.sanitize (String)
+
+model_node(50, 412) -> 50	 412 , model_node(50, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:181:38:181:72', 'unmodelled(...) : String') , hj.CustomZipAPI.unmodelled (String)
+
+model_node(12, 413) -> 12	 413 , model_node(12, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:155:22:155:48', 'source(...) : String') , hj.CustomZipAPI.source ()
+
+model_node(3, 413) -> 3	 413 , model_node(3, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:49:22:49:48', 'source(...) : String') , hj.CustomZipAPI.source ()
+
+model_node(51, 412) -> 51	 412 , model_node(51, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:195:38:195:72', 'unmodelled(...) : String') , hj.CustomZipAPI.unmodelled (String)
+
 model_node(77, 416) -> 77	 416 , model_node(77, 416) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:196:31:196:76', 'unsafe2(...) : String') , hj.CustomZipAPI.unsafe2 (String)
 
-model_node(85, 415) -> 85	 415 , model_node(85, 415) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:202:28:202:81', 'anotherSanitize(...) : String') , hj.CustomZipAPI.anotherSanitize (String)
+model_node(46, 416) -> 46	 416 , model_node(46, 416) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:123:38:123:69', 'unsafe2(...) : String') , hj.CustomZipAPI.unsafe2 (String)
+
+model_node(47, 412) -> 47	 412 , model_node(47, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:144:38:144:72', 'unmodelled(...) : String') , hj.CustomZipAPI.unmodelled (String)
+
+model_node(8, 413) -> 8	 413 , model_node(8, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:104:22:104:48', 'source(...) : String') , hj.CustomZipAPI.source ()
+
+model_node(17, 413) -> 17	 413 , model_node(17, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:220:22:220:48', 'source(...) : String') , hj.CustomZipAPI.source ()
+
+model_node(75, 416) -> 75	 416 , model_node(75, 416) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:106:31:106:76', 'unsafe2(...) : String') , hj.CustomZipAPI.unsafe2 (String)
+
+model_node(13, 413) -> 13	 413 , model_node(13, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:168:22:168:48', 'source(...) : String') , hj.CustomZipAPI.source ()
+
+model_node(85, 417) -> 85	 417 , model_node(85, 417) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:202:28:202:81', 'anotherSanitize(...) : String') , hj.CustomZipAPI.anotherSanitize (String)
+
+model_node(48, 414) -> 48	 414 , model_node(48, 414) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:156:38:156:68', 'unsafe(...) : String') , hj.CustomZipAPI.unsafe (String)
+
+model_node(1, 413) -> 1	 413 , model_node(1, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:37:22:37:48', 'source(...) : String') , hj.CustomZipAPI.source ()
+
+model_node(40, 414) -> 40	 414 , model_node(40, 414) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:71:16:71:46', 'unsafe(...) : String') , hj.CustomZipAPI.unsafe (String)
+
+model_node(4, 413) -> 4	 413 , model_node(4, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:67:22:67:48', 'source(...) : String') , hj.CustomZipAPI.source ()
+
+model_node(36, 415) -> 36	 415 , model_node(36, 415) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:29:39:29:71', 'sanitize(...) : String') , hj.CustomZipAPI.sanitize (String)
+
+model_node(5, 413) -> 5	 413 , model_node(5, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:61:22:61:48', 'source(...) : String') , hj.CustomZipAPI.source ()
+
+model_node(14, 413) -> 14	 413 , model_node(14, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:180:22:180:48', 'source(...) : String') , hj.CustomZipAPI.source ()
+
+model_node(45, 416) -> 45	 416 , model_node(45, 416) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:114:38:114:69', 'unsafe2(...) : String') , hj.CustomZipAPI.unsafe2 (String)
+
+model_node(52, 412) -> 52	 412 , model_node(52, 412) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:211:38:211:72', 'unmodelled(...) : String') , hj.CustomZipAPI.unmodelled (String)
+
+model_node(9, 413) -> 9	 413 , model_node(9, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:113:22:113:48', 'source(...) : String') , hj.CustomZipAPI.source ()
+
+model_node(41, 417) -> 41	 417 , model_node(41, 417) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java:63:42:63:81', 'anotherSanitize(...) : String') , hj.CustomZipAPI.anotherSanitize (String)
+
+model_node(10, 413) -> 10	 413 , model_node(10, 413) -> ('file:///Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java:122:22:122:48', 'source(...) : String') , hj.CustomZipAPI.source ()
 
 source(0) -> 0 , source(0) -> source(hj.CustomZipAPI.source()__returnValue, 408)
 
@@ -448,41 +420,41 @@ source(16) -> 16 , source(16) -> source(hj.CustomZipAPI.source()__returnValue, 4
 
 source(17) -> 17 , source(17) -> source(hj.CustomZipAPI.source()__returnValue, 408)
 
-sink(89) -> 89 , sink(89) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
-
-sink(87) -> 87 , sink(87) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
+sink(99) -> 99 , sink(99) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
 
 sink(88) -> 88 , sink(88) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
-
-sink(90) -> 90 , sink(90) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
-
-sink(91) -> 91 , sink(91) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
-
-sink(92) -> 92 , sink(92) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
 
 sink(93) -> 93 , sink(93) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
 
 sink(94) -> 94 , sink(94) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
 
-sink(96) -> 96 , sink(96) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
-
-sink(97) -> 97 , sink(97) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
-
-sink(98) -> 98 , sink(98) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
-
-sink(99) -> 99 , sink(99) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
-
-sink(103) -> 103 , sink(103) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
-
-sink(95) -> 95 , sink(95) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
-
 sink(100) -> 100 , sink(100) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
+
+sink(89) -> 89 , sink(89) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
+
+sink(90) -> 90 , sink(90) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
 
 sink(101) -> 101 , sink(101) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
 
-sink(104) -> 104 , sink(104) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
+sink(97) -> 97 , sink(97) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
+
+sink(95) -> 95 , sink(95) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
 
 sink(102) -> 102 , sink(102) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
+
+sink(98) -> 98 , sink(98) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
+
+sink(91) -> 91 , sink(91) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
+
+sink(103) -> 103 , sink(103) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
+
+sink(104) -> 104 , sink(104) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
+
+sink(87) -> 87 , sink(87) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
+
+sink(96) -> 96 , sink(96) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
+
+sink(92) -> 92 , sink(92) -> sink(hj.CustomZipAPI.sink(String)__arg0, 409)
 
 warning(0,2,89) -> 0	2	89 , source(java.util.Properties.get__returnValue, 0)
 
