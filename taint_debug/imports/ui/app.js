@@ -81,7 +81,7 @@ Meteor.startup(() => {
       for (let i = 0; i < result.edges.length ; i++) {        
           const edge = result.edges[i];
           let warningNumber = edge.warningNumber;
-          edges.push({ data: { id: 'edge_' + edge.edgeId.toString() , source: 'node_' + edge.sourceId.toString(), target: 'node_' + edge.targetId.toString(), description: "Warning " + warningNumber + " id:" +edge.edgeId } });    
+          edges.push({ data: { id: 'edge_' + edge.edgeId.toString() , source: 'node_' + edge.sourceId.toString(), target: 'node_' + edge.targetId.toString(), description: "Warning " + warningNumber + " id:" +edge.edgeId, warning: 'warning_' + warningNumber } });    
       }
 
       result.nodes.forEach(node => {
@@ -148,7 +148,18 @@ Meteor.startup(() => {
       cy.on( 'tap', 'node', function(){
         var node = this;
         console.log( 'tapped ' + node.id() );
+        
       });
+
+      cy.on('tap', 'edge', function(){
+        var edge = this;
+          var referenceId = edge.data('warning'); // Get the id to scroll to
+
+          var elementToScrollTo = document.getElementById(referenceId);
+          if (elementToScrollTo) {
+            elementToScrollTo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
 
       // Log Cytoscape elements to verify all nodes and edges
       console.log('Cytoscape elements:', cy.elements().jsons());
