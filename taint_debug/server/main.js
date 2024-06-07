@@ -247,7 +247,7 @@ Meteor.methods({
 
     libNodesLines.forEach(line => {
       if (line.trim()) {
-        const [libId, nodeId] = line.trim().split("\t").map(Number);
+        const [nodeId, libId] = line.trim().split("\t").map(Number);
         libNodes.set(nodeId, libId);
       }
     });
@@ -262,21 +262,37 @@ Meteor.methods({
     const lines = fs.readFileSync(ANALYSIS_PATH + "souffle_files/edge.facts", "utf-8").split("\n");
     lines.forEach(line => {
       if (!line.trim()) return;
-      const [edgeId, sourceId, targetId] = line.split("\t");
+      let [edgeId, sourceId, targetId] = line.split("\t");
       
       let sourceName = nodeMapping[parseInt(sourceId)].description;
       let targetName = nodeMapping[parseInt(targetId)].description;
-      let isSourceLibNode = libNodes.has(parseInt(sourceId));
-      let isTargetLibNode = libNodes.has(parseInt(targetId));
+      // let isSourceLibNode = libNodes.has(parseInt(sourceId));
+      let sourceLibNode = libNodes.get(parseInt(sourceId));
+      // let isTargetLibNode = libNodes.has(parseInt(targetId));
+      let targetLibNode = libNodes.get(parseInt(targetId));
       let warningNumber = edgeToWarningNumber.get(parseInt(edgeId));
       
-      edges.push({ edgeId, sourceId, targetId, sourceName, targetName, isSourceLibNode, isTargetLibNode, warningNumber});
+      // map the nodes of the same lib nodes to same nodes
+      if (sourceLibNode) {
+        console.log('mapping source', sourceId, ' to ', sourceLibNode)
+        // copy entry over in nodeMapping
+        nodeMapping[sourceLibNode] = nodeMapping[sourceId];
+        sourceId = sourceLibNode;
+      }
+      if (targetLibNode) {
+        console.log('mapping target', targetId, ' to ', targetLibNode)
+        // copy entry over in nodeMapping
+        nodeMapping[targetLibNode] = nodeMapping[targetId];
+        targetId = targetLibNode;
+      }
+      edges.push({ edgeId, sourceId, targetId, sourceName, targetName, sourceLibNode, targetLibNode, warningNumber});
       nodesSet.add(sourceId);
       nodesSet.add(targetId);
     });
     nodesSet.forEach(node => {
-      nodes.push({ nodeId: node, description: nodeMapping[node].description });
+      nodes.push({ nodeId: node, description: nodeMapping[node] ? nodeMapping[node].description : node });
     });
+    console.log(edges);
     return { nodes, edges };
 
   }
