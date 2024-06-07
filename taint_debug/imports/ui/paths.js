@@ -152,6 +152,17 @@ Template.intermediateNodes.events({
   'click .lib_impact'(event) {
     const libId = $(event.target).attr('data-libId');
     Session.set('inspectedLib', parseInt(libId));
+  },
+  'click .slide_clicker'(event) {
+
+    ;
+
+    var referenceId = $(event.target).attr('data-slide'); // Get the id to scroll to
+
+          var elementToScrollTo = document.getElementById(referenceId);
+          if (elementToScrollTo) {
+            elementToScrollTo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
   }
 });
 

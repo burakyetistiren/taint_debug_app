@@ -258,9 +258,18 @@ Meteor.methods({
         edgeToWarningNumber.set(middle.edgeId, path.warningNumber);
       });
     });
-    
+
     const lines = fs.readFileSync(ANALYSIS_PATH + "souffle_files/edge.facts", "utf-8").split("\n");
+    analysisEdges =  new Set();
     lines.forEach(line => {
+      if (line.trim()) {
+        const [edgeId, sourceId, targetId] = line.trim().split("\t");
+        analysisEdges.add(edgeId);
+      }
+    });
+    
+    const allEdgesLines = fs.readFileSync(ANALYSIS_PATH + "souffle_files/plausible_edge.facts", "utf-8").split("\n");
+    allEdgesLines.forEach(line => {
       if (!line.trim()) return;
       let [edgeId, sourceId, targetId] = line.split("\t");
       
@@ -285,7 +294,8 @@ Meteor.methods({
         nodeMapping[targetLibNode] = nodeMapping[targetId];
         targetId = targetLibNode;
       }
-      edges.push({ edgeId, sourceId, targetId, sourceName, targetName, sourceLibNode, targetLibNode, warningNumber});
+      let isAnalysisEdge = analysisEdges.has(edgeId);
+      edges.push({ edgeId, sourceId, targetId, sourceName, targetName, sourceLibNode, targetLibNode, warningNumber, isAnalysisEdge});
       nodesSet.add(sourceId);
       nodesSet.add(targetId);
     });

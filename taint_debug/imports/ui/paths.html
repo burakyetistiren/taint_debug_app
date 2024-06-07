@@ -1,7 +1,7 @@
 
 <template name="path">
   <div id="warning_{{warningNumber}}" class="border" style="margin-left:10px">
-    <div style="margin-left:auto; margin-right: auto; "><h2>{{{isReported}}} Warning {{warningNumber}}: {{warningDescription}}</h2></div>
+    <div style="margin-left:auto; margin-right: auto; "><h2>{{{isReported}}} Path {{warningNumber}}: {{warningDescription}}</h2></div>
     <div class="pure-g">
       <div class="pure-u-1-3"> 
         <h2>Source</h2>
@@ -48,13 +48,13 @@
       <div>Intermediate Steps:</div>
       {{#each intermediates}}
 
-        <a href="#slide_{{@index}}" class="{{colorBorder}}">{{@index}} </a>
+        <a  data-slide="slide_{{@index}}" class="{{colorBorder}} slide_clicker">{{@index}} </a>
       {{/each}}
     </div>
     
     <div class="slides " >
       {{#each intermediates}}
-        <div class="slide_{{@index}}" style="display:flex; flex-direction: column;">
+        <div id="slide_{{@index}}" style="display:flex; flex-direction: column;">
           
             <!-- hello -->
             
