@@ -85,13 +85,29 @@ Meteor.startup(() => {
       }
 
       result.nodes.forEach(node => {
-        nodes.push({ data: { id: 'node_' + node.nodeId.toString(), description: node.description } });
+        // color based on importance
+        let color = 'green';
+        if (node.importance >= 2.5) {
+          color = 'red';
+        } else if (node.importance >= 1.5) {
+          color = 'orange';
+        } else if (node.importance >= 0.5) {
+          color = 'yellow';
+        }
+          
+        nodes.push({ data: { 
+          id: 'node_' + node.nodeId.toString(), 
+          description: 'node_' + node.nodeId.toString() + " : " + node.description, 
+          importance: node.importance, 
+          source: node.isSource,
+          sink: node.isSink,
+          color: color 
+        } });
       });
 
       console.log('Nodes:', nodes);
       console.log('Edges:', edges);
 
-      // Initialize Cytoscape after data is ready
       let cy = cytoscape({
         container: document.getElementById('cy'),
         style: [
@@ -106,6 +122,34 @@ Meteor.startup(() => {
               'text-outline-width': 2,
               'text-outline-color': '#0074D9',
               'font-size': 12,
+            }
+          },
+          {
+            selector: 'node[color="green"]',
+            style: {
+              'background-color': '#2ECC40',
+              'text-outline-color': '#2ECC40',
+            }
+          },
+          {
+            selector: 'node[color="yellow"]',
+            style: {
+              'background-color': '#FFDC00',
+              'text-outline-color': '#FFDC00',
+            }
+          },
+          {
+            selector: 'node[color="orange"]',
+            style: {
+              'background-color': '#FF851B',
+              'text-outline-color': '#FF851B',
+            }
+          },
+          {
+            selector: 'node[color="red"]',
+            style: {
+              'background-color': '#FF4136',
+              'text-outline-color': '#FF4136',
             }
           },
           {
@@ -143,11 +187,42 @@ Meteor.startup(() => {
           coolingFactor: 0.95, // Cooling factor
           minTemp: 1.0 // Minimum temperature for cooling
         }
+
       });
+
+      let nodePositionIndex = 0;
+      cy.nodes().forEach(node => {
+        if (node.data('source')) {
+          console.log('Setting position for node:', node.id(), node.data('source'));
+          node.position({
+            x: 100, // Fixed x-coordinate for all such nodes
+            y: 100 + 100 * nodePositionIndex // Stacking them vertically
+          });
+
+          nodePositionIndex++;
+        }
+      });
+
+      cy.layout({
+        name: 'breadthfirst', 
+        fit: true,
+        directed: true,
+        padding: 30,
+        avoidOverlap: true,
+        nodeDimensionsIncludeLabels: true
+      }).run();
+      
 
       cy.on( 'tap', 'node', function(){
         var node = this;
         console.log( 'tapped ' + node.id() );
+
+        var referenceId = node.data('warning'); // Get the id to scroll to
+
+          var elementToScrollTo = document.getElementById(referenceId);
+          if (elementToScrollTo) {
+            elementToScrollTo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
         
       });
 

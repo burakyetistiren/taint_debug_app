@@ -47,6 +47,12 @@ function readNodeMapping() {
     if (line.trim()) {
       const [ nodeId, file, lineNum, column, endLineNum, endColNum, description ] = line.trim().split(",");
     
+      // check if Nan
+      if (isNaN(Number(nodeId))) {
+        throw new Error('Error: NodeId is not a number nodeId=' + nodeId + 'line' + line);
+        // return;
+      }
+
       nodeMapping[Number(nodeId)] = {
         'nodeId': Number(nodeId),
         'file': file,
@@ -193,6 +199,7 @@ function setupAndReadAnalysisData() {
 }
 
 function codeSnippetOfNodeWithHighlight(nodeId, nodeMapping) {
+  
   const { file, line, colNum, endColNum } =  getFileLoc(nodeId, nodeMapping);
 
   const surroundingBef =  readLinesFromFile(file, line - 3, line - 1);
@@ -225,7 +232,6 @@ function readLineFromFile(file, line) {
 }
 
 function getFileLoc(nodeId, nodeMapping) {
-
     return { file: nodeMapping[nodeId]['file'] , line: parseInt(nodeMapping[nodeId]['line']), colNum: parseInt(nodeMapping[nodeId]['column']) - 1, endColNum: parseInt(nodeMapping[nodeId]['end_column']) };
 }
 
@@ -241,23 +247,11 @@ Meteor.methods({
     const nodesSet = new Set();
     const nodeMapping = readNodeMapping();
 
-    // read library_nodes
-    let libNodesLines = fs.readFileSync(ANALYSIS_PATH + "souffle_files/library_node.facts", "utf-8").split("\n");
-    let libNodes = new Map();
 
-    libNodesLines.forEach(line => {
-      if (line.trim()) {
-        const [nodeId, libId] = line.trim().split("\t").map(Number);
-        libNodes.set(nodeId, libId);
-      }
-    });
+    let { libCentrality, sources, sinks, libNodes } = readNodeAttributes();   
+    console.log(sources)
 
-    let edgeToWarningNumber = new Map();
-    Paths.find().fetch().forEach(path => {
-      path.middle.forEach(middle => {
-        edgeToWarningNumber.set(middle.edgeId, path.warningNumber);
-      });
-    });
+    let edgeToWarningNumber = readEdgeAttributes();
 
     const lines = fs.readFileSync(ANALYSIS_PATH + "souffle_files/edge.facts", "utf-8").split("\n");
     analysisEdges =  new Set();
@@ -283,13 +277,13 @@ Meteor.methods({
       
       // map the nodes of the same lib nodes to same nodes
       if (sourceLibNode) {
-        console.log('mapping source', sourceId, ' to ', sourceLibNode)
+
         // copy entry over in nodeMapping
         nodeMapping[sourceLibNode] = nodeMapping[sourceId];
         sourceId = sourceLibNode;
       }
       if (targetLibNode) {
-        console.log('mapping target', targetId, ' to ', targetLibNode)
+
         // copy entry over in nodeMapping
         nodeMapping[targetLibNode] = nodeMapping[targetId];
         targetId = targetLibNode;
@@ -300,10 +294,71 @@ Meteor.methods({
       nodesSet.add(targetId);
     });
     nodesSet.forEach(node => {
-      nodes.push({ nodeId: node, description: nodeMapping[node] ? nodeMapping[node].description : node });
+      let importance = libCentrality.get(node);
+
+      nodes.push({ 
+        nodeId: node, 
+        description: nodeMapping[node] ? nodeMapping[node].description : node, 
+        importance: importance,
+        isSource: sources.has(node),
+        isSink: sinks.has(node),
+      });
     });
     console.log(edges);
     return { nodes, edges };
 
+
+    function readEdgeAttributes() {
+      let edgeToWarningNumber = new Map();
+      Paths.find().fetch().forEach(path => {
+        path.middle.forEach(middle => {
+          edgeToWarningNumber.set(middle.edgeId, path.warningNumber);
+        });
+      });
+      return edgeToWarningNumber;
+    }
+
+    function readNodeAttributes() {
+      let libCentralityLines = fs.readFileSync(ANALYSIS_PATH + "souffle_files/lib_centrality.facts", "utf-8").split("\n");
+      let libCentrality = new Map();
+      libCentralityLines.forEach(line => {
+        if (line.trim()) {
+          const [libId, centrality, scaledCentrality] = line.trim().split("\t").map(Number);
+          libCentrality.set(libId, scaledCentrality);
+        }
+      });
+      // read sources 
+      let sources = new Set();
+      let sinks = new Set();
+
+      let sourceLines = fs.readFileSync(ANALYSIS_PATH + "souffle_files/source.facts", "utf-8").split("\n");
+      sourceLines.forEach(line => {
+        if (line.trim()) {
+          const [nodeId] = line.trim().split("\t").map(Number);
+          sources.add(nodeId);
+        }
+      });
+
+      let sinkLines = fs.readFileSync(ANALYSIS_PATH + "souffle_files/sink.facts", "utf-8").split("\n");
+      sinkLines.forEach(line => {
+        if (line.trim()) {
+          const [nodeId] = line.trim().split("\t").map(Number);
+          sinks.add(nodeId);
+        }
+      });
+
+       // read library_nodes
+      let libNodesLines = fs.readFileSync(ANALYSIS_PATH + "souffle_files/library_node.facts", "utf-8").split("\n");
+      let libNodes = new Map();
+
+      libNodesLines.forEach(line => {
+        if (line.trim()) {
+          const [nodeId, libId] = line.trim().split("\t").map(Number);
+          libNodes.set(nodeId, libId);
+        }
+      });
+
+      return { libCentrality, sources, sinks, libNodes };
+    }
   }
 });
