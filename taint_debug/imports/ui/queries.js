@@ -48,28 +48,60 @@ Template.queries.events({
   'change .focus-dropdown-node'(event) {
     const selectedNodeId = event.target.value;
     const cy = window.cyInstance; // Access the Cytoscape instance
-    cy.elements().removeClass('highlighted');
+
+    // Function to reset all nodes and edges to their original colors
+    function resetColors() {
+      cy.nodes().forEach(node => {
+        node.removeClass('highlighted');
+        node.style('background-color', node.data('original-background-color'));
+        node.style('color', node.data('original-text-color'));
+      });
+      cy.edges().removeClass('highlighted');
+    }
+
+    resetColors();
     const selectedNode = cy.getElementById('node_' + selectedNodeId);
     selectedNode.addClass('highlighted');
+    selectedNode.style('background-color', '#808080'); // Change color to gray
+    selectedNode.style('color', '#FFFFFF'); // Change text color to white
     cy.animate({
       center: { eles: selectedNode },
       zoom: 2 // You can adjust the zoom level as needed
     }, {
-      duration: 1000 // Animation duration in milliseconds
+      duration: 200 // Animation duration in milliseconds
     });
   },
   'change .focus-dropdown-edge'(event) {
     const selectedEdgeId = event.target.value;
     const cy = window.cyInstance; // Access the Cytoscape instance
-    cy.elements().removeClass('highlighted');
+
+    // Function to reset all nodes and edges to their original colors
+    function resetColors() {
+      cy.nodes().forEach(node => {
+        node.removeClass('highlighted');
+        node.style('background-color', node.data('original-background-color'));
+        node.style('color', node.data('original-text-color'));
+      });
+      cy.edges().removeClass('highlighted');
+    }
+
+    resetColors();
     const selectedEdge = cy.getElementById('edge_' + selectedEdgeId);
     selectedEdge.addClass('highlighted');
     cy.animate({
       center: { eles: selectedEdge },
       zoom: 2 // You can adjust the zoom level as needed
     }, {
-      duration: 1000 // Animation duration in milliseconds
+      duration: 200 // Animation duration in milliseconds
     });
+
+    // Scroll to the relevant code snippet
+    var referenceId = selectedEdge.data('description');
+    var warningNumber = referenceId.split(" ")[1];
+    var elementToScrollTo = document.getElementById("warning_" + warningNumber);
+    if (elementToScrollTo) {
+      elementToScrollTo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 });
 

@@ -196,7 +196,7 @@ Meteor.startup(() => {
               center: { eles: node },
               zoom: 2
             }, {
-              duration: 1000
+              duration: 200
             });
           }
           console.log('tapped ' + node.id());
@@ -222,7 +222,7 @@ Meteor.startup(() => {
               center: { eles: edge },
               zoom: 2
             }, {
-              duration: 1000
+              duration: 200
             });
           }
           console.log('tapped ' + edge.id());
