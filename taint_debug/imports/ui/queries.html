@@ -1,0 +1,68 @@
+<template name="queries">
+    <style>
+      .query-box {
+        border: 1px solid #ccc;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .query-box h3 {
+        margin: 0 0 10px;
+        font-size: 1.5em;
+        color: #333;
+      }
+      .query-box label {
+        margin-right: 5px;
+      }
+      .query-box select {
+        margin-right: 20px;
+        padding: 5px;
+      }
+      .highlighted {
+        background-color: red !important;
+      }
+    </style>
+    <h1>Query</h1>
+    <div class="query-box">
+      <h3>
+        Focus on node:
+        <select id="focus-node" class="focus-dropdown-node">
+          {{#each nodes}}
+            <option value="{{this}}">{{this}}</option>
+          {{/each}}
+        </select>
+      </h3>
+    </div>
+    <div class="query-box">
+      <h3>
+        Focus on edge:
+        <select id="focus-edge" class="focus-dropdown-edge">
+          {{#each edges}}
+            <option value="{{this}}">{{this}}</option>
+          {{/each}}
+        </select>
+      </h3>
+    </div>
+    {{#each queries}}
+      <div class="query-box">
+        <h3>
+          {{description}}
+          Source:
+          <select id="src-{{@index}}" class="src-dropdown">
+            {{#each sources}}
+              <option value="{{this}}">{{this}}</option>
+            {{/each}}
+          </select>
+          Sink:
+          <select id="sink-{{@index}}" class="sink-dropdown">
+            {{#each sinks}}
+              <option value="{{this}}">{{this}}</option>
+            {{/each}}
+          </select>
+        </h3>
+      </div>
+    {{/each}}
+  </template>
+  

@@ -1,15 +1,45 @@
 <body>
-    <div class="taint-paths-view" style="height:50vh; overflow: scroll;">
-      <h1>Taint paths</h1>
-      
-      {{# each paths}}
-
-        {{> path}}
-
-      {{/each}}
+    <style>
+      .row {
+        display: flex;
+        flex-direction: row;
+      }
+      .column {
+        flex: 1; /* Each column takes equal space */
+      }
+      .full-width {
+        width: 100%; /* Full width for the second row */
+      }
+      .view-container {
+        height: 50vh; /* Assigns half of the vertical height to the views */
+        overflow: auto; /* Allows scrolling if content overflows */
+      }
+      .graph-view {
+        overflow: hidden; /* Prevents scrolling within the Graph view */
+      }
+      .taint-paths-view {
+        height: 50vh;
+        overflow: scroll;
+      }
+    </style>
+  
+    <div class="row" style="height: 50vh;"> <!-- First row -->
+      <div class="column view-container"> <!-- First column of the first row -->
+        {{> queries}}
+      </div>
+      <div class="column view-container graph-view"> <!-- Second column of the first row -->
+        <h1>Graph view</h1>
+        {{> cytoscapeContainer}}
+      </div>
     </div>
-    <div class="graph-view" style="height:50vh; overflow: scroll;">
-      <h1>Graph view</h1>
-      <div id="cy"></div>
+  
+    <div class="row full-width"> <!-- Second row -->
+      <div class="column taint-paths-view"> <!-- Full width for taint paths -->
+        <h1>Taint paths</h1>
+        {{#each paths}}
+          {{> path}}
+        {{/each}}
+      </div>
     </div>
-</body>
+  </body>
+  

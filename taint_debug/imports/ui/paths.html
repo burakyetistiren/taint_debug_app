@@ -1,67 +1,73 @@
+<head>
+  <style>
+    .interactive-button {
+      background-color: #4CAF50; /* Green */
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      transition-duration: 0.4s;
+    }
+
+    .interactive-button:hover {
+      background-color: white;
+      color: black;
+      border: 2px solid #4CAF50;
+    }
+  </style>
+</head>
 
 <template name="path">
-  <div id="warning_{{warningNumber}}" class="border" style="margin-left:10px">
-    <div style="margin-left:auto; margin-right: auto; "><h2>{{{isReported}}} Path {{warningNumber}}: {{warningDescription}}</h2></div>
+  <div id="warning_{{warningNumber}}" class="border" style="margin: 10px;">
+    <div style="margin: auto; text-align: center;">
+      <h2>{{{isReported}}} Path {{warningNumber}}: {{warningDescription}}</h2>
+    </div>
     <div class="pure-g">
-      <div class="pure-u-1-3"> 
+      <div class="pure-u-1-3">
         <h2>Source</h2>
-        <pre style="overflow: auto; min-width: 100%; width:0px; "><code class="start">{{start}}</code></pre>
+        <pre style="overflow: auto; min-width: 100%; width: 0px;"><code class="start">{{start}}</code></pre>
       </div>
-
-      <div class="pure-u-1-6"> 
-        
-          <!-- <pre style="overflow: auto; min-width: 100%; width:0px; "><code class="middle">{{topIntermediateCode}}</code></pre> -->
-          <h2></h2>
-          <div style="padding-left:8px; padding-top:40px">
+      <div class="pure-u-1-6">
+        <div style="padding-left: 8px; padding-top: 40px;">
           Passing through {{numIntermediate}} steps to reach 
         </div>
-          
       </div>
-      <div class="pure-u-1-3"> 
+      <div class="pure-u-1-3">
         <h2>Sink</h2>
-        <pre style="overflow: auto; min-width: 100%; width:0px; "><code class="end">{{end}}</code></pre>
+        <pre style="overflow: auto; min-width: 100%; width: 0px;"><code class="end">{{end}}</code></pre>
         <button class="pure-button" id="inspectButton">Inspect</button>
       </div>
-      
-
-
+    </div>
+    {{#if isCurrentlyInspectedWarning}}
+      {{> questionChoices}}
+    {{/if}}
+    {{#if isViewingWhyNodeModel}}
+      {{> intermediateNodes}}
+    {{/if}}
+    {{#if showLibraryImpact}}
+      {{> libraryImpact}}
+    {{/if}}
   </div>
-  {{#if isCurrentlyInspectedWarning}}
-    {{>questionChoices}}
-
-  {{/if}}
-
-  {{#if isViewingWhyNodeModel}}
-    {{> intermediateNodes}} 
-  {{/if}}
-
-  {{#if showLibraryImpact}}
-    {{> libraryImpact}}
-  {{/if}}
-</div>
 </template>
 
 <template name="intermediateNodes">
-  <div class="slider border" style="margin-left:auto; margin-right:auto; margin-left:20px"> 
-    
+  <div class="slider border" style="margin: auto; margin-left: 20px;">
     <div style="text-align: center;">
       <div>Intermediate Steps:</div>
       {{#each intermediates}}
-
-        <a  data-slide="slide_{{@index}}" class="{{colorBorder}} slide_clicker">{{@index}} </a>
+        <a data-slide="slide_{{@index}}" class="{{colorBorder}} slide_clicker">{{@index}} </a>
       {{/each}}
     </div>
-    
-    <div class="slides " >
+    <div class="slides">
       {{#each intermediates}}
-        <div id="slide_{{@index}}" style="display:flex; flex-direction: column;">
-          
-            <!-- hello -->
-            
-          <pre style="overflow: auto; min-width: 100%; width:0px; " ><code class="middle {{colorBorder}}">{{this.code}}</code></pre>
+        <div id="slide_{{@index}}" style="display: flex; flex-direction: column;">
+          <pre style="overflow: auto; min-width: 100%; width: 0px;"><code class="middle {{colorBorder}}">{{this.code}}</code></pre>
           <span class="{{showIfHasLib}}">View paths {{libStateDescription}} <button class="pure-button lib_impact" style="width: 240px" data-libId="{{libId}}">{{libname}} </button></span>
-        
-          <!-- <span>Step {{@index}}</span> -->
         </div>
       {{/each}}
     </div>
@@ -69,39 +75,36 @@
 </template>
 
 <template name="questionChoices">
-  <div id="contextMenu" class="context-menu border" >
+  <div id="contextMenu" class="context-menu border">
     <ul>
-        <li><a href="#why_node_model" class="why_node_model">Why {{isOrIsNot}} there a taint path ending at <code>{{end}}</code>?</a></li>
-        <li><a href="#why_node_pair_model">Why {{isOrIsNot}} there a taint path from <code>{{start}}</code> to <code>{{end}}</code>?</a></li>
-        <li><a href="#why_start_node_model">Why {{isOrIsNot}} there a taint path start at <code>{{end}}</code>?</a></li>
+      <li><button class="interactive-button why_node_model">Show path</button></li>
+      <!--<li><a href="#why_node_pair_model">Why {{isOrIsNot}} there a taint path from <code>{{start}}</code> to <code>{{end}}</code>?</a></li>-->
+      <!--<li><a href="#why_start_node_model">Why {{isOrIsNot}} there a taint path start at <code>{{end}}</code>?</a></li>-->
     </ul>
   </div>
 </template>
 
 <template name="libraryImpact">
-<div class="library-impact border" style="margin-left:50px;">
-  <h3>Other warnings with path {{libStateDescription}} {{displaySelectedLibNode}}</h3>
-  {{#each paths}}
-    {{>sourceSinkPair}}
-  {{/each}}
-</div>
+  <div class="library-impact border" style="margin-left: 50px;">
+    <h3>Other warnings with path {{libStateDescription}} {{displaySelectedLibNode}}</h3>
+    {{#each paths}}
+      {{> sourceSinkPair}}
+    {{/each}}
+  </div>
 </template>
 
 <template name="sourceSinkPair">
-  <div class="pure-g" style="margin-left:20px">
-    <div class="pure-u-1-6"> 
+  <div class="pure-g" style="margin-left: 20px;">
+    <div class="pure-u-1-6">
       {{{isReported}}} Warning {{warningNumber}}
     </div>
-    <div class="pure-u-1-3"> 
-      <pre style="overflow: auto; min-width: 100%; width:0px; "><code class="start">{{codeFromNode start}}</code></pre>
+    <div class="pure-u-1-3">
+      <pre style="overflow: auto; min-width: 100%; width: 0px;"><code class="start">{{codeFromNode start}}</code></pre>
     </div>
-    <div class="pure-u-1-12"> 
-      <!-- {{warningNumber}} -->
+    <div class="pure-u-1-12">
     </div>
-
-    
-    <div class="pure-u-1-3"> 
-      <pre style="overflow: auto; min-width: 100%; width:0px; "><code class="end">{{codeFromNode end}}</code></pre>
+    <div class="pure-u-1-3">
+      <pre style="overflow: auto; min-width: 100%; width: 0px;"><code class="end">{{codeFromNode end}}</code></pre>
     </div>
-</div>
+  </div>
 </template>

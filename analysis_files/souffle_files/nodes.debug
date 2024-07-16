@@ -1,83 +1,83 @@
-0,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,28,22,28,48,source(...) : String
-1,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,37,22,37,48,source(...) : String
-2,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,45,29,45,55,source(...) : String
-3,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,49,22,49,48,source(...) : String
-4,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,67,22,67,48,source(...) : String
-5,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,61,22,61,48,source(...) : String
-6,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,95,22,95,48,source(...) : String
-7,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,73,23,73,49,source(...) : String
-8,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,104,22,104,48,source(...) : String
-9,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,113,22,113,48,source(...) : String
-10,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,122,22,122,48,source(...) : String
-11,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,143,22,143,48,source(...) : String
-12,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,155,22,155,48,source(...) : String
-13,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,168,22,168,48,source(...) : String
-14,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,180,22,180,48,source(...) : String
-15,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,194,22,194,48,source(...) : String
-16,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,210,22,210,48,source(...) : String
-17,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,220,22,220,48,source(...) : String
-18,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,29,67,29,70,name : String
-19,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,39,67,39,70,name : String
-20,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,52,44,52,47,name : String
-21,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,51,70,51,73,name : String
-22,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,71,42,71,45,name : String
-23,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,63,77,63,80,name : String
-24,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,96,64,96,67,name : String
-25,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,75,70,75,73,name : String
-26,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,105,64,105,67,name : String
-27,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,114,65,114,68,name : String
-28,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,123,65,123,68,name : String
-29,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,144,68,144,71,name : String
-30,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,156,64,156,67,name : String
-31,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,169,68,169,71,name : String
-32,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,181,68,181,71,name : String
-33,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,195,68,195,71,name : String
-34,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,211,68,211,71,name : String
-35,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,221,67,221,70,name : String
-36,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,29,39,29,71,sanitize(...) : String
-37,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,39,39,39,71,sanitize(...) : String
-39,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,51,42,51,74,sanitize(...) : String
-40,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,71,16,71,46,unsafe(...) : String
-41,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,63,42,63,81,anotherSanitize(...) : String
-42,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,96,38,96,68,unsafe(...) : String
-43,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,75,42,75,74,sanitize(...) : String
-44,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,105,38,105,68,unsafe(...) : String
-45,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,114,38,114,69,unsafe2(...) : String
-46,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,123,38,123,69,unsafe2(...) : String
-47,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,144,38,144,72,unmodelled(...) : String
-48,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,156,38,156,68,unsafe(...) : String
-49,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,169,38,169,72,unmodelled(...) : String
-50,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,181,38,181,72,unmodelled(...) : String
-51,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,195,38,195,72,unmodelled(...) : String
-52,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,211,38,211,72,unmodelled(...) : String
-53,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,221,37,221,71,unmodelled(...) : String
-63,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,106,58,106,75,badlySanitizedName : String
-65,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,125,29,125,46,badlySanitizedName : String
-69,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,182,57,182,74,badlySanitizedName : String
-70,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,196,58,196,75,badlySanitizedName : String
-71,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,213,56,213,73,badlySanitizedName : String
-72,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,224,28,224,45,badlySanitizedName : String
-75,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,106,31,106,76,unsafe2(...) : String
-76,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,182,31,182,75,unsafe(...) : String
-77,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,196,31,196,76,unsafe2(...) : String
-79,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,228,43,228,53,name : String
-83,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,202,63,202,80,badlySanitizedName : String
-85,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,202,28,202,81,anotherSanitize(...) : String
-87,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,30,34,30,52,customSanitizedName
-88,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,40,34,40,52,customSanitizedName
-89,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,54,42,54,45,name
-90,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,52,37,52,55,customSanitizedName
-91,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,73,33,73,36,name
-92,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,64,37,64,55,customSanitizedName
-93,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,97,34,97,51,badlySanitizedName
-94,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,76,37,76,55,customSanitizedName
-95,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,107,34,107,51,badlySanitizedName
-96,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,116,34,116,51,badlySanitizedName
-97,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,145,34,145,51,badlySanitizedName
-98,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,160,30,160,47,badlySanitizedName
-99,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,173,30,173,47,badlySanitizedName
-100,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,186,30,186,47,badlySanitizedName
-101,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,200,30,200,47,badlySanitizedName
-102,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,203,38,203,42,name2
-103,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,215,34,215,51,badlySanitizedName
-104,/Users/hongjinkang/repos/codeql_exp/burak_toy/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,230,33,230,36,name
+0,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,28,22,28,48,source(...) : String
+1,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,37,22,37,48,source(...) : String
+2,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,45,29,45,55,source(...) : String
+3,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,49,22,49,48,source(...) : String
+4,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,67,22,67,48,source(...) : String
+5,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,61,22,61,48,source(...) : String
+6,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,95,22,95,48,source(...) : String
+7,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,73,23,73,49,source(...) : String
+8,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,104,22,104,48,source(...) : String
+9,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,113,22,113,48,source(...) : String
+10,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,122,22,122,48,source(...) : String
+11,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,143,22,143,48,source(...) : String
+12,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,155,22,155,48,source(...) : String
+13,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,168,22,168,48,source(...) : String
+14,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,180,22,180,48,source(...) : String
+15,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,194,22,194,48,source(...) : String
+16,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,210,22,210,48,source(...) : String
+17,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,220,22,220,48,source(...) : String
+18,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,29,67,29,70,name : String
+19,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,39,67,39,70,name : String
+20,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,52,44,52,47,name : String
+21,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,51,70,51,73,name : String
+22,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,71,42,71,45,name : String
+23,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,63,77,63,80,name : String
+24,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,96,64,96,67,name : String
+25,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,75,70,75,73,name : String
+26,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,105,64,105,67,name : String
+27,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,114,65,114,68,name : String
+28,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,123,65,123,68,name : String
+29,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,144,68,144,71,name : String
+30,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,156,64,156,67,name : String
+31,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,169,68,169,71,name : String
+32,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,181,68,181,71,name : String
+33,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,195,68,195,71,name : String
+34,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,211,68,211,71,name : String
+35,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,221,67,221,70,name : String
+36,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,29,39,29,71,sanitize(...) : String
+37,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,39,39,39,71,sanitize(...) : String
+39,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,51,42,51,74,sanitize(...) : String
+40,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,71,16,71,46,unsafe(...) : String
+41,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,63,42,63,81,anotherSanitize(...) : String
+42,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,96,38,96,68,unsafe(...) : String
+43,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,75,42,75,74,sanitize(...) : String
+44,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,105,38,105,68,unsafe(...) : String
+45,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,114,38,114,69,unsafe2(...) : String
+46,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,123,38,123,69,unsafe2(...) : String
+47,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,144,38,144,72,unmodelled(...) : String
+48,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,156,38,156,68,unsafe(...) : String
+49,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,169,38,169,72,unmodelled(...) : String
+50,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,181,38,181,72,unmodelled(...) : String
+51,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,195,38,195,72,unmodelled(...) : String
+52,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,211,38,211,72,unmodelled(...) : String
+53,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,221,37,221,71,unmodelled(...) : String
+63,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,106,58,106,75,badlySanitizedName : String
+65,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,125,29,125,46,badlySanitizedName : String
+69,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,182,57,182,74,badlySanitizedName : String
+70,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,196,58,196,75,badlySanitizedName : String
+71,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,213,56,213,73,badlySanitizedName : String
+72,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,224,28,224,45,badlySanitizedName : String
+75,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,106,31,106,76,unsafe2(...) : String
+76,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,182,31,182,75,unsafe(...) : String
+77,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,196,31,196,76,unsafe2(...) : String
+79,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,228,43,228,53,name : String
+83,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,202,63,202,80,badlySanitizedName : String
+85,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,202,28,202,81,anotherSanitize(...) : String
+87,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,30,34,30,52,customSanitizedName
+88,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,40,34,40,52,customSanitizedName
+89,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,54,42,54,45,name
+90,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,52,37,52,55,customSanitizedName
+91,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,73,33,73,36,name
+92,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,64,37,64,55,customSanitizedName
+93,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,97,34,97,51,badlySanitizedName
+94,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/GoodZip.java,76,37,76,55,customSanitizedName
+95,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,107,34,107,51,badlySanitizedName
+96,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,116,34,116,51,badlySanitizedName
+97,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,145,34,145,51,badlySanitizedName
+98,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,160,30,160,47,badlySanitizedName
+99,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,173,30,173,47,badlySanitizedName
+100,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,186,30,186,47,badlySanitizedName
+101,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,200,30,200,47,badlySanitizedName
+102,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,203,38,203,42,name2
+103,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,215,34,215,51,badlySanitizedName
+104,/Users/burakyetistiren/Desktop/Projects/toy_analysis/api-interactor/src/main/java/com/tempcomp/apiinteractor/BadZip.java,230,33,230,36,name
