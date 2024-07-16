@@ -259,7 +259,15 @@ Meteor.methods({
     });
 
     nodesSet.forEach(node => {
-      nodes.push({ nodeId: node, description: nodeMapping[node] ? nodeMapping[node].description : node });
+      let importance = libCentrality.get(node);
+
+      nodes.push({ 
+        nodeId: node, 
+        description: nodeMapping[node] ? nodeMapping[node].description : node, 
+        importance: importance,
+        isSource: sources.has(node),
+        isSink: sinks.has(node),
+      });
     });
 
     console.log(edges);
