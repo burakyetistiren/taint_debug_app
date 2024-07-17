@@ -26,7 +26,7 @@ Meteor.startup(() => {
     Libs.insert(libSet);
   });
 
-  // Read additional facts files
+  // Read additional facts files ####### HJ TODO: #######
   const sinks = readFactFile('sink.facts');
   const sources = readFactFile('source.facts');
   const sanitizers = readFactFile('sanitizer.facts');

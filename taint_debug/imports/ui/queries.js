@@ -27,11 +27,13 @@ Template.queries.helpers({
     ];
   },
   sources() {
+    // ####### HJ TODO: #######
     const paths = Paths.find().fetch();
     const sources = paths.map(path => path.left.nodeId);
     return [...new Set(sources)];
   },
   sinks() {
+    // ####### HJ TODO: #######
     const paths = Paths.find().fetch();
     const sinks = paths.map(path => path.right.nodeId);
     return [...new Set(sinks)];
