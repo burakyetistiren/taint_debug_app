@@ -105,12 +105,13 @@
 <template name="questionChoices">
   <div id="contextMenu" class="context-menu border">
     <ul>
-      <li><button class="interactive-button why_node_model">Show path</button></li>
+      <li><button id="toggleButton" class="interactive-button why_node_model">{{buttonText}}</button></li>
       <!--<li><a href="#why_node_pair_model">Why {{isOrIsNot}} there a taint path from <code>{{start}}</code> to <code>{{end}}</code>?</a></li>-->
       <!--<li><a href="#why_start_node_model">Why {{isOrIsNot}} there a taint path start at <code>{{end}}</code>?</a></li>-->
     </ul>
   </div>
 </template>
+
 
 <template name="libraryImpact">
   <div class="library-impact border" style="margin-left: 50px;">

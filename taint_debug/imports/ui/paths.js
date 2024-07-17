@@ -149,12 +149,16 @@ Template.intermediateNodes.onRendered(function() {
 });
 
 Template.questionChoices.helpers({
+  buttonText() {
+    const currentWarning = Session.get('inspectedWarning');
+    const currentWhyNodeModel = Session.get('whyNodeModel');
+    return currentWhyNodeModel === currentWarning ? 'Hide path' : 'Show path';
+  },
   isOrIsNot() {
     const reported = Paths.findOne(Session.get('inspectedWarning')).reported;
     return reported ? 'is' : 'is not';
   },
   start() {
-    // Return the current inspected path
     const path = Paths.findOne(Session.get('inspectedWarning')).left;
     return path ? path.description : '';
   },
@@ -166,10 +170,29 @@ Template.questionChoices.helpers({
 
 Template.questionChoices.events({
   'click .why_node_model'(event) {
-    Session.set('whyNodeModel', Session.get('inspectedWarning'));
-    Session.set('inspectedLib', '');
+    const currentWarning = Session.get('inspectedWarning');
+    const currentWhyNodeModel = Session.get('whyNodeModel');
+
+    if (currentWhyNodeModel === currentWarning) {
+      // If already shown, hide it
+      Session.set('whyNodeModel', '');
+    } else {
+      // If hidden, show it
+      Session.set('whyNodeModel', currentWarning);
+      Session.set('inspectedLib', '');
+    }
   }
 });
+
+Template.questionChoices.onRendered(function() {
+  this.autorun(() => {
+    const currentWarning = Session.get('inspectedWarning');
+    const currentWhyNodeModel = Session.get('whyNodeModel');
+    const buttonText = currentWhyNodeModel === currentWarning ? 'Hide path' : 'Show path';
+    document.getElementById('toggleButton').innerText = buttonText;
+  });
+});
+
 
 Template.libraryImpact.helpers({
   displaySelectedLibNode() {
