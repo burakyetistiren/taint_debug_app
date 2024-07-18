@@ -26,11 +26,11 @@ Meteor.startup(() => {
     Libs.insert(libSet);
   });
 
-  // Read additional facts files ####### HJ TODO: #######
+  // Read additional facts files
   const sinks = readFactFile('sink.facts');
   const sources = readFactFile('source.facts');
-  const sanitizers = readFactFile('sanitizer.facts');
-  const apis = readFactFile('api.facts');
+  const sanitizers = readCurrentSanitizers();
+  const apis = readLibraryNodes();
 
   // Save facts data to Meteor
   Meteor.methods({
@@ -51,6 +51,32 @@ function readFactFile(filename) {
   if (!fs.existsSync(filepath)) return [];
   const data = fs.readFileSync(filepath, 'utf8');
   return data.split('\n').filter(Boolean).map(Number);
+}
+
+function readCurrentSanitizers() {
+  const filepath = path.join(ANALYSIS_PATH, 'souffle_files/', 'sanitizers.facts');
+  console.log('Reading file:', filepath);
+  if (!fs.existsSync(filepath)) return [];
+  const data = fs.readFileSync(filepath, 'utf8');
+  return data.split('\n')
+           .filter(Boolean)
+           .map(line => {
+               const [firstValue] = line.split('\t');
+               return Number(firstValue);
+           });
+}
+
+function readLibraryNodes() {
+  const filepath = path.join(ANALYSIS_PATH, 'souffle_files/', 'library_nodes.facts');
+  console.log('Reading file:', filepath);
+  if (!fs.existsSync(filepath)) return [];
+  const data = fs.readFileSync(filepath, 'utf8');
+  return data.split('\n')
+           .filter(Boolean)
+           .map(line => {
+               const [firstValue] = line.split('\t');
+               return Number(firstValue);
+           });
 }
 
 function readNodeMapping() {
