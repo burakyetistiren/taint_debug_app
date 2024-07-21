@@ -47,32 +47,70 @@ Template.queries.helpers({
 });
 
 Template.queries.events({
-  'change .focus-dropdown-node'(event) {
-    const selectedNodeId = event.target.value;
-    const cy = window.cyInstance; // Access the Cytoscape instance
+'change .focus-dropdown-node'(event) {
+  const selectedNodeId = event.target.value;
+  const cy = window.cyInstance; // Access the Cytoscape instance
 
-    // Function to reset all nodes and edges to their original colors
-    function resetColors() {
-      cy.nodes().forEach(node => {
-        node.removeClass('highlighted');
-        node.style('background-color', node.data('original-background-color'));
-        node.style('color', node.data('original-text-color'));
-      });
-      cy.edges().removeClass('highlighted');
-    }
-
-    resetColors();
-    const selectedNode = cy.getElementById('node_' + selectedNodeId);
-    selectedNode.addClass('highlighted');
-    selectedNode.style('background-color', '#808080'); // Change color to gray
-    selectedNode.style('color', '#FFFFFF'); // Change text color to white
-    cy.animate({
-      center: { eles: selectedNode },
-      zoom: 2 // You can adjust the zoom level as needed
-    }, {
-      duration: 200 // Animation duration in milliseconds
+  // Function to reset all nodes and edges to their original colors
+  function resetColors() {
+    cy.nodes().forEach(node => {
+      node.removeClass('highlighted');
+      node.style('background-color', node.data('original-background-color'));
+      node.style('color', node.data('original-text-color'));
     });
-  },
+    cy.edges().removeClass('highlighted');
+  }
+
+  resetColors();
+  const selectedNode = cy.getElementById('node_' + selectedNodeId);
+  selectedNode.addClass('highlighted');
+  selectedNode.style('background-color', '#808080'); // Change color to gray
+  selectedNode.style('color', '#FFFFFF'); // Change text color to white
+  cy.animate({
+    center: { eles: selectedNode },
+    zoom: 2 // You can adjust the zoom level as needed
+  }, {
+    duration: 200 // Animation duration in milliseconds
+  });
+
+  // Scroll to the corresponding code snippet
+  console.log('tapped ' + selectedNode.id());
+  console.log('node data:', selectedNode);
+  console.log('edge data:', selectedNode._private.edges[0]._private.data.id);
+
+  var referenceId = selectedNode._private.edges[0]._private.data.description;
+  // Get the reference ID of the node Warning 17 id:14 --> 17
+  referenceId = referenceId.split(" ")[1];
+
+  console.log('referenceId:', referenceId);
+
+  // Expand the pathContent div and ensure all child divs are displayed
+  const pathContent = document.getElementById('pathContent_' + referenceId);
+  const collapseButton = document.getElementById('collapse-button_' + referenceId);
+
+  console.log('pathContent:', pathContent);
+
+  if (pathContent) {
+    pathContent.style.display = 'block';
+    collapseButton.innerHTML = 'Collapse';
+
+    const pathId = Paths.findOne({ warningNumber: parseInt(referenceId) })._id;
+    console.log('pathId:', pathId);
+    Session.set('inspectedWarning', pathId);
+
+    // Use the same logic as in Template.questionChoices.events to ensure the div is fully expanded
+    const currentWarning = Session.get('inspectedWarning');
+    Session.set('whyNodeModel', currentWarning);
+    Session.set('inspectedLib', '');
+
+    // Scroll to the relevant code snippet
+    const elementToScrollTo = document.getElementById("warning_" + referenceId);
+    if (elementToScrollTo) {
+      elementToScrollTo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+},
+
   'change .focus-dropdown-edge'(event) {
     const selectedEdgeId = event.target.value;
     const cy = window.cyInstance; // Access the Cytoscape instance

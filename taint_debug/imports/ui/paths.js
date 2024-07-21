@@ -53,6 +53,7 @@ Template.path.helpers({
 
 Template.path.events({
   'click #inspectButton'(event) {
+    console.log('Inspecting warning:', this); 
     Session.set('inspectedWarning', this._id);
   },
 'click #collapse-button-container'(event) {
@@ -172,6 +173,9 @@ Template.questionChoices.events({
   'click .why_node_model'(event) {
     const currentWarning = Session.get('inspectedWarning');
     const currentWhyNodeModel = Session.get('whyNodeModel');
+
+    console.log('currentWarning:', currentWarning);
+    console.log('currentWhyNodeModel:', currentWhyNodeModel);
 
     if (currentWhyNodeModel === currentWarning) {
       // If already shown, hide it
