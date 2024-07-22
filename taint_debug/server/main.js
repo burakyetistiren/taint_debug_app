@@ -1,5 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import fs from 'fs';
+import fsPromise from 'fs/promises';
+import readline from 'readline';
 import path from 'path';
 
 export const Paths = new Mongo.Collection('paths');
@@ -8,6 +10,31 @@ export const Nodes = new Mongo.Collection('nodes');
 
 const PROJECT_PATH = process.env.PWD;
 const ANALYSIS_PATH = path.join(PROJECT_PATH, '..', 'analysis_files') + "/";
+
+async function readLargeFile(filePath, processLine) {
+  const fileStream = fs.createReadStream(filePath, 'utf8');
+  const rl = readline.createInterface({
+    input: fileStream,
+    crlfDelay: Infinity
+  });
+
+  // Process each line.
+  rl.on('line', (line) => {
+    if (line.trim()) {
+      processLine(line);
+    }
+  });
+
+  return new Promise((resolve, reject) => {
+    rl.on('close', () => {
+      resolve();
+    });
+
+    rl.on('error', (error) => {
+      reject(error);
+    });
+  });
+}
 
 Meteor.startup(() => {
   console.log('Server started');
@@ -27,7 +54,7 @@ Meteor.startup(() => {
   });
 
   // Read additional facts files
-  const sinks = readFactFile('sink.facts');
+  const sinks =  readFactFile('sink.facts');
   const sources = readFactFile('source.facts');
   const sanitizers = readCurrentSanitizers();
   const apis = readLibraryNodes();
@@ -106,8 +133,21 @@ function setupAndReadAnalysisData() {
   let warningToReported = new Map();
   let nodePairToEdgeId = new Map();
 
-  const lines = fs.readFileSync(path.join(ANALYSIS_PATH, 'warning_paths.csv'), 'utf8').split('\n');
-  lines.forEach(line => {
+  
+  const nodeMapping = readNodeMapping();
+  Object.keys(nodeMapping).forEach(nodeId => {
+    const code = codeSnippetOfNodeWithHighlight(nodeId, nodeMapping);
+    var node = nodeMapping[nodeId];
+    node.code = code;
+
+    Nodes.insert(node);
+  });
+
+  // const lines = fs.readFileSync(path.join(ANALYSIS_PATH, 'warning_paths.csv'), 'utf8').split('\n');
+  // lines.forEach(line => {
+    
+  // });
+  let readingData = readLargeFile(path.join(ANALYSIS_PATH, 'warning_paths.csv'), line => {
     if (line.trim()) {
       const [source, sink, node, step, edge, libIndex] = line.trim().split('\t').map(Number);
 
@@ -120,11 +160,10 @@ function setupAndReadAnalysisData() {
 
       nodePairToEdgeId.set(key, edge);
     }
-  });
 
-  const plausibleLines = fs.readFileSync(path.join(ANALYSIS_PATH, 'plausible_warning_paths.csv'), 'utf8').split('\n');
-  plausibleLines.forEach(line => {
-    if (line.trim()) {
+  }).then(() => {
+    console.log('Finished reading warning_paths.csv');
+    return readLargeFile(path.join(ANALYSIS_PATH, 'plausible_warning_paths.csv'), line => {
       const [source, sink, node, step, edge, libIndex] = line.trim().split('\t').map(Number);
 
       const key = `${source},${sink}`;
@@ -135,88 +174,81 @@ function setupAndReadAnalysisData() {
       warningToReported.set(key, false);
 
       nodePairToEdgeId.set(key, edge);
-    }
-  });
-
-  const nodeMapping = readNodeMapping();
-
-  Object.keys(nodeMapping).forEach(nodeId => {
-    const code = codeSnippetOfNodeWithHighlight(nodeId, nodeMapping);
-    var node = nodeMapping[nodeId];
-    node.code = code;
-
-    Nodes.insert(node);
-  });
-
-  let paths = Array.from(pathsLibs, ([key, value]) => {
-    const [source, sink] = key.split(',').map(Number);
-    return { source, sink, nodeLibIndicesAndEdgeId: value, reported: warningToReported.get(key) };
-  });
-
-  paths.forEach(({ source, sink, nodeLibIndicesAndEdgeId, reported }) => {
-    let warningNumber = codeSets.length;
-
-    codeSets.push({
-      warningNumber: warningNumber,
-      reported: reported,
-      left: {
-        code: codeSnippetOfNodeWithHighlight(source, nodeMapping),
-        nodeId: source,
-        description: nodeMapping[source].description,
-      },
-      middle: nodeLibIndicesAndEdgeId.map(({ nodeId, lib, edgeId }) => ({
-        code: codeSnippetOfNodeWithHighlight(nodeId, nodeMapping),
-        nodeId: nodeId,
-        lib: lib,
-        edgeId: edgeId,
-        description: nodeMapping[nodeId].description,
-      })),
-      right: {
-        code: codeSnippetOfNodeWithHighlight(sink, nodeMapping),
-        nodeId: sink,
-        description: nodeMapping[sink].description,
-      },
     });
-  });
+  }).then(() => {
 
-  const modelDebugLines = fs.readFileSync(path.join(ANALYSIS_PATH, 'souffle_files/model.debug'), 'utf8').split('\n');
-  modelDebugLines.forEach(line => {
-    if (line.includes('model_node')) {
-      const [name, lib] = line.split('model_node(')[1].slice(0, -1).split(',');
-      libSets.set(parseInt(lib), { name: name, libId: parseInt(lib) });
-    }
-  });
+    let paths = Array.from(pathsLibs, ([key, value]) => {
+      const [source, sink] = key.split(',').map(Number);
+      return { source, sink, nodeLibIndicesAndEdgeId: value, reported: warningToReported.get(key) };
+    });
+    return paths;
+  }).then(paths => {
 
-  const centralityLines = fs.readFileSync(path.join(ANALYSIS_PATH, 'souffle_files/lib_centrality.facts'), 'utf8').split('\n');
-  centralityLines.forEach(line => {
-    if (line.trim()) {
+    paths.forEach(({ source, sink, nodeLibIndicesAndEdgeId, reported }) => {
+
+      
+      let warningNumber = codeSets.length;
+    
+      codeSets.push({
+        warningNumber: warningNumber,
+        reported: reported,
+        left: {
+          code: codeSnippetOfNodeWithHighlight(source, nodeMapping),
+          nodeId: source,
+          description: nodeMapping[source].description,
+        },
+        middle: nodeLibIndicesAndEdgeId.map(({ nodeId, lib, edgeId }) => ({
+          code: codeSnippetOfNodeWithHighlight(nodeId, nodeMapping),
+          nodeId: nodeId,
+          lib: lib,
+          edgeId: edgeId,
+          description: nodeMapping[nodeId].description,
+        })),
+        right: {
+          code: codeSnippetOfNodeWithHighlight(sink, nodeMapping),
+          nodeId: sink,
+          description: nodeMapping[sink].description,
+        },
+      });
+    });
+
+  }).then(() => {
+    return readLargeFile(path.join(ANALYSIS_PATH, 'souffle_files/model.debug'), line => {
+      if (line.includes('model_node')) {
+        const [name, lib] = line.split('model_node(')[1].slice(0, -1).split(',');
+        libSets.set(parseInt(lib), { name: name, libId: parseInt(lib) });
+      }
+    })
+  }).then(() => {
+    return readLargeFile(path.join(ANALYSIS_PATH, 'souffle_files/lib_centrality.facts'), line => {
       const [lib, centrality, scaledCentrality] = line.split('\t');
       if (libSets.has(parseInt(lib))) {
         libSets.get(parseInt(lib)).importance = parseFloat(scaledCentrality);
       }
-    }
-  });
+    });
+  }).then(() => {
 
-  codeSets.forEach(codeSet => {
-    codeSet.middle.forEach(middleCode => {
-      let lib = middleCode.lib;
-      if (!libSets.has(lib)) {
-        middleCode.importance = 0;
-      } else {
-        let libInfo = libSets.get(lib);
-        middleCode.importance = Math.round(libInfo.importance);
-        if (!libInfo.sources) libInfo.sources = [];
-        if (!libInfo.sinks) libInfo.sinks = [];
+    codeSets.forEach(codeSet => {
+      codeSet.middle.forEach(middleCode => {
+        let lib = middleCode.lib;
+        if (!libSets.has(lib)) {
+          middleCode.importance = 0;
+        } else {
+          let libInfo = libSets.get(lib);
+          middleCode.importance = Math.round(libInfo.importance);
+          if (!libInfo.sources) libInfo.sources = [];
+          if (!libInfo.sinks) libInfo.sinks = [];
 
-        libInfo.sources.push(codeSet.left.nodeId);
-        libInfo.sinks.push(codeSet.right.nodeId);
+          libInfo.sources.push(codeSet.left.nodeId);
+          libInfo.sinks.push(codeSet.right.nodeId);
 
-        if (!libInfo.warningNumbers) libInfo.warningNumbers = [];
-        libInfo.warningNumbers.push(codeSet.warningNumber);
-      }
+          if (!libInfo.warningNumbers) libInfo.warningNumbers = [];
+          libInfo.warningNumbers.push(codeSet.warningNumber);
+        }
+      });
     });
   });
-
+  
   return { codeSets, libSets };
 }
 
@@ -249,6 +281,21 @@ function readLineFromFile(file, line) {
 
 function getFileLoc(nodeId, nodeMapping) {
   return { file: nodeMapping[nodeId]['file'], line: parseInt(nodeMapping[nodeId]['line']), colNum: parseInt(nodeMapping[nodeId]['column']) - 1, endColNum: parseInt(nodeMapping[nodeId]['end_column']) };
+}
+
+
+function executeSouffleWhy() {
+  const exec = require('child_process').exec;
+  const command = 'souffle -F. -D. -w why.dl -o why.csv';
+  exec(command, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return;
+    }
+    console.log(`stdout: ${stdout}`);
+    console.error(`stderr: ${stderr}`);
+  });
+
 }
 
 Meteor.methods({
@@ -289,8 +336,11 @@ Meteor.methods({
       }
     });
 
-    const allEdgesLines = fs.readFileSync(path.join(ANALYSIS_PATH, 'souffle_files/plausible_edge.facts'), 'utf8').split('\n');
-    allEdgesLines.forEach(line => {
+    // const allEdgesLines = fs.readFileSync(path.join(ANALYSIS_PATH, 'souffle_files/plausible_edge.facts'), 'utf8').split('\n');
+
+    allEdgesLines = [];
+    allEdgesLines
+    .forEach(line => {
       if (!line.trim()) return;
       let [edgeId, sourceId, targetId] = line.split('\t');
 
