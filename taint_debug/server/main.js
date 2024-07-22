@@ -44,14 +44,17 @@ Meteor.startup(() => {
   Libs.remove({});
   Nodes.remove({});
 
-  const analysisData = setupAndReadAnalysisData();
+  setupAndReadAnalysisData().then(analysisData => {
+    console.log('Finished reading analysis data');
+    // console.log(analysisData);
+    analysisData['codeSets'].forEach(codeSet => {
+      Paths.insert(codeSet);
+    });
+    analysisData['libSets'].forEach(libSet => {
+      Libs.insert(libSet);
+    });
+  });
 
-  analysisData['codeSets'].forEach(codeSet => {
-    Paths.insert(codeSet);
-  });
-  analysisData['libSets'].forEach(libSet => {
-    Libs.insert(libSet);
-  });
 
   // Read additional facts files
   const sinks =  readFactFile('sink.facts');
@@ -147,7 +150,7 @@ function setupAndReadAnalysisData() {
   // lines.forEach(line => {
     
   // });
-  let readingData = readLargeFile(path.join(ANALYSIS_PATH, 'warning_paths.csv'), line => {
+  return readLargeFile(path.join(ANALYSIS_PATH, 'warning_paths.csv'), line => {
     if (line.trim()) {
       const [source, sink, node, step, edge, libIndex] = line.trim().split('\t').map(Number);
 
@@ -162,7 +165,7 @@ function setupAndReadAnalysisData() {
     }
 
   }).then(() => {
-    console.log('Finished reading warning_paths.csv');
+    console.log('Finished reading warning_paths.csv. Reading plausible_warning_paths.csv next.');
     return readLargeFile(path.join(ANALYSIS_PATH, 'plausible_warning_paths.csv'), line => {
       const [source, sink, node, step, edge, libIndex] = line.trim().split('\t').map(Number);
 
@@ -176,6 +179,7 @@ function setupAndReadAnalysisData() {
       nodePairToEdgeId.set(key, edge);
     });
   }).then(() => {
+    console.log('Finished reading plausible_warning_paths.csv. Reading edge.facts next.');
 
     let paths = Array.from(pathsLibs, ([key, value]) => {
       const [source, sink] = key.split(',').map(Number);
@@ -183,7 +187,8 @@ function setupAndReadAnalysisData() {
     });
     return paths;
   }).then(paths => {
-
+    
+    console.log('Finished reading edge.facts. Processing the data.');
     paths.forEach(({ source, sink, nodeLibIndicesAndEdgeId, reported }) => {
 
       
@@ -213,6 +218,7 @@ function setupAndReadAnalysisData() {
     });
 
   }).then(() => {
+    console.log('Finished reading edge.facts. Reading model.debug next.');
     return readLargeFile(path.join(ANALYSIS_PATH, 'souffle_files/model.debug'), line => {
       if (line.includes('model_node')) {
         const [name, lib] = line.split('model_node(')[1].slice(0, -1).split(',');
@@ -220,6 +226,7 @@ function setupAndReadAnalysisData() {
       }
     })
   }).then(() => {
+    console.log('Finished reading model.debug. Reading lib_centrality.facts next.');
     return readLargeFile(path.join(ANALYSIS_PATH, 'souffle_files/lib_centrality.facts'), line => {
       const [lib, centrality, scaledCentrality] = line.split('\t');
       if (libSets.has(parseInt(lib))) {
@@ -247,25 +254,28 @@ function setupAndReadAnalysisData() {
         }
       });
     });
+  }). then(() => {
+    return { codeSets, libSets };
   });
-  
-  return { codeSets, libSets };
 }
 
 function codeSnippetOfNodeWithHighlight(nodeId, nodeMapping) {
-  const { file, line, colNum, endColNum } = getFileLoc(nodeId, nodeMapping);
 
-  const surroundingBef = readLinesFromFile(file, line - 3, line - 1);
-  var targetLine = readLineFromFile(file, line);
-  const surroundingAft = readLinesFromFile(file, line + 1, line + 3);
+  return function() {
+    const { file, line, colNum, endColNum } = getFileLoc(nodeId, nodeMapping);
 
-  const fileSuffix = file.split('/').pop();
-  const metadataLines = `// File: ${fileSuffix}\n// Line: ${line}\n`;
+    const surroundingBef = readLinesFromFile(file, line - 3, line - 1);
+    var targetLine = readLineFromFile(file, line);
+    const surroundingAft = readLinesFromFile(file, line + 1, line + 3);
 
-  targetLine = targetLine.substring(0, colNum) + '---focus---' + targetLine.substring(colNum, endColNum) + '---/focus---' + targetLine.substring(endColNum);
-  const modifiedCode = metadataLines + surroundingBef + '\n' + targetLine + '\n' + surroundingAft;
+    const fileSuffix = file.split('/').pop();
+    const metadataLines = `// File: ${fileSuffix}\n// Line: ${line}\n`;
 
-  return modifiedCode;
+    targetLine = targetLine.substring(0, colNum) + '---focus---' + targetLine.substring(colNum, endColNum) + '---/focus---' + targetLine.substring(endColNum);
+    const modifiedCode = metadataLines + surroundingBef + '\n' + targetLine + '\n' + surroundingAft;
+
+    return modifiedCode;
+  };
 }
 
 function readLinesFromFile(file, startLine, endLine) {
