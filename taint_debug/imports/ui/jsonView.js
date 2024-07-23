@@ -1,30 +1,42 @@
 import jsonview from '@pgrabovets/json-view';
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
+import { ReactiveVar } from 'meteor/reactive-var';
 import './jsonView.html';
 
-Meteor.startup(() => {
-  // Function to fetch JSON data and render it
-  function renderJsonView(data) {
-    // Create JSON tree object
-    const tree = jsonview.create(data);
-    
-    // Render JSON tree into DOM element
-    const container = document.querySelector('.json-view-container');
-    if (container) {
-      jsonview.render(tree, container);
+Template.jsonView.onCreated(function() {
+  this.jsonData = new ReactiveVar(null);
+
+  Meteor.call('readDataflowJson', (error, result) => {
+    if (error) {
+      console.error('Error reading dataflow JSON:', error);
+    } else {
+      this.jsonData.set(result);
+    }
+  });
+});
+
+Template.jsonView.onRendered(function() {
+  this.autorun(() => {
+    const jsonData = Template.instance().jsonData.get();
+    if (jsonData) {
+      const tree = jsonview.create(JSON.stringify(jsonData));
+      jsonview.render(tree, document.getElementById('json-view'));
       jsonview.expand(tree);
     }
-  }
-
-  // Fetch JSON data from the server
-  Meteor.call('readDataflowJson', function(error, result) {
-    if (error) {
-      console.error('Error fetching JSON data:', error);
-      return;
-    }
-
-    // Render JSON view
-    renderJsonView(JSON.stringify(result));
   });
+});
+
+Template.jsonView.events({
+  'click #toggle-json-view'(event) {
+    const jsonView = document.getElementById('json-view');
+    const button = event.target;
+    if (jsonView.style.display === 'none') {
+      jsonView.style.display = 'block';
+      button.innerHTML = 'Collapse JSON View';
+    } else {
+      jsonView.style.display = 'none';
+      button.innerHTML = 'Expand JSON View';
+    }
+  }
 });

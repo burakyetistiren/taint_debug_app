@@ -56,7 +56,7 @@ function makeTippy(ele, text) {
 Meteor.startup(() => {
   const nodes = [];
   const edges = [];
-  
+
   Meteor.defer(() => {
     Meteor.call('readGraphData', (error, result) => {
       if (error) {
@@ -103,11 +103,11 @@ Meteor.startup(() => {
             console.log(`Node ${nodeId} is an API, assigned color: yellow`);
           }
           nodes.push({
-          data: { id: 'node_' + nodeId, description: nodeId + ' ' + node.description, 'original-background-color': color, 'original-text-color': textColor},
+            data: { id: 'node_' + nodeId, description: nodeId + ' ' + node.description, 'original-background-color': color, 'original-text-color': textColor },
             style: { 'background-color': color, 'color': textColor }
           });
         });
-        console.log('Nodes:', nodes); 
+        console.log('Nodes:', nodes);
 
         result.edges.forEach(edge => edges.push({
           data: { id: 'edge_' + edge.edgeId.toString(), source: 'node_' + edge.sourceId.toString(), target: 'node_' + edge.targetId.toString(), description: "Warning " + edge.warningNumber + " id:" + edge.edgeId }
@@ -194,43 +194,43 @@ Meteor.startup(() => {
               duration: 200
             });
           }
-        
+
           // Scroll to the corresponding code snippet
           const nodeId = node.id().replace('node_', '');
           const elementToScrollTo = document.getElementById("node_" + nodeId);
           if (elementToScrollTo) {
             elementToScrollTo.scrollIntoView({ behavior: 'smooth', block: 'start' });
           }
-        
+
           console.log('tapped ' + node.id());
           console.log('node data:', node);
           console.log('edge data:', node._private.edges[0]._private.data.id);
-        
+
           var referenceId = node._private.edges[0]._private.data.description;
           // Get the reference ID of the node Warning 17 id:14 --> 17
           referenceId = referenceId.split(" ")[1];
-        
+
           console.log('referenceId:', referenceId);
-        
+
           // Expand the pathContent div and ensure all child divs are displayed
           const pathContent = document.getElementById('pathContent_' + referenceId);
           const collapseButton = document.getElementById('collapse-button_' + referenceId);
-        
+
           console.log('pathContent:', pathContent);
-        
+
           if (pathContent) {
             pathContent.style.display = 'block';
             collapseButton.innerHTML = 'Collapse';
-        
+
             const pathId = Paths.findOne({ warningNumber: parseInt(referenceId) })._id;
             console.log('pathId:', pathId);
             Session.set('inspectedWarning', pathId);
-        
+
             // Use the same logic as in Template.questionChoices.events to ensure the div is fully expanded
             const currentWarning = Session.get('inspectedWarning');
             Session.set('whyNodeModel', currentWarning);
             Session.set('inspectedLib', '');
-        
+
             // Scroll to the relevant code snippet
             const elementToScrollTo = document.getElementById("warning_" + referenceId);
             if (elementToScrollTo) {
@@ -238,7 +238,7 @@ Meteor.startup(() => {
             }
           }
         });
-        
+
         cy.on('tap', 'edge', function(evt) {
           var edge = evt.target;
           resetColors(); // Reset colors before highlighting the clicked edge

@@ -1,6 +1,5 @@
 <head>
   <title>Your Meteor App</title>
-  <script src="/path/to/jsonview.js"></script>
 </head>
 
 <body>
@@ -29,6 +28,29 @@
       .json-view-container {
         height: 100%; /* Full height of the parent container */
         overflow: auto; /* Allows scrolling if content overflows */
+      }
+      .json-view {
+        display: none; /* Initially collapsed */
+        overflow: auto;
+      }
+      .collapse-button {
+        cursor: pointer;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        padding: 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        transition-duration: 0.4s;
+        width: 100%;
+      }
+      .collapse-button:hover {
+        background-color: white;
+        color: black;
+        border: 2px solid #007BFF;
       }
     </style>
 
