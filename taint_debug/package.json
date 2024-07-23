@@ -10,6 +10,7 @@
   "dependencies": {
     "@babel/runtime": "^7.24.6",
     "@floating-ui/dom": "^1.6.5",
+    "@pgrabovets/json-view": "^2.7.5",
     "@popperjs/core": "^2.11.8",
     "cytoscape": "^3.29.2",
     "cytoscape-popper": "^1.0.7",

@@ -1,3 +1,8 @@
+<head>
+  <title>Your Meteor App</title>
+  <script src="/path/to/jsonview.js"></script>
+</head>
+
 <body>
     <style>
       .row {
@@ -21,8 +26,12 @@
         height: 50vh;
         overflow: scroll;
       }
+      .json-view-container {
+        height: 100%; /* Full height of the parent container */
+        overflow: auto; /* Allows scrolling if content overflows */
+      }
     </style>
-  
+
     <div class="row" style="height: 50vh;"> <!-- First row -->
       <div class="column view-container"> <!-- First column of the first row -->
         {{> queries}}
@@ -32,7 +41,7 @@
         {{> cytoscapeContainer}}
       </div>
     </div>
-  
+
     <div class="row full-width"> <!-- Second row -->
       <div class="column taint-paths-view"> <!-- Full width for taint paths -->
         <h1>Taint paths</h1>
@@ -41,5 +50,11 @@
         {{/each}}
       </div>
     </div>
-  </body>
-  
+
+    <div class="row full-width"> <!-- New row for JSON view -->
+      <div class="column json-view-container">
+        <h1>JSON View</h1>
+        {{> jsonView}}
+      </div>
+    </div>
+</body>

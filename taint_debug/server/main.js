@@ -42,6 +42,9 @@ Meteor.startup(() => {
         apis,
       };
     },
+    readDataflowJson() {
+      return readDataflowJson();
+    }
   });
 });
 
@@ -249,6 +252,14 @@ function readLineFromFile(file, line) {
 
 function getFileLoc(nodeId, nodeMapping) {
   return { file: nodeMapping[nodeId]['file'], line: parseInt(nodeMapping[nodeId]['line']), colNum: parseInt(nodeMapping[nodeId]['column']) - 1, endColNum: parseInt(nodeMapping[nodeId]['end_column']) };
+}
+
+function readDataflowJson() {
+  const filepath = path.join(ANALYSIS_PATH, 'dataflow.json');
+  console.log('Reading file:', filepath);
+  if (!fs.existsSync(filepath)) return {};
+  const data = fs.readFileSync(filepath, 'utf8');
+  return JSON.parse(data);
 }
 
 Meteor.methods({

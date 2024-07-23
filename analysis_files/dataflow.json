@@ -1,0 +1,107 @@
+[
+    {
+        "file": "main.py",
+        "functions": [
+            {
+                "name": "read_data",
+                "inputs": [
+                    {
+                        "type": "str",
+                        "description": "Path to the data file"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "DataFrame",
+                        "description": "Pandas DataFrame with the data"
+                    }
+                ]
+            },
+            {
+                "name": "process_data",
+                "inputs": [
+                    {
+                        "type": "DataFrame",
+                        "description": "Raw data to process"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "DataFrame",
+                        "description": "Processed data"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "file": "utils.py",
+        "functions": [
+            {
+                "name": "clean_data",
+                "inputs": [
+                    {
+                        "type": "DataFrame",
+                        "description": "Data to clean"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "DataFrame",
+                        "description": "Cleaned data"
+                    }
+                ]
+            },
+            {
+                "name": "validate_data",
+                "inputs": [
+                    {
+                        "type": "DataFrame",
+                        "description": "Data to validate"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "bool",
+                        "description": "Validation result"
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "file": "analysis.py",
+        "functions": [
+            {
+                "name": "generate_report",
+                "inputs": [
+                    {
+                        "type": "DataFrame",
+                        "description": "Data to analyze"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "str",
+                        "description": "Path to the generated report"
+                    }
+                ]
+            },
+            {
+                "name": "visualize_data",
+                "inputs": [
+                    {
+                        "type": "DataFrame",
+                        "description": "Data to visualize"
+                    }
+                ],
+                "outputs": [
+                    {
+                        "type": "None",
+                        "description": "Displays visualization"
+                    }
+                ]
+            }
+        ]
+    }
+]

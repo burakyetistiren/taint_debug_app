@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@pgrabovets/json-view": "^2.7.5"
+  }
+}
