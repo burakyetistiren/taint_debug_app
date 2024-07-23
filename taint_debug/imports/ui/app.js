@@ -153,19 +153,14 @@ Meteor.startup(() => {
           }],
           elements: { nodes, edges },
           layout: {
-            name: 'cose',
+            name: 'breadthfirst', // Use breadthfirst layout
             animate: true,
             fit: true,
             padding: 30,
-            randomize: true,
-            nodeRepulsion: 400000,
-            idealEdgeLength: 100,
-            edgeElasticity: 100,
-            gravity: 80,
-            numIter: 1000,
-            initialTemp: 200,
-            coolingFactor: 0.95,
-            minTemp: 1.0
+            directed: true, // Ensure directed layout
+            spacingFactor: 1.5, // Increase spacing between nodes
+            nodeDimensionsIncludeLabels: true, // Include labels in node dimensions
+            avoidOverlap: true // Avoid overlapping nodes
           }
         });
 
@@ -243,8 +238,6 @@ Meteor.startup(() => {
             }
           }
         });
-        
-        
         
         cy.on('tap', 'edge', function(evt) {
           var edge = evt.target;
