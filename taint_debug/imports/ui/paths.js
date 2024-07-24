@@ -26,7 +26,17 @@ Template.path.helpers({
     return this.left.description + ' to ' + this.right.description;
   },
   start() {
-    return this.left.code;
+    // return this.left.code;
+    // console.log(this.left.nodeId);
+    var node = Nodes.findOne({ nodeId: this.left.nodeId });
+    var retVal = node?.code
+    console.log('=====start=====');
+    console.log(this.left.nodeId)
+    console.log(retVal);
+    return retVal;
+  },
+  startNodeId() {
+    return this.left.nodeId;
   },
   topIntermediateCode() {
     return this.middle ? this.middle[0].code : null;
@@ -35,7 +45,17 @@ Template.path.helpers({
     return this.middle ? this.middle.length : 0;
   },
   end() {
-    return this.right.code;
+    // return this.right.code;
+    // return Nodes.findOne({ nodeId: this.right.nodeId }).code;
+    var node = Nodes.findOne({ nodeId: this.right.nodeId });
+    var retVal = node?.code;
+    console.log('=====end=====');
+    console.log(this.right.nodeId);
+    console.log(retVal);
+    return retVal;
+  },
+  endNodeId() {
+    return this.right.nodeId;
   },
   isCurrentlyInspectedWarning() {
     return Session.get('inspectedWarning') == this._id;
@@ -75,15 +95,15 @@ Template.path.events({
 
 Template.path.onRendered(function() {
   // hljs on the left, right
-  hljs.highlightBlock(this.find('.start'), { language: 'java' });
-  this.findAll('.middle').forEach(function(middle) {
-    hljs.highlightBlock(middle, { language: 'java' });
-  });
-  hljs.highlightBlock(this.find('.end'), { language: 'java' });
+  // hljs.highlightBlock(this.find('.start'), { language: 'java' });
+  // this.findAll('.middle').forEach(function(middle) {
+  //   hljs.highlightBlock(middle, { language: 'java' });
+  // });
+  // hljs.highlightBlock(this.find('.end'), { language: 'java' });
   // Replace <focus> in the content of the .start blocks with <strong>
-  this.findAll('.start,.end,.middle').forEach(function(start) {
-    start.innerHTML = start.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
-  });
+  // this.findAll('.start,.end,.middle').forEach(function(start) {
+  //   start.innerHTML = start.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
+  // });
 });
 
 Template.intermediateNodes.helpers({
@@ -123,6 +143,9 @@ Template.intermediateNodes.helpers({
   libStateDescription() {
     const reported = Paths.findOne(Session.get('inspectedWarning')).reported;
     return reported ? 'going through' : 'ending because of';
+  },
+  showCode(nodeId) {
+    return Nodes.findOne({ nodeId: nodeId })?.code;
   }
 });
 

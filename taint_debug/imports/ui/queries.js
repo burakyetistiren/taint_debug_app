@@ -28,15 +28,17 @@ Template.queries.helpers({
   },
   sources() {
     // ####### HJ TODO: #######
-    const paths = Paths.find().fetch();
-    const sources = paths.map(path => path.left.nodeId);
-    return [...new Set(sources)];
+    // const paths = Paths.find().fetch();
+    // const sources = paths.map(path => path.left.nodeId);
+    // return [...new Set(sources)];
+    return [1,2,3]
   },
   sinks() {
-    // ####### HJ TODO: #######
-    const paths = Paths.find().fetch();
-    const sinks = paths.map(path => path.right.nodeId);
-    return [...new Set(sinks)];
+    // // ####### HJ TODO: #######
+    // const paths = Paths.find().fetch();
+    // const sinks = paths.map(path => path.right.nodeId);
+    // return [...new Set(sinks)];
+    return [4,5,6]
   },
   nodes() {
     return Template.instance().nodes.get();

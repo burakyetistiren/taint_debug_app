@@ -13,6 +13,10 @@ Template.body.helpers({
     },
     paths() {
         return Paths.find({}).fetch();   
+    },
+    pathsToDisplay() {
+        // fetch first 5 paths
+        return Paths.find({}, {limit: 5}).fetch();
     }
     
 

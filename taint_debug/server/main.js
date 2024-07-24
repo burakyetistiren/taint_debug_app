@@ -44,15 +44,30 @@ Meteor.startup(() => {
   Libs.remove({});
   Nodes.remove({});
 
+  console.log('clear data');
+
   setupAndReadAnalysisData().then(analysisData => {
     console.log('Finished reading analysis data');
-    // console.log(analysisData);
-    analysisData['codeSets'].forEach(codeSet => {
-      Paths.insert(codeSet);
-    });
-    analysisData['libSets'].forEach(libSet => {
-      Libs.insert(libSet);
-    });
+    console.log(analysisData['codeSets'].length);
+    console.log(analysisData['libSets'].size);
+
+    var pathsToInsert = analysisData['codeSets'];
+    Paths.batchInsert(pathsToInsert);
+    // Paths.rawCollection().insertMany(pathsToInsert);
+    // analysisData['codeSets'].forEach(codeSet => {
+    //   Paths.insert(codeSet);
+    // });
+    // analysisData['libSets'].forEach(libSet => {
+    //   Libs.insert(libSet);
+    // });
+    Libs.batchInsert(Array.from(analysisData['libSets'].values()));
+    // Libs.rawCollection().insertMany(Array.from(analysisData['libSets'].values()));
+
+    console.log('Finished inserting data');
+    console.log('paths count')
+    console.log(Paths.find().count());
+    console.log('nodes count')
+    console.log(Nodes.find().count());
   });
 
 
@@ -138,13 +153,25 @@ function setupAndReadAnalysisData() {
 
   
   const nodeMapping = readNodeMapping();
+  var nodesToInsert = [];
   Object.keys(nodeMapping).forEach(nodeId => {
     const code = codeSnippetOfNodeWithHighlight(nodeId, nodeMapping);
     var node = nodeMapping[nodeId];
-    node.code = code;
+    node.code =  code //''; // to be filled afterwards
+    node.file = nodeMapping[nodeId]['file'];
+    node.line = parseInt(nodeMapping[nodeId]['line']);
+    node.colNum = parseInt(nodeMapping[nodeId]['column']) - 1;
+    node.endColNum =  parseInt(nodeMapping[nodeId]['end_column']);
+    node.nodeId = parseInt(nodeId);
 
-    Nodes.insert(node);
+    nodesToInsert.push(node);
+    // console.log('inserted node');
   });
+  Nodes.batchInsert(nodesToInsert);
+
+  // trim nodesToInsert to 10
+  // nodesToInsert = nodesToInsert.slice(0, 10);
+  // Nodes.rawCollection().insertMany(nodesToInsert);
 
   // const lines = fs.readFileSync(path.join(ANALYSIS_PATH, 'warning_paths.csv'), 'utf8').split('\n');
   // lines.forEach(line => {
@@ -170,47 +197,49 @@ function setupAndReadAnalysisData() {
       const [source, sink, node, step, edge, libIndex] = line.trim().split('\t').map(Number);
 
       const key = `${source},${sink}`;
+      
       if (!pathsLibs.has(key)) {
         pathsLibs.set(key, []);
-      }
-      pathsLibs.get(key).push({ nodeId: node, lib: libIndex, edgeId: edge });
-      warningToReported.set(key, false);
+        pathsLibs.get(key).push({ nodeId: node, lib: libIndex, edgeId: edge });
+        warningToReported.set(key, false);
 
-      nodePairToEdgeId.set(key, edge);
+        nodePairToEdgeId.set(key, edge);
+      }
+      
     });
   }).then(() => {
-    console.log('Finished reading plausible_warning_paths.csv. Reading edge.facts next.');
+    console.log('Finished reading plausible_warning_paths.csv. Processing.');
 
     let paths = Array.from(pathsLibs, ([key, value]) => {
       const [source, sink] = key.split(',').map(Number);
+      
       return { source, sink, nodeLibIndicesAndEdgeId: value, reported: warningToReported.get(key) };
     });
     return paths;
   }).then(paths => {
     
-    console.log('Finished reading edge.facts. Processing the data.');
+    console.log(' Processing the data.');
     paths.forEach(({ source, sink, nodeLibIndicesAndEdgeId, reported }) => {
 
-      
       let warningNumber = codeSets.length;
     
       codeSets.push({
         warningNumber: warningNumber,
         reported: reported,
         left: {
-          code: codeSnippetOfNodeWithHighlight(source, nodeMapping),
+          code: '', // codeSnippetOfNodeWithHighlight(source, nodeMapping),
           nodeId: source,
           description: nodeMapping[source].description,
         },
         middle: nodeLibIndicesAndEdgeId.map(({ nodeId, lib, edgeId }) => ({
-          code: codeSnippetOfNodeWithHighlight(nodeId, nodeMapping),
+          code: '', // codeSnippetOfNodeWithHighlight(nodeId, nodeMapping),
           nodeId: nodeId,
           lib: lib,
           edgeId: edgeId,
           description: nodeMapping[nodeId].description,
         })),
         right: {
-          code: codeSnippetOfNodeWithHighlight(sink, nodeMapping),
+          code: '', // codeSnippetOfNodeWithHighlight(sink, nodeMapping),
           nodeId: sink,
           description: nodeMapping[sink].description,
         },
@@ -218,7 +247,7 @@ function setupAndReadAnalysisData() {
     });
 
   }).then(() => {
-    console.log('Finished reading edge.facts. Reading model.debug next.');
+    console.log('Reading model.debug next.');
     return readLargeFile(path.join(ANALYSIS_PATH, 'souffle_files/model.debug'), line => {
       if (line.includes('model_node')) {
         const [name, lib] = line.split('model_node(')[1].slice(0, -1).split(',');
@@ -255,13 +284,17 @@ function setupAndReadAnalysisData() {
       });
     });
   }). then(() => {
+    console.log('Finished reading the facts');
+    console.log('codeSets:', codeSets.length);
+    console.log('libSets:', libSets.size);
+
     return { codeSets, libSets };
   });
 }
 
 function codeSnippetOfNodeWithHighlight(nodeId, nodeMapping) {
 
-  return function() {
+  
     const { file, line, colNum, endColNum } = getFileLoc(nodeId, nodeMapping);
 
     const surroundingBef = readLinesFromFile(file, line - 3, line - 1);
@@ -275,13 +308,24 @@ function codeSnippetOfNodeWithHighlight(nodeId, nodeMapping) {
     const modifiedCode = metadataLines + surroundingBef + '\n' + targetLine + '\n' + surroundingAft;
 
     return modifiedCode;
-  };
+  
 }
 
+const lastReadFileContents = new Map();
+
 function readLinesFromFile(file, startLine, endLine) {
-  let lines = fs.readFileSync(file, { encoding: 'utf-8' }).split('\n');
-  const result = lines.slice(startLine - 1, endLine).join('\n');
-  return result;
+  if (lastReadFileContents.has(file)) {
+    const contents = lastReadFileContents.get(file);
+    return contents.slice(startLine - 1, endLine).join('\n');
+  } else {
+    lastReadFileContents.clear();
+
+    const lines = fs.readFileSync(file, { encoding: 'utf-8' }).split('\n');
+    lastReadFileContents.set(file, lines);
+    return lines.slice(startLine - 1, endLine).join('\n');
+
+  }
+  
 }
 
 function readLineFromFile(file, line) {
@@ -317,8 +361,10 @@ Meteor.methods({
     const edges = [];
     const nodes = [];
     const nodesSet = new Set();
+    console.log('readGraphData: reading node mapping');
     const nodeMapping = readNodeMapping();
 
+    console.log('readGraphData: read node mapping');
     // read library_nodes
     let libNodesLines = fs.readFileSync(path.join(ANALYSIS_PATH, 'souffle_files/library_node.facts'), 'utf8').split('\n');
     let libNodes = new Map();
@@ -337,6 +383,7 @@ Meteor.methods({
       });
     });
 
+    console.log('readGraphData: reading edges');
     const lines = fs.readFileSync(path.join(ANALYSIS_PATH, 'souffle_files/edge.facts'), 'utf8').split('\n');
     const analysisEdges = new Set();
     lines.forEach(line => {
@@ -381,7 +428,12 @@ Meteor.methods({
     nodesSet.forEach(node => {
       nodes.push({ nodeId: node, description: nodeMapping[node] ? nodeMapping[node].description : node });
     });
+    console.log('readGraphData: nodes are')
+    console.log(nodes);
+    console.log('readGraphData: edges are')
     console.log(edges);
+
     return { nodes, edges };
-  }
+  },
+  
 });

@@ -59,6 +59,7 @@ Meteor.startup(() => {
   
   Meteor.defer(() => {
     Meteor.call('readGraphData', (error, result) => {
+      return;
       if (error) {
         console.error('Error reading file:', error);
         return;
