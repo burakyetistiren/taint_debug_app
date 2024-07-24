@@ -89,11 +89,41 @@ Template.path.events({
     pathContent.style.display = 'none';
     collapseButton.innerHTML = 'Expand';
   }
+
+  
+    //  hljs on the left, right
+    // get child with class start from pathContent
+    var pathContentElement = document.getElementById('pathContent_' + this.warningNumber);
+    var startchild = pathContentElement.getElementsByClassName('start')[0];
+    hljs.highlightBlock(startchild, { language: 'java' });
+
+    var allMiddles = pathContentElement.getElementsByClassName('middle');
+    for (var i = 0; i < allMiddles.length; i++) {
+      hljs.highlightBlock(allMiddles[i], { language: 'java' });
+      allMiddles[i].innerHTML = start.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
+    }
+  
+    var endchild = pathContentElement.getElementsByClassName('end')[0];
+    hljs.highlightBlock(endchild, { language: 'java' });
+    // Replace <focus> in the content of the .start,.end blocks with <strong>
+    
+      startchild.innerHTML = startchild.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
+      endchild.innerHTML = endchild.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
+
+    
+
+  // hljs.highlightBlock(this.find('.start'), { language: 'java' });
+  // Replace <focus> in the content of the .start blocks with <strong>
+  // $(pathContent).findAll('.start,.end,.middle').forEach(function(start) {
+  //   start.innerHTML = start.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
+  // });
+  
 }
 
 });
 
 Template.path.onRendered(function() {
+
   // hljs on the left, right
   // hljs.highlightBlock(this.find('.start'), { language: 'java' });
   // this.findAll('.middle').forEach(function(middle) {
