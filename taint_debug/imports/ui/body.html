@@ -1,3 +1,7 @@
+<head>
+  <title>Your Meteor App</title>
+</head>
+
 <body>
     <style>
       .row {
@@ -21,8 +25,54 @@
         height: 50vh;
         overflow: scroll;
       }
+      .json-view-container {
+        height: 100%; /* Full height of the parent container */
+        overflow: auto; /* Allows scrolling if content overflows */
+      }
+      .json-view {
+        display: none; /* Initially collapsed */
+        overflow: auto;
+      }
+      .collapse-button {
+        cursor: pointer;
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        padding: 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        transition-duration: 0.4s;
+        width: 100%;
+      }
+      .collapse-button:hover {
+        background-color: white;
+        color: black;
+        border: 2px solid #007BFF;
+      }
+      .collapse-button-json {
+        cursor: pointer;
+        background-color: #ff8c00;
+        color: white;
+        border: none;
+        padding: 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        transition-duration: 0.4s;
+        width: 100%;
+      }
+      .collapse-button-json:hover {
+        background-color: white;
+        color: black;
+        border: 2px solid #ff8c00;
+      }
     </style>
-  
+
     <div class="row" style="height: 50vh;"> <!-- First row -->
       <div class="column view-container"> <!-- First column of the first row -->
         {{> queries}}
@@ -32,7 +82,7 @@
         {{> cytoscapeContainer}}
       </div>
     </div>
-  
+
     <div class="row full-width"> <!-- Second row -->
       <div class="column taint-paths-view"> <!-- Full width for taint paths -->
         <h1>Taint paths</h1>
@@ -41,5 +91,11 @@
         {{/each}}
       </div>
     </div>
-  </body>
-  
+
+    <div class="row full-width"> <!-- New row for JSON view -->
+      <div class="column json-view-container">
+        <h1>JSON View</h1>
+        {{> jsonView}}
+      </div>
+    </div>
+</body>
