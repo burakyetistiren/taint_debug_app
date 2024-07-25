@@ -2,6 +2,18 @@ import { Template } from 'meteor/templating';
 import { Paths, Libs, Nodes } from '../api/paths.js';
 import './queries.html';
 
+
+function callSouffleAndDisplayResults(queryType, sourceId, sinkId) {
+  console.log('Running query:', queryType, sourceId, sinkId);
+  Meteor.call('runQuery', queryType, sourceId, sinkId, (error, result) => {
+    if (error) {
+      console.error('Error running query:', error);
+    } else {
+      console.log('Query result:', result);
+    }
+  });
+}
+
 Template.queries.onCreated(function() {
   this.nodes = new ReactiveVar([]);
   this.edges = new ReactiveVar([]);
@@ -21,9 +33,9 @@ Template.queries.onCreated(function() {
 Template.queries.helpers({
   queries() {
     return [
-      { description: "WhyFlow: Tracking data flows from" },
-      { description: "WhyNotFlow: Identifying sanitizers that remove data flows from" },
-      { description: "CommonFlows: Common API usages between different flow paths from" }
+      { description: "WhyFlow: Tracking data flows from", queryType: "why_node_pair" },
+      { description: "WhyNotFlow: Identifying sanitizers that remove data flows from", queryType: "whynot" },
+      { description: "CommonFlows: Common API usages between different flow paths from", queryType: "common"}
     ];
   },
   sources() {
@@ -144,7 +156,28 @@ Template.queries.events({
     if (elementToScrollTo) {
       elementToScrollTo.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-  }
+  },
+
+  'change .src-dropdown'(event) {
+    console.log('a sink dropdown saw a value change');
+    const selectedSourceId = $(event.target).val();
+    
+    const selectedSinkId = $(event.target).closest('.query-box').find('.sink-dropdown').val();
+    const queryType = $(event.target).closest('.query-box').attr('data-query');
+    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId);
+    
+    
+  },
+  'change .sink-dropdown'(event) {
+    console.log('a sink dropdown saw a value change');
+    const selectedSinkId = $(event.target).val();
+    
+    const selectedSourceId = $(event.target).closest('.query-box').find('.src-dropdown').val();
+
+    const queryType = $(event.target).closest('.query-box').attr('data-query');
+    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId);
+
+  },
 });
 
 Template.queries.onRendered(function() {

@@ -30,9 +30,7 @@ Template.path.helpers({
     // console.log(this.left.nodeId);
     var node = Nodes.findOne({ nodeId: this.left.nodeId });
     var retVal = node?.code
-    console.log('=====start=====');
-    console.log(this.left.nodeId)
-    console.log(retVal);
+    
     return retVal;
   },
   startNodeId() {
@@ -49,9 +47,7 @@ Template.path.helpers({
     // return Nodes.findOne({ nodeId: this.right.nodeId }).code;
     var node = Nodes.findOne({ nodeId: this.right.nodeId });
     var retVal = node?.code;
-    console.log('=====end=====');
-    console.log(this.right.nodeId);
-    console.log(retVal);
+
     return retVal;
   },
   endNodeId() {
@@ -283,14 +279,14 @@ Template.sourceSinkPair.helpers({
 });
 
 Template.sourceSinkPair.onRendered(function() {
-  // hljs on the left, right
-  hljs.highlightBlock(this.find('.start'), { language: 'java' });
-  this.findAll('.middle').forEach(function(middle) {
-    hljs.highlightBlock(middle, { language: 'java' });
-  });
-  hljs.highlightBlock(this.find('.end'), { language: 'java' });
-  // Replace <focus> in the content of the .start blocks with <strong>
-  this.findAll('.start,.end,.middle').forEach(function(start) {
-    start.innerHTML = start.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
-  });
+  // // hljs on the left, right
+  // hljs.highlightBlock(this.find('.start'), { language: 'java' });
+  // this.findAll('.middle').forEach(function(middle) {
+  //   hljs.highlightBlock(middle, { language: 'java' });
+  // });
+  // hljs.highlightBlock(this.find('.end'), { language: 'java' });
+  // // Replace <focus> in the content of the .start blocks with <strong>
+  // this.findAll('.start,.end,.middle').forEach(function(start) {
+  //   start.innerHTML = start.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
+  // });
 });

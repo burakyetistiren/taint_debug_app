@@ -8,8 +8,12 @@ export const Paths = new Mongo.Collection('paths');
 export const Libs = new Mongo.Collection('libs');
 export const Nodes = new Mongo.Collection('nodes');
 
+export const QueryResults = new Mongo.Collection('queryResults');
+
 const PROJECT_PATH = process.env.PWD;
 const ANALYSIS_PATH = path.join(PROJECT_PATH, '..', 'analysis_files') + "/";
+const QUERY_PATH = path.join(PROJECT_PATH, '..', 'app_souffle_queries') + "/";
+const QUERY_RESULT_PATH = path.join(PROJECT_PATH, '..', 'souffle_output') + "/";
 
 async function readLargeFile(filePath, processLine) {
   const fileStream = fs.createReadStream(filePath, 'utf8');
@@ -435,5 +439,33 @@ Meteor.methods({
 
     return { nodes, edges };
   },
+  runQuery(queryType, sourceId, sinkId) {
+    console.log('Running query:', queryType, sourceId, sinkId);
+    // Execute Souffle query
+    // run shell command
+    const exec = require('child_process').exec;
+    const command = `souffle -F${ANALYSIS_PATH}/souffle_files -D${QUERY_RESULT_PATH} ${QUERY_PATH}/${queryType}.dl `;
+    console.log(command)
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      
+      // read the result file
+      const result = fs.readFileSync(`${QUERY_RESULT_PATH}/${queryType}_answer.csv`, 'utf8');
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+      console.log('Query result:', result);
+
+      const resultNodes = fs.readFileSync(`${QUERY_RESULT_PATH}/nodes_in_path.csv`, 'utf8');
+      // TODO i guess the result should be saved to a collection
+      // indicating which paths to show
+      // {path, nodes, edges}
+
+    });
+
+    return 'Query result';
+  }
   
 });
