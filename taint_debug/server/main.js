@@ -85,6 +85,10 @@ Meteor.startup(() => {
   Meteor.methods({
     getFactNodes() {
       return {
+        
+        nodes: Nodes.find({}).fetch(),
+        edges: [],
+
         sinks,
         sources,
         sanitizers,
@@ -103,7 +107,7 @@ function readFactFile(filename) {
 }
 
 function readCurrentSanitizers() {
-  const filepath = path.join(ANALYSIS_PATH, 'souffle_files/', 'sanitizers.facts');
+  const filepath = path.join(ANALYSIS_PATH, 'souffle_files/', 'sanitizer.facts');
   console.log('Reading file:', filepath);
   if (!fs.existsSync(filepath)) return [];
   const data = fs.readFileSync(filepath, 'utf8');
@@ -116,7 +120,7 @@ function readCurrentSanitizers() {
 }
 
 function readLibraryNodes() {
-  const filepath = path.join(ANALYSIS_PATH, 'souffle_files/', 'library_nodes.facts');
+  const filepath = path.join(ANALYSIS_PATH, 'souffle_files/', 'library_node.facts');
   console.log('Reading file:', filepath);
   if (!fs.existsSync(filepath)) return [];
   const data = fs.readFileSync(filepath, 'utf8');
@@ -458,7 +462,7 @@ Meteor.methods({
       console.error(`stderr: ${stderr}`);
       console.log('Query result:', result);
 
-      const resultNodes = fs.readFileSync(`${QUERY_RESULT_PATH}/nodes_in_path.csv`, 'utf8');
+      const resultNodes = fs.readFileSync(`${QUERY_RESULT_PATH}/nodes_on_path.csv`, 'utf8');
       // TODO i guess the result should be saved to a collection
       // indicating which paths to show
       // {path, nodes, edges}

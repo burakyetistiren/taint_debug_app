@@ -17,16 +17,29 @@ function callSouffleAndDisplayResults(queryType, sourceId, sinkId) {
 Template.queries.onCreated(function() {
   this.nodes = new ReactiveVar([]);
   this.edges = new ReactiveVar([]);
+  this.sources = new ReactiveVar([]);
+  this.sinks = new ReactiveVar([]);
+  this.libraryNodes = new ReactiveVar([]);
   
-  Meteor.call('readGraphData', (error, result) => {
-    if (error) {
-      console.error('Error reading graph data:', error);
-    } else {
-      const nodes = result.nodes.map(node => node.nodeId);
-      const edges = result.edges.map(edge => edge.edgeId);
-      this.nodes.set(nodes);
-      this.edges.set(edges);
-    }
+  Meteor.defer(() => {
+    Meteor.call('getFactNodes', (error, result) => {
+      if (error) {
+        console.error('Error reading graph data:', error);
+      } else {
+        const nodes = result.nodes.map(node => node.nodeId);
+        const edges = result.edges;
+        const sources = result.sources;
+        const sinks = result.sinks;
+
+        console.log('Nodes:', nodes);
+        console.log('Edges:', edges);
+        this.nodes.set(nodes);
+        this.edges.set(edges);
+        this.sources.set(sources);
+        this.sinks.set(sinks);
+        this.libraryNodes.set(result.libraryNodes);
+      }
+    });
   });
 });
 
@@ -43,14 +56,14 @@ Template.queries.helpers({
     // const paths = Paths.find().fetch();
     // const sources = paths.map(path => path.left.nodeId);
     // return [...new Set(sources)];
-    return [1,2,3]
+    return Template.instance().sources.get();
   },
   sinks() {
     // // ####### HJ TODO: #######
     // const paths = Paths.find().fetch();
     // const sinks = paths.map(path => path.right.nodeId);
     // return [...new Set(sinks)];
-    return [4,5,6]
+    return Template.instance().sinks.get();
   },
   nodes() {
     return Template.instance().nodes.get();
