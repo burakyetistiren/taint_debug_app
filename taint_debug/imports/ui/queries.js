@@ -52,18 +52,33 @@ Template.queries.helpers({
     ];
   },
   sources() {
-    // ####### HJ TODO: #######
-    // const paths = Paths.find().fetch();
-    // const sources = paths.map(path => path.left.nodeId);
-    // return [...new Set(sources)];
-    return Template.instance().sources.get();
+    const selectedSinkId = Session.get('selectedSinkId');
+
+    if (!selectedSinkId) {
+      return Template.instance().sources.get();
+    }
+
+    // find all paths that have the selected sink
+    const paths = Paths.find({ 'right.nodeId': parseInt(selectedSinkId) }).fetch();
+    // extract all source nodeIds from the paths
+    const sources = paths.map(path => path.left.nodeId);
+
+    return [...new Set(sources)];
   },
   sinks() {
-    // // ####### HJ TODO: #######
-    // const paths = Paths.find().fetch();
-    // const sinks = paths.map(path => path.right.nodeId);
-    // return [...new Set(sinks)];
-    return Template.instance().sinks.get();
+    
+    // fetch current selected source
+    const selectedSourceId = Session.get('selectedSourceId');
+
+    if (!selectedSourceId) {
+      return Template.instance().sinks.get();
+    }
+    // find all paths that have the selected source
+    const paths = Paths.find({ 'left.nodeId': parseInt(selectedSourceId) }).fetch();
+    // extract all sink nodeIds from the paths
+    const sinks = paths.map(path => path.right.nodeId);
+
+    return [...new Set(sinks)];
   },
   nodes() {
     return Template.instance().nodes.get();
@@ -177,6 +192,10 @@ Template.queries.events({
     
     const selectedSinkId = $(event.target).closest('.query-box').find('.sink-dropdown').val();
     const queryType = $(event.target).closest('.query-box').attr('data-query');
+
+    // write to session
+    Session.set('selectedSourceId', selectedSourceId);
+
     callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId);
     
     
@@ -188,6 +207,10 @@ Template.queries.events({
     const selectedSourceId = $(event.target).closest('.query-box').find('.src-dropdown').val();
 
     const queryType = $(event.target).closest('.query-box').attr('data-query');
+
+    // write to session
+    Session.set('selectedSinkId', selectedSinkId);
+
     callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId);
 
   },
