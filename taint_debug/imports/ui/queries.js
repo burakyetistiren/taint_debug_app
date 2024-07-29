@@ -28,12 +28,16 @@ function callSouffleAndDisplayResults(queryType, sourceId, sinkId) {
   
 
   
-  const nodesToKeep = queryResults.nodesOnPath.map(tuple => tuple[0]);
+  const nodesToKeep = queryResults.nodesOnPath;
   const cyNodesToShow = [];
 
   
   
-  nodesToKeep.forEach(nodeId => {
+  nodesToKeep.forEach(nodeOnPathTuple => {
+    const nodeId = nodeOnPathTuple[0];
+
+    const libNode = nodeOnPathTuple[2];
+
     let color = '#0074D9';
     let textColor = '#FFFFFF';
     const node = Nodes.findOne({
@@ -44,6 +48,11 @@ function callSouffleAndDisplayResults(queryType, sourceId, sinkId) {
     if (nodeId === sourceId) {
       return;
     }
+    // if node is a library node, color it differently
+    if (libNode != -1) {
+      color = '#FF851B';
+    }
+      
     cyNodesToShow.push({
       data: { id: 'node_' + nodeId, description: nodeId + ' ' + node.description, 'original-background-color': color, 'original-text-color': textColor },
       style: { 'background-color': color, 'color': textColor }
