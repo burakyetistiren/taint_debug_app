@@ -47,6 +47,7 @@ Meteor.startup(() => {
   Paths.remove({});
   Libs.remove({});
   Nodes.remove({});
+  QueryResults.remove({});
 
   console.log('clear data');
 
@@ -456,12 +457,17 @@ Meteor.methods({
   },
   runQuery(queryType, sourceId, sinkId) {
     console.log('Running query:', queryType, sourceId, sinkId);
+
+    // update the query file with the source and sink
+    const queryFactsFile = `${ANALYSIS_PATH}/souffle_files/${queryType}.facts`;
+    fs.writeFileSync(queryFactsFile, `${sourceId}\t${sinkId}\n`);
+
     // Execute Souffle query
     // run shell command
     const exec = require('child_process').exec;
     const command = `souffle -F${ANALYSIS_PATH}/souffle_files -D${QUERY_RESULT_PATH} ${QUERY_PATH}/${queryType}.dl `;
     console.log(command)
-    exec(command, (error, stdout, stderr) => {
+    exec(command, Meteor.bindEnvironment((error, stdout, stderr) => {
       if (error) {
         console.error(`exec error: ${error}`);
         return;
@@ -471,14 +477,21 @@ Meteor.methods({
       const result = fs.readFileSync(`${QUERY_RESULT_PATH}/${queryType}_answer.csv`, 'utf8');
       console.log(`stdout: ${stdout}`);
       console.error(`stderr: ${stderr}`);
-      console.log('Query result:', result);
+
+      // split result by \n, then split each row by \t, read last value
+      const libNodes = result.split('\n')
+        .filter(row => row.trim())
+        .map(row => row.split('\t').map(Number))
+        .map(row => row[row.length - 1]);
 
       const resultNodes = fs.readFileSync(`${QUERY_RESULT_PATH}/nodes_on_path.csv`, 'utf8');
-      // TODO i guess the result should be saved to a collection
-      // indicating which paths to show
-      // {path, nodes, edges}
-
-    });
+      
+      const nodesOnPath = resultNodes.split('\n')
+        .map(row => row.split('\t').map(Number))
+        .map(row => row.slice(-2));
+      console.log("nodesOnPath", nodesOnPath)
+      QueryResults.insert({ queryType, sourceId, sinkId, libNodes, nodesOnPath });
+    }));
 
     return 'Query result';
   }

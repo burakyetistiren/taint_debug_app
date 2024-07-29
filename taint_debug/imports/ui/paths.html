@@ -93,8 +93,8 @@
     </div>
     <div class="slides">
       {{#each intermediates}}
-        <div id="slide_{{@index}}" style="display: flex; flex-direction: column;">
-          <pre style="overflow: auto; min-width: 100%; width: 0px;"><code class="middle {{colorBorder}}">{{showCode this.node}}</code></pre>
+        <div id="slide_{{@index}}" class="intermediateNodes_{{@index}}" style="display: flex; flex-direction: column;">
+          <pre style="overflow: auto; min-width: 100%; width: 0px;"><code class="middle {{colorBorder}}">{{showCode this.nodeId}}</code></pre>
           <span class="{{showIfHasLib}}">View paths {{libStateDescription}} <button class="pure-button lib_impact" style="width: 240px" data-libId="{{libId}}">{{libname}} </button></span>
         </div>
       {{/each}}

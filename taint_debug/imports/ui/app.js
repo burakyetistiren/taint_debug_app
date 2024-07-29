@@ -8,6 +8,7 @@ import 'tippy.js/dist/tippy.css';
 import { createPopper } from '@popperjs/core';
 
 import { Paths, Libs, Nodes } from '../api/paths.js';
+import { QueryResults } from '../api/queryresults.js';
 
 import './queries.html';
 import './queries.js';
@@ -18,6 +19,7 @@ import './cytoscapeContainer.html';
 window.Paths = Paths;
 window.Libs = Libs;
 window.Nodes = Nodes;
+window.QueryResults = QueryResults;
 console.log('Paths:', Paths);
 
 // Register the popper extension
