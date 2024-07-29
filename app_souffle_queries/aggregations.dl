@@ -1,0 +1,13 @@
+.decl edge(id:number, x:number, y:number)
+.input edge
+
+.decl node(id:number)
+.input node
+
+.decl outgoing_count(id:number, c:number)
+.output outgoing_count
+// aggregation
+
+outgoing_count(a, c) :- node(a), c = count : {edge(_, a, _)}.
+
+

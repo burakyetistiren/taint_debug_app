@@ -1,0 +1,24 @@
+
+.decl library_node(node:number, lib:number)
+.input library_node
+
+.decl library_flow(edge:number, id:number)
+.input library_flow
+
+.decl plausible_edge(id:number, x:number, y:number)
+.input plausible_edge
+
+.decl edge(id:number, x:number, y:number)
+.input edge
+
+.decl sanitizers(node:number, lib:number)
+.output sanitizers
+
+
+
+
+// a sanitizer is a library node 
+// in a plausible flow but not in a library flow
+sanitizers(node, lib) :-  library_node(node, lib), plausible_edge(edge_id, node, _), !edge(_,node,_).
+
+
