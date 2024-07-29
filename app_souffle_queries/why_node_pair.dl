@@ -36,10 +36,10 @@ why_node_pair_answer(start, end, y) :- why_node_pair(start, end), library_flow_o
 
 nodes_on_path(query_start, query_end, query_start, 0, -1) :- node(query_start), why_node_pair_answer(query_start, query_end, _), node(query_end), path(query_start, query_end).
 nodes_on_path(query_start, query_end, x, steps + 1, -1) :- 
-        nodes_on_path(query_start, query_end, a, steps), edge(_, a, x), path(x, query_end), 
+        nodes_on_path(query_start, query_end, a, steps, _), edge(_, a, x), path(x, query_end), 
         why_node_pair_answer(query_start, query_end, _), !library_node(x, _).
 nodes_on_path(query_start, query_end, x, steps + 1, libnode) :- 
-        nodes_on_path(query_start, query_end, a, steps), edge(_, a, x), path(x, query_end), 
+        nodes_on_path(query_start, query_end, a, steps, _), edge(_, a, x), path(x, query_end), 
         why_node_pair_answer(query_start, query_end, _), library_node(x, libnode).
 
 
