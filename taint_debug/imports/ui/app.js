@@ -67,6 +67,7 @@ Meteor.startup(() => {
         return;
       }
 
+
       // Fetch the node type information
       Meteor.call('getFactNodes', (error, factNodes) => {
         if (error) {
@@ -87,8 +88,14 @@ Meteor.startup(() => {
         console.log('Sanitizers:', sanitizers);
         console.log('APIs:', apis);
 
-        result.nodes.forEach(node => {
-          const nodeId = node.nodeId.toString();
+        // for the first time the graph is shown, show just the sources and sinks
+
+        Object.keys(result.nodes).forEach(nodeId => {
+        // var sourcesAndSinks = sinks.concat(sources);
+        // var sourcesAndSinksNodeIds = sourcesAndSinks.map(nodeId => nodeId.toString());
+        // sourcesAndSinks.forEach(nodeId => {
+          // const nodeId = node.nodeId.toString();
+          const node  = result.nodes[nodeId];
           let color = '#0074D9'; // Default color
           let textColor = '#FFFFFF'; // Default text color
 
@@ -112,7 +119,8 @@ Meteor.startup(() => {
         });
         console.log('Nodes:', nodes);
 
-        result.edges.forEach(edge => edges.push({
+        result.edges
+        .forEach(edge => edges.push({
           data: { id: 'edge_' + edge.edgeId.toString(), source: 'node_' + edge.sourceId.toString(), target: 'node_' + edge.targetId.toString(), description: "Warning " + edge.warningNumber + " id:" + edge.edgeId }
         }));
 

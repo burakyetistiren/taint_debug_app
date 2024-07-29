@@ -379,8 +379,8 @@ Meteor.methods({
   },
   readGraphData() {
     const edges = [];
-    const nodes = [];
-    const nodesSet = new Set();
+    const nodes = {};
+    
     console.log('readGraphData: reading node mapping');
     const nodeMapping = readNodeMapping();
 
@@ -413,9 +413,9 @@ Meteor.methods({
       }
     });
 
-    // const allEdgesLines = fs.readFileSync(path.join(ANALYSIS_PATH, 'souffle_files/plausible_edge.facts'), 'utf8').split('\n');
+    const allEdgesLines = fs.readFileSync(path.join(ANALYSIS_PATH, 'souffle_files/plausible_edge.facts'), 'utf8').split('\n');
 
-    allEdgesLines = [];
+    // allEdgesLines = [];
     allEdgesLines
     .forEach(line => {
       if (!line.trim()) return;
@@ -442,18 +442,11 @@ Meteor.methods({
       }
       let isAnalysisEdge = analysisEdges.has(edgeId);
       edges.push({ edgeId, sourceId, targetId, sourceName, targetName, sourceLibNode, targetLibNode, warningNumber, isAnalysisEdge });
-      nodesSet.add(sourceId);
-      nodesSet.add(targetId);
+      
     });
-    nodesSet.forEach(node => {
-      nodes.push({ nodeId: node, description: nodeMapping[node] ? nodeMapping[node].description : node });
-    });
-    console.log('readGraphData: nodes are')
-    console.log(nodes);
-    console.log('readGraphData: edges are')
-    console.log(edges);
 
-    return { nodes, edges };
+
+    return { nodes: nodeMapping, edges: edges };
   },
   runQuery(queryType, sourceId, sinkId) {
     console.log('Running query:', queryType, sourceId, sinkId);
