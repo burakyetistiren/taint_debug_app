@@ -1,5 +1,6 @@
 import { Template } from 'meteor/templating';
-import { Paths, Libs, Nodes } from '../api/paths.js';
+import { Paths, Libs,Edges,  Nodes } from '../api/paths.js';
+import { QueryResults } from '../api/queryresults.js';
 import './queries.html';
 
 
@@ -12,6 +13,78 @@ function callSouffleAndDisplayResults(queryType, sourceId, sinkId) {
       console.log('Query result:', result);
     }
   });
+
+  // fetch QueryResults
+  const queryResults = QueryResults.findOne({sourceId: sourceId, sinkId: sinkId});
+  console.log('QueryResults:', queryResults);
+
+  if (!queryResults) {
+    console.error('No query results found');
+    return;
+  }
+
+  // clear the graph, show only the nodes in QueryResults
+  const cy = window.cyInstance;
+  
+
+  
+  const nodesToKeep = queryResults.nodesOnPath.map(tuple => tuple[0]);
+  const cyNodesToShow = [];
+
+  
+  
+  nodesToKeep.forEach(nodeId => {
+    let color = '#0074D9';
+    let textColor = '#FFFFFF';
+    const node = Nodes.findOne({
+      nodeId: nodeId
+    });
+
+    // skip source
+    if (nodeId === sourceId) {
+      return;
+    }
+    cyNodesToShow.push({
+      data: { id: 'node_' + nodeId, description: nodeId + ' ' + node.description, 'original-background-color': color, 'original-text-color': textColor },
+      style: { 'background-color': color, 'color': textColor }
+    });
+  });
+  // also the source and sink nodes
+  cyNodesToShow.push({
+    data: { id: 'node_' + sourceId, description: sourceId + ' Source', 'original-background-color': '#2ECC40', 'original-text-color': '#FFFFFF' },
+    style: { 'background-color': '#2ECC40', 'color': '#FFFFFF' }
+  });
+  cyNodesToShow.push({
+    data: { id: 'node_' + sinkId, description: sinkId + ' Sink', 'original-background-color': '#FF4136', 'original-text-color': '#FFFFFF' },
+    style: { 'background-color': '#FF4136', 'color': '#FFFFFF' }
+  });
+
+    console.log('Nodes:', cyNodesToShow);
+
+    const nodeIdsToKeep = cyNodesToShow.map(node => node.data.id);
+
+      // Keep edges that connect nodes in nodesToKeep
+      const allEdges =Edges.find({}).fetch();
+  const edgesToKeep = allEdges.filter(edge => 
+    nodeIdsToKeep.includes('node_' + edge.sourceId) && nodeIdsToKeep.includes('node_' + edge.targetId)
+  );
+
+  cy.elements().remove();
+
+
+    // add to cy
+    cy.add(cyNodesToShow);
+
+  
+  edgesToKeep.forEach(edge => {
+    cy.add({
+      group: 'edges',
+      data: { source: 'node_' +  edge.sourceId, target: 'node_' + edge.targetId }
+    });
+  });
+
+  // Layout the graph for better visualization
+  cy.layout({ name: 'cose' }).run();
 }
 
 Template.queries.onCreated(function() {

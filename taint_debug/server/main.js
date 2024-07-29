@@ -7,7 +7,7 @@ import path from 'path';
 export const Paths = new Mongo.Collection('paths');
 export const Libs = new Mongo.Collection('libs');
 export const Nodes = new Mongo.Collection('nodes');
-
+export const Edges = new Mongo.Collection('edges');
 export const QueryResults = new Mongo.Collection('queryResults');
 
 const PROJECT_PATH = process.env.PWD;
@@ -47,6 +47,7 @@ Meteor.startup(() => {
   Paths.remove({});
   Libs.remove({});
   Nodes.remove({});
+  Edges.remove({});
   QueryResults.remove({});
 
   console.log('clear data');
@@ -415,6 +416,9 @@ Meteor.methods({
 
     const allEdgesLines = fs.readFileSync(path.join(ANALYSIS_PATH, 'souffle_files/plausible_edge.facts'), 'utf8').split('\n');
 
+    // first time reading edge data?
+    var isFirstTimeReadingEdges = Edges.find().count() == 0;
+
     // allEdgesLines = [];
     allEdgesLines
     .forEach(line => {
@@ -428,21 +432,25 @@ Meteor.methods({
       let warningNumber = edgeToWarningNumber.get(parseInt(edgeId));
 
       // map the nodes of the same lib nodes to same nodes
-      if (sourceLibNode) {
-        console.log('mapping source', sourceId, ' to ', sourceLibNode);
-        // copy entry over in nodeMapping
-        nodeMapping[sourceLibNode] = nodeMapping[sourceId];
-        sourceId = sourceLibNode;
-      }
-      if (targetLibNode) {
-        console.log('mapping target', targetId, ' to ', targetLibNode);
-        // copy entry over in nodeMapping
-        nodeMapping[targetLibNode] = nodeMapping[targetId];
-        targetId = targetLibNode;
-      }
+      // if (sourceLibNode) {
+      //   console.log('mapping source', sourceId, ' to ', sourceLibNode);
+      //   // copy entry over in nodeMapping
+      //   nodeMapping[sourceLibNode] = nodeMapping[sourceId];
+      //   sourceId = sourceLibNode;
+      // }
+      // if (targetLibNode) {
+      //   console.log('mapping target', targetId, ' to ', targetLibNode);
+      //   // copy entry over in nodeMapping
+      //   nodeMapping[targetLibNode] = nodeMapping[targetId];
+      //   targetId = targetLibNode;
+      // }
       let isAnalysisEdge = analysisEdges.has(edgeId);
       edges.push({ edgeId, sourceId, targetId, sourceName, targetName, sourceLibNode, targetLibNode, warningNumber, isAnalysisEdge });
-      
+
+      if (isFirstTimeReadingEdges) {
+        Edges.insert({ edgeId, sourceId, targetId, sourceName, targetName, sourceLibNode, targetLibNode, warningNumber, isAnalysisEdge });
+        // console.log('edge, sourceId' + sourceId + ' targetId' + targetId + ' inserted');
+      }
     });
 
 
