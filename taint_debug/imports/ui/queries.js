@@ -12,88 +12,90 @@ function callSouffleAndDisplayResults(queryType, sourceId, sinkId) {
     } else {
       console.log('Query result:', result);
     }
-  });
+    
+    // fetch latest QueryResults
+    const queryResults = QueryResults.findOne({sourceId: sourceId, sinkId: sinkId});
+    
+    // const queryResults = result;
+    console.log('QueryResults:', queryResults);
 
-  // fetch QueryResults
-  const queryResults = QueryResults.findOne({sourceId: sourceId, sinkId: sinkId});
-  console.log('QueryResults:', queryResults);
-
-  if (!queryResults) {
-    console.error('No query results found');
-    return;
-  }
-
-  // clear the graph, show only the nodes in QueryResults
-  const cy = window.cyInstance;
-  
-
-  
-  const nodesToKeep = queryResults.nodesOnPath;
-  const cyNodesToShow = [];
-
-  
-  
-  nodesToKeep.forEach(nodeOnPathTuple => {
-    const nodeId = nodeOnPathTuple[0];
-
-    const libNode = nodeOnPathTuple[2];
-
-    let color = '#0074D9';
-    let textColor = '#FFFFFF';
-    const node = Nodes.findOne({
-      nodeId: nodeId
-    });
-
-    // skip source
-    if (nodeId === sourceId) {
+    if (!queryResults) {
+      console.error('No query results found');
       return;
     }
-    // if node is a library node, color it differently
-    if (libNode != -1) {
-      color = '#FF851B';
-    }
-      
+
+    // clear the graph, show only the nodes in QueryResults
+    const cy = window.cyInstance;
+    
+
+    
+    const nodesToKeep = queryResults.nodesOnPath;
+    const cyNodesToShow = [];
+
+    
+    
+    nodesToKeep.forEach(nodeOnPathTuple => {
+      const nodeId = nodeOnPathTuple[0];
+
+      const libNode = nodeOnPathTuple[2];
+
+      let color = '#0074D9';
+      let textColor = '#FFFFFF';
+      const node = Nodes.findOne({
+        nodeId: nodeId
+      });
+
+      // skip source
+      if (nodeId === sourceId) {
+        return;
+      }
+      // if node is a library node, color it differently
+      if (libNode != -1) {
+        color = '#FF851B';
+      }
+        
+      cyNodesToShow.push({
+        data: { id: 'node_' + nodeId, description: nodeId + ' ' + node.description, 'original-background-color': color, 'original-text-color': textColor },
+        style: { 'background-color': color, 'color': textColor }
+      });
+    });
+    // also the source and sink nodes
     cyNodesToShow.push({
-      data: { id: 'node_' + nodeId, description: nodeId + ' ' + node.description, 'original-background-color': color, 'original-text-color': textColor },
-      style: { 'background-color': color, 'color': textColor }
+      data: { id: 'node_' + sourceId, description: sourceId + ' Source', 'original-background-color': '#2ECC40', 'original-text-color': '#FFFFFF' },
+      style: { 'background-color': '#2ECC40', 'color': '#FFFFFF' }
     });
-  });
-  // also the source and sink nodes
-  cyNodesToShow.push({
-    data: { id: 'node_' + sourceId, description: sourceId + ' Source', 'original-background-color': '#2ECC40', 'original-text-color': '#FFFFFF' },
-    style: { 'background-color': '#2ECC40', 'color': '#FFFFFF' }
-  });
-  cyNodesToShow.push({
-    data: { id: 'node_' + sinkId, description: sinkId + ' Sink', 'original-background-color': '#FF4136', 'original-text-color': '#FFFFFF' },
-    style: { 'background-color': '#FF4136', 'color': '#FFFFFF' }
-  });
-
-    console.log('Nodes:', cyNodesToShow);
-
-    const nodeIdsToKeep = cyNodesToShow.map(node => node.data.id);
-
-      // Keep edges that connect nodes in nodesToKeep
-      const allEdges =Edges.find({}).fetch();
-  const edgesToKeep = allEdges.filter(edge => 
-    nodeIdsToKeep.includes('node_' + edge.sourceId) && nodeIdsToKeep.includes('node_' + edge.targetId)
-  );
-
-  cy.elements().remove();
-
-
-    // add to cy
-    cy.add(cyNodesToShow);
-
-  
-  edgesToKeep.forEach(edge => {
-    cy.add({
-      group: 'edges',
-      data: { source: 'node_' +  edge.sourceId, target: 'node_' + edge.targetId }
+    cyNodesToShow.push({
+      data: { id: 'node_' + sinkId, description: sinkId + ' Sink', 'original-background-color': '#FF4136', 'original-text-color': '#FFFFFF' },
+      style: { 'background-color': '#FF4136', 'color': '#FFFFFF' }
     });
-  });
 
-  // Layout the graph for better visualization
-  cy.layout({ name: 'cose' }).run();
+      console.log('Nodes:', cyNodesToShow);
+
+      const nodeIdsToKeep = cyNodesToShow.map(node => node.data.id);
+
+        // Keep edges that connect nodes in nodesToKeep
+        const allEdges =Edges.find({}).fetch();
+    const edgesToKeep = allEdges.filter(edge => 
+      nodeIdsToKeep.includes('node_' + edge.sourceId) && nodeIdsToKeep.includes('node_' + edge.targetId)
+    );
+
+    cy.elements().remove();
+
+
+      // add to cy
+      cy.add(cyNodesToShow);
+
+    
+    edgesToKeep.forEach(edge => {
+      cy.add({
+        group: 'edges',
+        data: { source: 'node_' +  edge.sourceId, target: 'node_' + edge.targetId }
+      });
+    });
+
+    // Layout the graph for better visualization
+    cy.layout({ name: 'cose' }).run();
+  });
 }
 
 Template.queries.onCreated(function() {

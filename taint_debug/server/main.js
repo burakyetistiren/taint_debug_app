@@ -489,9 +489,12 @@ Meteor.methods({
       
       const nodesOnPath = resultNodes.split('\n')
         .map(row => row.split('\t').map(Number))
-        .map(row => row.slice(-3));
+        .map(row => row.slice(-3))
+        .filter(row => row.length == 3);
       console.log("nodesOnPath", nodesOnPath)
       QueryResults.insert({ queryType, sourceId, sinkId, libNodes, nodesOnPath });
+
+      
     }));
 
     return 'Query result';
