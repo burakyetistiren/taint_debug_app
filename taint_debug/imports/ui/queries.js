@@ -131,7 +131,7 @@ Template.queries.helpers({
   queries() {
     return [
       { description: "WhyFlow: Tracking data flows from", queryType: "why_node_pair" },
-      { description: "WhyNotFlow: Identifying sanitizers that remove data flows from", queryType: "whynot" },
+      { description: "WhyNotFlow: Identifying sanitizers that remove data flows from", queryType: "whynot_node_pairs" },
       { description: "CommonFlows: Common API usages between different flow paths from", queryType: "common"}
     ];
   },
@@ -142,8 +142,16 @@ Template.queries.helpers({
       return Template.instance().sources.get();
     }
 
+    const queryType = Session.get('queryType');// TODO we should be reading queryType from the position in the list of queries
+
+    let isReported = true;
+    if (queryType === 'whynot_node_pairs') {
+      // any 
+      isReported = { $in: [true, false] };
+    }
+    
     // find all paths that have the selected sink
-    const paths = Paths.find({ 'right.nodeId': parseInt(selectedSinkId) }).fetch();
+    const paths = Paths.find({ 'right.nodeId': parseInt(selectedSinkId), 'reported': isReported }).fetch();
     // extract all source nodeIds from the paths
     const sources = paths.map(path => path.left.nodeId);
 
@@ -157,8 +165,16 @@ Template.queries.helpers({
     if (!selectedSourceId) {
       return Template.instance().sinks.get();
     }
+    const queryType = Session.get('queryType'); // TODO we should be reading queryType from the position in the list of queries
+
+    let isReported = true;
+    if (queryType === 'whynot_node_pairs') {
+      // any 
+      isReported = { $in: [ false] };
+    }
+
     // find all paths that have the selected source
-    const paths = Paths.find({ 'left.nodeId': parseInt(selectedSourceId) }).fetch();
+    const paths = Paths.find({ 'left.nodeId': parseInt(selectedSourceId) , 'reported': isReported}).fetch();
     // extract all sink nodeIds from the paths
     const sinks = paths.map(path => path.right.nodeId);
 
@@ -279,6 +295,7 @@ Template.queries.events({
 
     // write to session
     Session.set('selectedSourceId', selectedSourceId);
+    Session.set('queryType', queryType);
 
     callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId);
     
@@ -294,6 +311,7 @@ Template.queries.events({
 
     // write to session
     Session.set('selectedSinkId', selectedSinkId);
+    Session.set('queryType', queryType);
 
     callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId);
 

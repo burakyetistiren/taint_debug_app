@@ -10,7 +10,7 @@
 .decl   whynot_node_pairs(start:number, end:number)
 .input whynot_node_pairs
 
-.decl   library_node(node:number)
+.decl   library_node(node:number, lib: number)
 .input library_node
 
 .decl path(x:number, y:number)
@@ -29,6 +29,9 @@
 .decl plausible_edge(id:number, start: number, end: number)
 .input plausible_edge
 
+.decl plausible_warning_paths(source:number, sink:number, node:number, step: number, edge:number, lib:number)
+.input plausible_warning_paths
+
 .decl hypothetical_library_flow_from_node(node:number)
 .output hypothetical_library_flow_from_node
 
@@ -40,9 +43,11 @@
 .output plausible_path
 
 
-.decl   whynot_node_pairs_answer(libnode:number, num_occurences:number)
+.decl   whynot_node_pairs_answer(start: number, end: number, libnode:number, num_occurences:number)
 .output whynot_node_pairs_answer
 
+.decl nodes_on_path(query_start: number, query_end:number, a:number, steps: number, libnode: number)
+.output nodes_on_path
 
 
 path(x, y) :- edge(_, x, y).
@@ -58,13 +63,20 @@ library_flow_on_path(end, start, e) :- edge(e, a, end), library_flow(e, _), path
 
 
 
-hypothetical_library_flow_from_node(node) :- library_node(node), !edge(_, node, _).
+hypothetical_library_flow_from_node(node) :- library_node(node, _), !edge(_, node, _).
 
-hypothetical_library_flow_on_path(taintsink, taintsource, libnode) :- hypothetical_library_flow_from_node(libnode), source(taintsource), sink(taintsink), plausible_path(taintsource, libnode), plausible_path(libnode, taintsink).
+hypothetical_library_flow_on_path(taintsink, taintsource, libnode) :- hypothetical_library_flow_from_node(libnode), whynot_node_pairs(taintsource, taintsink), plausible_path(taintsource, libnode), plausible_path(libnode, taintsink).
 
 // hypothetical_path(x, y) :- !path(x, y), hypothetical_library_flow_on_path(y, x, _), 
 
 // path_through_hypothetical_subpath(x, start, end, y) :- path(x, start), hypothetical_path(start, end), plausible_path(end, y).
 
-whynot_node_pairs_answer(libnode, num_occurences) :- hypothetical_library_flow_from_node(libnode), num_occurences = count : {hypothetical_library_flow_on_path(_, _, libnode)}.
+whynot_node_pairs_answer(start, end, libnode, num_occurences) :- whynot_node_pairs(start, end), hypothetical_library_flow_from_node(libnode), num_occurences = count : {hypothetical_library_flow_on_path(_, _, libnode)}.
+
+// just trace the plausible_warning_paths
+nodes_on_path(query_start, query_end, query_start, 0, -1) :-whynot_node_pairs_answer(query_start, query_end, _, _), plausible_warning_paths(query_start, query_end, query_start, _, _, _).
+nodes_on_path(query_start, query_end, x, steps + 1, -1) :- 
+        nodes_on_path(query_start, query_end, a, steps, _), plausible_edge(_, a, x), plausible_warning_paths(query_start, query_end, x, steps + 1, _, -1).
+nodes_on_path(query_start, query_end, x, steps + 1, lib) :- 
+        nodes_on_path(query_start, query_end, a, steps, _), plausible_edge(_, a, x), plausible_warning_paths(query_start, query_end, x, steps + 1, _, lib).
 
