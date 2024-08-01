@@ -132,7 +132,7 @@ Template.queries.helpers({
     return [
       { description: "WhyFlow: Tracking data flows from", queryType: "why_node_pair" },
       { description: "WhyNotFlow: Identifying sanitizers that remove data flows from", queryType: "whynot_node_pairs" },
-      { description: "CommonFlows: Common API usages between different flow paths from", queryType: "common"}
+      { description: "CommonFlows: Common API usages between different flow paths from", queryType: "common_paths", pairedQuery: true}
     ];
   },
   sources() {
@@ -144,18 +144,7 @@ Template.queries.helpers({
 
     const queryType = Session.get('queryType');// TODO we should be reading queryType from the position in the list of queries
 
-    let isReported = true;
-    if (queryType === 'whynot_node_pairs') {
-      // any 
-      isReported = { $in: [true, false] };
-    }
-    
-    // find all paths that have the selected sink
-    const paths = Paths.find({ 'right.nodeId': parseInt(selectedSinkId), 'reported': isReported }).fetch();
-    // extract all source nodeIds from the paths
-    const sources = paths.map(path => path.left.nodeId);
-
-    return [...new Set(sources)];
+    return fetchSources(queryType, selectedSinkId);
   },
   sinks() {
     
@@ -167,18 +156,31 @@ Template.queries.helpers({
     }
     const queryType = Session.get('queryType'); // TODO we should be reading queryType from the position in the list of queries
 
-    let isReported = true;
-    if (queryType === 'whynot_node_pairs') {
-      // any 
-      isReported = { $in: [ false] };
+    return fetchSinks(queryType, selectedSourceId);
+  },
+  secondPairSources() {
+    const selectedSinkId = Session.get('selectedSecondSinkId');
+
+    if (!selectedSinkId) {
+      return Template.instance().sources.get();
     }
 
-    // find all paths that have the selected source
-    const paths = Paths.find({ 'left.nodeId': parseInt(selectedSourceId) , 'reported': isReported}).fetch();
-    // extract all sink nodeIds from the paths
-    const sinks = paths.map(path => path.right.nodeId);
+    const queryType = Session.get('queryType');// TODO we should be reading queryType from the position in the list of queries
 
-    return [...new Set(sinks)];
+    return fetchSources(queryType, selectedSinkId);
+
+  },
+
+  secondPairSinks() {
+    const selectedSourceId = Session.get('selectedSecondSourceId');
+
+    if (!selectedSourceId) {
+      return Template.instance().sinks.get();
+    }
+    const queryType = Session.get('queryType'); // TODO we should be reading queryType from the position in the list of queries
+
+    return fetchSinks(queryType, selectedSourceId);
+
   },
   nodes() {
     return Template.instance().nodes.get();
@@ -298,8 +300,6 @@ Template.queries.events({
     Session.set('queryType', queryType);
 
     callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId);
-    
-    
   },
   'change .sink-dropdown'(event) {
     console.log('a sink dropdown saw a value change');
@@ -316,6 +316,33 @@ Template.queries.events({
     callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId);
 
   },
+  'change .second-src-dropdown'(event) {
+    console.log('2nd src dropdown saw a value change');
+    const selectedSourceId = $(event.target).val();
+    
+    const selectedSinkId = $(event.target).closest('.query-box').find('.second-sink-dropdown').val();
+    const queryType = $(event.target).closest('.query-box').attr('data-query');
+
+    // write to session
+    Session.set('selectedSecondSourceId', selectedSourceId);
+    Session.set('queryType', queryType);
+
+    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId);
+  },
+  'change .second-sink-dropdown'(event) {
+    console.log('2nd sink dropdown saw a value change');
+    const selectedSinkId = $(event.target).val();
+    
+    const selectedSourceId = $(event.target).closest('.query-box').find('.second-src-dropdown').val();
+
+    const queryType = $(event.target).closest('.query-box').attr('data-query');
+
+    // write to session
+    Session.set('selectedSecondSinkId', selectedSinkId);
+    Session.set('queryType', queryType);
+
+    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId);
+  },
 });
 
 Template.queries.onRendered(function() {
@@ -324,3 +351,33 @@ Template.queries.onRendered(function() {
     element.innerHTML = element.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
   });
 });
+function fetchSinks(queryType, selectedSourceId) {
+  let isReported = true;
+  if (queryType === 'whynot_node_pairs') {
+    // any 
+    isReported = { $in: [false] };
+  }
+
+  // find all paths that have the selected source
+  const paths = Paths.find({ 'left.nodeId': parseInt(selectedSourceId), 'reported': isReported }).fetch();
+  // extract all sink nodeIds from the paths
+  const sinks = paths.map(path => path.right.nodeId);
+
+  return [...new Set(sinks)];
+}
+
+function fetchSources(queryType, selectedSinkId) {
+  let isReported = true;
+  if (queryType === 'whynot_node_pairs') {
+    // any 
+    isReported = { $in: [true, false] };
+  }
+
+  // find all paths that have the selected sink
+  const paths = Paths.find({ 'right.nodeId': parseInt(selectedSinkId), 'reported': isReported }).fetch();
+  // extract all source nodeIds from the paths
+  const sources = paths.map(path => path.left.nodeId);
+
+  return [...new Set(sources)];
+}
+

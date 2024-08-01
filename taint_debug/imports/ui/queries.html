@@ -61,6 +61,20 @@
               <option value="{{this}}">{{this}}</option>
             {{/each}}
           </select>
+            {{#if pairedQuery}}
+              Source:
+              <select id="second-src-{{@index}}" class="second-src-dropdown">
+              {{#each secondPairSources}}
+                <option value="{{this}}">{{this}}</option>
+              {{/each}}
+              </select>
+              Sink:
+              <select id="second-sink-{{@index}}" class="second-sink-dropdown">
+              {{#each secondPairSinks}}
+                <option value="{{this}}">{{this}}</option>
+              {{/each}}
+              </select>
+            {{/if}}
         </h3>
       </div>
     {{/each}}
