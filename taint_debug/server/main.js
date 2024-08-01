@@ -456,8 +456,8 @@ Meteor.methods({
 
     return { nodes: nodeMapping, edges: edges };
   },
-  runQuery(queryType, sourceId, sinkId) {
-    console.log('Running query:', queryType, sourceId, sinkId);
+  runQuery(queryType, sourceId, sinkId, secondSourceId, secondSinkId) {
+    console.log('Running query:', queryType, sourceId, sinkId, secondSourceId, secondSinkId);
 
     // update the query file with the source and sink
     const queryFactsFile = `${ANALYSIS_PATH}/souffle_files/${queryType}.facts`;

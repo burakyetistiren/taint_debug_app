@@ -4,9 +4,9 @@ import { QueryResults } from '../api/queryresults.js';
 import './queries.html';
 
 
-function callSouffleAndDisplayResults(queryType, sourceId, sinkId) {
+function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceId, secondSinkId) {
   console.log('Running query:', queryType, sourceId, sinkId);
-  Meteor.call('runQuery', queryType, sourceId, sinkId, (error, result) => {
+  Meteor.call('runQuery', queryType, sourceId, sinkId,secondSourceId, secondSinkId, (error, result) => {
     if (error) {
       console.error('Error running query:', error);
     } else {
@@ -299,7 +299,15 @@ Template.queries.events({
     Session.set('selectedSourceId', selectedSourceId);
     Session.set('queryType', queryType);
 
-    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId);
+    // for paired queries, we need to fetch the second pair dropdowns values
+    let selectedSecondSourceId = '';
+    let selectedSecondSinkId = '';
+    if (queryType === 'common_paths') {
+      selectedSecondSourceId = $(event.target).closest('.query-box').find('.second-src-dropdown').val();
+      selectedSecondSinkId = $(event.target).closest('.query-box').find('.second-sink-dropdown').val();
+    }
+
+    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId);
   },
   'change .sink-dropdown'(event) {
     console.log('a sink dropdown saw a value change');
@@ -313,27 +321,39 @@ Template.queries.events({
     Session.set('selectedSinkId', selectedSinkId);
     Session.set('queryType', queryType);
 
-    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId);
+    // for paired queries, we need to fetch the second pair dropdowns values
+    let selectedSecondSourceId = '';
+    let selectedSecondSinkId = '';
+    if (queryType === 'common_paths') {
+      selectedSecondSourceId = $(event.target).closest('.query-box').find('.second-src-dropdown').val();
+      selectedSecondSinkId = $(event.target).closest('.query-box').find('.second-sink-dropdown').val();
+    }
+
+    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId);
 
   },
   'change .second-src-dropdown'(event) {
     console.log('2nd src dropdown saw a value change');
-    const selectedSourceId = $(event.target).val();
+    const selectedSecondSourceId = $(event.target).val();
     
-    const selectedSinkId = $(event.target).closest('.query-box').find('.second-sink-dropdown').val();
+    const selectedSecondSinkId = $(event.target).closest('.query-box').find('.second-sink-dropdown').val();
     const queryType = $(event.target).closest('.query-box').attr('data-query');
 
     // write to session
-    Session.set('selectedSecondSourceId', selectedSourceId);
+    Session.set('selectedSecondSourceId', selectedSecondSourceId);
     Session.set('queryType', queryType);
 
-    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId);
+    // fetch the first pair dropdowns values
+    const selectedSourceId = $(event.target).closest('.query-box').find('.src-dropdown').val();
+    const selectedSinkId = $(event.target).closest('.query-box').find('.sink-dropdown').val();
+
+    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId);
   },
   'change .second-sink-dropdown'(event) {
     console.log('2nd sink dropdown saw a value change');
-    const selectedSinkId = $(event.target).val();
+    const selectedSecondSinkId = $(event.target).val();
     
-    const selectedSourceId = $(event.target).closest('.query-box').find('.second-src-dropdown').val();
+    const selectedSecondSourceId = $(event.target).closest('.query-box').find('.second-src-dropdown').val();
 
     const queryType = $(event.target).closest('.query-box').attr('data-query');
 
@@ -341,7 +361,12 @@ Template.queries.events({
     Session.set('selectedSecondSinkId', selectedSinkId);
     Session.set('queryType', queryType);
 
-    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId);
+      // fetch the first pair dropdowns values
+      const selectedSourceId = $(event.target).closest('.query-box').find('.src-dropdown').val();
+      const selectedSinkId = $(event.target).closest('.query-box').find('.sink-dropdown').val();
+  
+
+    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId);
   },
 });
 
