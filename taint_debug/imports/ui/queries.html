@@ -49,6 +49,8 @@
       <div class="query-box" data-query="{{queryType}}">
         <h3>
           {{description}}
+
+          
           Source:
           <select id="src-{{@index}}" class="src-dropdown">
             {{#each sources}}
@@ -75,6 +77,19 @@
               {{/each}}
               </select>
             {{/if}}
+
+            {{#if whatIfQuery}}
+            API:
+            <select id="api-{{@index}}" class="api-dropdown">
+            {{#each apis}}
+              <option value="{{this}}">{{this}}</option>
+            {{/each}}
+            </select>
+
+            {{/if}}
+            
+
+            
         </h3>
       </div>
     {{/each}}

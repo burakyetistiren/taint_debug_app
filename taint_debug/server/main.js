@@ -190,15 +190,15 @@ function setupAndReadAnalysisData() {
   // lines.forEach(line => {
     
   // });
-  return readLargeFile(path.join(ANALYSIS_PATH, 'warning_paths.csv'), line => {
+  return readLargeFile(path.join(ANALYSIS_PATH, 'souffle_files/warning_paths.facts'), line => {
     if (line.trim()) {
-      const [source, sink, node, step, edge, libIndex] = line.trim().split('\t').map(Number);
+      const [source, sink, node, step, edge, prevNode, libIndex] = line.trim().split('\t').map(Number);
 
       const key = `${source},${sink}`;
       if (!pathsLibs.has(key)) {
         pathsLibs.set(key, []);
       }
-      pathsLibs.get(key).push({ nodeId: node, lib: libIndex, edgeId: edge });
+      pathsLibs.get(key).push({ nodeId: node, lib: libIndex, edgeId: edge, prevNode: prevNode});
       warningToReported.set(key, true);
 
       nodePairToEdgeId.set(key, edge);
@@ -206,14 +206,14 @@ function setupAndReadAnalysisData() {
 
   }).then(() => {
     console.log('Finished reading warning_paths.csv. Reading plausible_warning_paths.csv next.');
-    return readLargeFile(path.join(ANALYSIS_PATH, 'plausible_warning_paths.csv'), line => {
-      const [source, sink, node, step, edge, libIndex] = line.trim().split('\t').map(Number);
+    return readLargeFile(path.join(ANALYSIS_PATH, 'souffle_files/plausible_warning_paths.facts'), line => {
+      const [source, sink, node, step, edge, prevNode, libIndex] = line.trim().split('\t').map(Number);
 
       const key = `${source},${sink}`;
       
       if (!pathsLibs.has(key)) {
         pathsLibs.set(key, []);
-        pathsLibs.get(key).push({ nodeId: node, lib: libIndex, edgeId: edge });
+        pathsLibs.get(key).push({ nodeId: node, lib: libIndex, edgeId: edge, prevNode: prevNode });
         warningToReported.set(key, false);
 
         nodePairToEdgeId.set(key, edge);
@@ -244,7 +244,7 @@ function setupAndReadAnalysisData() {
           nodeId: source,
           description: nodeMapping[source].description,
         },
-        middle: nodeLibIndicesAndEdgeId.map(({ nodeId, lib, edgeId }) => ({
+        middle: nodeLibIndicesAndEdgeId.map(({ nodeId, lib, edgeId, prevNode }) => ({
           code: '', // codeSnippetOfNodeWithHighlight(nodeId, nodeMapping),
           nodeId: nodeId,
           lib: lib,
@@ -456,12 +456,19 @@ Meteor.methods({
 
     return { nodes: nodeMapping, edges: edges };
   },
-  runQuery(queryType, sourceId, sinkId, secondSourceId, secondSinkId) {
-    console.log('Running query:', queryType, sourceId, sinkId, secondSourceId, secondSinkId);
+  runQuery(queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId) {
+    console.log('Running query:', queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId);
 
     // update the query file with the source and sink
     const queryFactsFile = `${ANALYSIS_PATH}/souffle_files/${queryType}.facts`;
-    fs.writeFileSync(queryFactsFile, `${sourceId}\t${sinkId}\n`);
+
+    if (['why_node_pair', 'whynot_node_pairs'].includes(queryType)) {
+      fs.writeFileSync(queryFactsFile, `${sourceId}\t${sinkId}\n`);
+    } else if (['common_paths'].includes(queryType)) {
+      fs.writeFileSync(queryFactsFile, `${sourceId}\t${sinkId}\t${secondSourceId}\t${secondSinkId}\n`);
+    } else if (['whatif_relax', 'whatif_restrict'].includes(queryType)) {
+      fs.writeFileSync(queryFactsFile, `${sourceId}\t${sinkId}\t${selectedAPIId}\n`);
+    }
 
     // Execute Souffle query
     // run shell command

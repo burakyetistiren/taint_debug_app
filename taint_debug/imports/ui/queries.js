@@ -4,9 +4,9 @@ import { QueryResults } from '../api/queryresults.js';
 import './queries.html';
 
 
-function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceId, secondSinkId) {
+function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId) {
   console.log('Running query:', queryType, sourceId, sinkId);
-  Meteor.call('runQuery', queryType, sourceId, sinkId,secondSourceId, secondSinkId, (error, result) => {
+  Meteor.call('runQuery', queryType, sourceId, sinkId,secondSourceId, secondSinkId,selectedAPIId, (error, result) => {
     if (error) {
       console.error('Error running query:', error);
     } else {
@@ -117,11 +117,14 @@ Template.queries.onCreated(function() {
 
         console.log('Nodes:', nodes);
         console.log('Edges:', edges);
+        
         this.nodes.set(nodes);
         this.edges.set(edges);
         this.sources.set(sources);
         this.sinks.set(sinks);
-        this.libraryNodes.set(result.libraryNodes);
+        this.libraryNodes.set(result.apis);
+
+        console.log('Library Nodes:', this.apis);
       }
     });
   });
@@ -130,9 +133,10 @@ Template.queries.onCreated(function() {
 Template.queries.helpers({
   queries() {
     return [
-      { description: "WhyFlow: Tracking data flows from", queryType: "why_node_pair" },
-      { description: "WhyNotFlow: Identifying sanitizers that remove data flows from", queryType: "whynot_node_pairs" },
-      { description: "CommonFlows: Common API usages between different flow paths from", queryType: "common_paths", pairedQuery: true}
+      { description: "WhyFlow: Tracking data flows from", queryType: "why_node_pair" , whyQuery : true},
+      { description: "WhyNotFlow: Identifying sanitizers that remove data flows from", queryType: "whynot_node_pairs" , whyQuery: true},
+      { description: "CommonFlows: Common API usages between different flow paths from", queryType: "common_paths", whyQuery: true, pairedQuery: true},
+      { description: "What If", queryType: "whatif_relax", whatIfQuery: true},
     ];
   },
   sources() {
@@ -181,6 +185,15 @@ Template.queries.helpers({
 
     return fetchSinks(queryType, selectedSourceId);
 
+  },
+  apis() {
+    let values = Template.instance().libraryNodes.get();
+
+    // remove duplicate and sort
+
+    values = values.filter((v, i, a) => a.indexOf(v) === i);
+    values.sort();
+    return values;
   },
   nodes() {
     return Template.instance().nodes.get();
@@ -307,7 +320,7 @@ Template.queries.events({
       selectedSecondSinkId = $(event.target).closest('.query-box').find('.second-sink-dropdown').val();
     }
 
-    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId);
+    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, null);
   },
   'change .sink-dropdown'(event) {
     console.log('a sink dropdown saw a value change');
@@ -329,7 +342,7 @@ Template.queries.events({
       selectedSecondSinkId = $(event.target).closest('.query-box').find('.second-sink-dropdown').val();
     }
 
-    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId);
+    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, null);
 
   },
   'change .second-src-dropdown'(event) {
@@ -347,7 +360,7 @@ Template.queries.events({
     const selectedSourceId = $(event.target).closest('.query-box').find('.src-dropdown').val();
     const selectedSinkId = $(event.target).closest('.query-box').find('.sink-dropdown').val();
 
-    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId);
+    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, null);
   },
   'change .second-sink-dropdown'(event) {
     console.log('2nd sink dropdown saw a value change');
@@ -366,7 +379,25 @@ Template.queries.events({
       const selectedSinkId = $(event.target).closest('.query-box').find('.sink-dropdown').val();
   
 
-    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId);
+    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, null);
+  },
+
+  'change .api-dropdown'(event) {
+    const selectedAPIId = $(event.target).val();
+    
+
+    const queryType = $(event.target).closest('.query-box').attr('data-query');
+
+    // write to session
+    Session.set('selectedAPIId', selectedAPIId);
+    Session.set('queryType', queryType);
+
+    // fetch the first pair dropdowns values
+    const selectedSourceId = $(event.target).closest('.query-box').find('.src-dropdown').val();
+    const selectedSinkId = $(event.target).closest('.query-box').find('.sink-dropdown').val();
+
+
+    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, null, null, selectedAPIId);
   },
 });
 
@@ -378,7 +409,7 @@ Template.queries.onRendered(function() {
 });
 function fetchSinks(queryType, selectedSourceId) {
   let isReported = true;
-  if (queryType === 'whynot_node_pairs') {
+  if (queryType === 'whynot_node_pairs' || queryType === 'whatif_relax') {
     // any 
     isReported = { $in: [false] };
   }
@@ -393,7 +424,7 @@ function fetchSinks(queryType, selectedSourceId) {
 
 function fetchSources(queryType, selectedSinkId) {
   let isReported = true;
-  if (queryType === 'whynot_node_pairs') {
+  if (queryType === 'whynot_node_pairs'  || queryType === 'whatif_relax') {
     // any 
     isReported = { $in: [true, false] };
   }
