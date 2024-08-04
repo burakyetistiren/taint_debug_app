@@ -139,7 +139,8 @@ Template.queries.helpers({
       { description: "WhyFlow: Tracking data flows from", queryType: "why_node_pair" , whyQuery : true},
       { description: "WhyNotFlow: Identifying sanitizers that remove data flows from", queryType: "whynot_node_pairs" , whyQuery: true},
       { description: "CommonFlows: Common API usages between different flow paths from", queryType: "common_paths", whyQuery: true, pairedQuery: true},
-      { description: "What If", queryType: "whatif_relax", whatIfQuery: true},
+      { description: "What If Relax: ", queryType: "whatif_relax", whatIfQuery: true},
+      { description: "What If Restrict: ", queryType: "whatif_restrict", whatIfQuery: true},
     ];
   },
   sources() {
