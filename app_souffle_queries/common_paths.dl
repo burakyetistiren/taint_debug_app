@@ -13,11 +13,11 @@
 .decl path2(node:number, step:number, lib: number)
 .output path2
 
-.decl common_path(start1: number, end1: number, start2: number, end2 : number)
-.input common_path
+.decl common_paths(start1: number, end1: number, start2: number, end2 : number)
+.input common_paths
 
-.decl common_path_output( lib: number)
-.output common_path_output
+.decl common_paths_output( lib: number)
+.output common_paths_output
 
 .decl start1(x:number)
 
@@ -34,10 +34,10 @@
 .output nodes_on_path
 
 // find common paths 
-start1(x) :- common_path(x, _, _, _).
-end1(x) :- common_path(_, x, _, _).
-start2(x) :- common_path(_, _, x, _).
-end2(x) :- common_path(_, _, _, x).
+start1(x) :- common_paths(x, _, _, _).
+end1(x) :- common_paths(_, x, _, _).
+start2(x) :- common_paths(_, _, x, _).
+end2(x) :- common_paths(_, _, _, x).
 
 path1(node, 0, 0) :- start1(node).
 path1(next, step+1, lib) :- path1(node, step, _), edge(_, node, next), library_node(next, lib), end1(end), node != end, step < 10.
@@ -49,15 +49,15 @@ path2(next, step+1, lib) :- path2(node, step, _), edge(_, node, next), library_n
 path2(next, step+1, -1) :- path2(node, step, _), edge(_, node, next), !library_node(next, _), end2(end), node != end, step < 10.
 
 
-common_path_output(lib) :- path1(_, _, lib), path2(_, _, lib), lib != -1.
+common_paths_output(lib) :- path1(_, _, lib), path2(_, _, lib), lib != -1.
 
 // common path nodes goes into nodes_on_path
 // so does path1 and path2 
 nodes_on_path(query_start, query_end, a, steps, libnode) :- 
-        common_path(query_start, query_end, _, _),
+        common_paths(query_start, query_end, _, _),
         path1(a, steps, libnode). 
 nodes_on_path(query_start, query_end, a, steps, libnode) :-
-        common_path(query_start, query_end, _, _),
+        common_paths(query_start, query_end, _, _),
         path2(a, steps, libnode).
 
         
