@@ -104,6 +104,7 @@ Template.queries.onCreated(function() {
   this.sources = new ReactiveVar([]);
   this.sinks = new ReactiveVar([]);
   this.libraryNodes = new ReactiveVar([]);
+  this.libraries= new ReactiveVar([]);
   
   Meteor.defer(() => {
     Meteor.call('getFactNodes', (error, result) => {
@@ -123,8 +124,10 @@ Template.queries.onCreated(function() {
         this.sources.set(sources);
         this.sinks.set(sinks);
         this.libraryNodes.set(result.apis);
+        this.libraries.set(result.apiLibs);
 
-        console.log('Library Nodes:', this.apis);
+
+        console.log('Library Nodes:', this.libraryNodes);
       }
     });
   });
@@ -140,15 +143,15 @@ Template.queries.helpers({
     ];
   },
   sources() {
-    const selectedSinkId = Session.get('selectedSinkId');
+    // const selectedSinkId = Session.get('selectedSinkId');
 
-    if (!selectedSinkId) {
+    // if (!selectedSinkId) {
       return Template.instance().sources.get();
-    }
+    // }
 
-    const queryType = Session.get('queryType');// TODO we should be reading queryType from the position in the list of queries
+    // const queryType = Session.get('queryType');// TODO we should be reading queryType from the position in the list of queries
 
-    return fetchSources(queryType, selectedSinkId);
+    // return fetchSources(queryType, selectedSinkId);
   },
   sinks() {
     
@@ -187,7 +190,7 @@ Template.queries.helpers({
 
   },
   apis() {
-    let values = Template.instance().libraryNodes.get();
+    let values = Template.instance().libraries.get();
 
     // remove duplicate and sort
 
@@ -320,7 +323,9 @@ Template.queries.events({
       selectedSecondSinkId = $(event.target).closest('.query-box').find('.second-sink-dropdown').val();
     }
 
-    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, null);
+    let selectedApiId = $(event.target).closest('.query-box').find('.api-dropdown').val();
+
+    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, selectedApiId);
   },
   'change .sink-dropdown'(event) {
     console.log('a sink dropdown saw a value change');
@@ -342,7 +347,9 @@ Template.queries.events({
       selectedSecondSinkId = $(event.target).closest('.query-box').find('.second-sink-dropdown').val();
     }
 
-    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, null);
+    let selectedApiId = $(event.target).closest('.query-box').find('.api-dropdown').val();
+
+    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, selectedApiId);
 
   },
   'change .second-src-dropdown'(event) {

@@ -81,7 +81,9 @@ Meteor.startup(() => {
   const sinks =  readFactFile('sink.facts');
   const sources = readFactFile('source.facts');
   const sanitizers = readCurrentSanitizers();
-  const apis = readLibraryNodes();
+  const apiNodes = readLibraryNodes();
+  const apiLibs = readLibs();
+
 
   // Save facts data to Meteor
   Meteor.methods({
@@ -94,7 +96,8 @@ Meteor.startup(() => {
         sinks,
         sources,
         sanitizers,
-        apis,
+        apiNodes,
+        apiLibs
       };
     },
     readDataflowJson() {
@@ -132,8 +135,21 @@ function readLibraryNodes() {
   return data.split('\n')
            .filter(Boolean)
            .map(line => {
-               const [firstValue] = line.split('\t');
+               const [firstValue, secondValue] = line.split('\t');
                return Number(firstValue);
+           });
+}
+
+function readLibs() {
+  const filepath = path.join(ANALYSIS_PATH, 'souffle_files/', 'library_node.facts');
+  console.log('Reading file:', filepath);
+  if (!fs.existsSync(filepath)) return [];
+  const data = fs.readFileSync(filepath, 'utf8');
+  return data.split('\n')
+           .filter(Boolean)
+           .map(line => {
+               const [firstValue, secondValue] = line.split('\t');
+               return Number(secondValue);
            });
 }
 
@@ -499,6 +515,10 @@ Meteor.methods({
         .map(row => row.slice(-3))
         .filter(row => row.length == 3);
       console.log("nodesOnPath", nodesOnPath)
+
+      // remove old QueryResults without the same sourceId 
+      QueryResults.remove({ sourceId: { '$ne' : sourceId}  });
+
       QueryResults.insert({ queryType, sourceId, sinkId, libNodes, nodesOnPath });
 
       

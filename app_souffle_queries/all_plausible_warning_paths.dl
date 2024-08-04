@@ -31,10 +31,10 @@
 .decl plausible_warning(warning_id:number, source:number, sink:number)
 .input plausible_warning
 
-.decl tmp_plausible_warning_paths(source:number, sink:number, node:number, step: number, edge:number, lib:number)
+.decl tmp_plausible_warning_paths(source:number, sink:number, node:number, step: number, edge:number,  prev_node:number, lib:number)
 .output tmp_plausible_warning_paths
 
-.decl plausible_warning_paths(source:number, sink:number, node:number, step: number, edge:number, lib:number)
+.decl plausible_warning_paths(source:number, sink:number, node:number, step: number, edge:number,  prev_node:number, lib:number)
 .output plausible_warning_paths
 
 .decl lib_on_plausible_warning_path(source:number, sink:number, lib:number, step: number)
@@ -67,14 +67,14 @@ plausible_path(x, x) :- node(x).
 plausible_path(x, y) :- plausible_path(x, z), plausible_edge(_, z, y), z != y.
 
 
-tmp_plausible_warning_paths(source_node, sink_node, source_node, 0, -1, -1) :-    plausible_warning(_, source_node, sink_node).
-tmp_plausible_warning_paths(source_node, sink_node, node2, step+1,  edge, lib) :- tmp_plausible_warning_paths(source_node, sink_node, node1, step,_, _),  plausible_edge(edge, node1, node2), plausible_path(node2, sink_node), !has_cycle(source_node, sink_node, node2, step), library_node(node2, lib), step < 20. 
-tmp_plausible_warning_paths(source_node, sink_node, node2, step+1, edge, lib) :- tmp_plausible_warning_paths(source_node, sink_node, node1, step,_, _),  plausible_edge(edge, node1, node2), plausible_path(node2, sink_node), node2 = sink_node, library_node(node2, lib) , step<20. 
-tmp_plausible_warning_paths(source_node, sink_node, node2, step+1,  edge, -1) :- tmp_plausible_warning_paths(source_node, sink_node, node1, step,_, _ ),  plausible_edge(edge, node1, node2), plausible_path(node2, sink_node), !has_cycle(source_node, sink_node, node2, step), !library_node(node2, _), step < 20. 
-tmp_plausible_warning_paths(source_node, sink_node, node2, step+1, edge, -1) :- tmp_plausible_warning_paths(source_node, sink_node, node1, step,_, _),  plausible_edge(edge, node1, node2), plausible_path(node2, sink_node), node2 = sink_node, !library_node(node2, _), step<20. 
+tmp_plausible_warning_paths(source_node, sink_node, source_node, 0, -1, -1, -1) :-    plausible_warning(_, source_node, sink_node).
+tmp_plausible_warning_paths(source_node, sink_node, node2, step+1,  edge, node1, lib) :- tmp_plausible_warning_paths(source_node, sink_node, node1, step,_, _, _),  plausible_edge(edge, node1, node2), plausible_path(node2, sink_node), !has_cycle(source_node, sink_node, node2, step), library_node(node2, lib), step < 20. 
+tmp_plausible_warning_paths(source_node, sink_node, node2, step+1, edge, node1, lib) :- tmp_plausible_warning_paths(source_node, sink_node, node1, step,_, _,  _),  plausible_edge(edge, node1, node2), plausible_path(node2, sink_node), node2 = sink_node, library_node(node2, lib) , step<20. 
+tmp_plausible_warning_paths(source_node, sink_node, node2, step+1,  edge, node1, -1) :- tmp_plausible_warning_paths(source_node, sink_node, node1, step,_,_,  _ ),  plausible_edge(edge, node1, node2), plausible_path(node2, sink_node), !has_cycle(source_node, sink_node, node2, step), !library_node(node2, _), step < 20. 
+tmp_plausible_warning_paths(source_node, sink_node, node2, step+1, edge, node1, -1) :- tmp_plausible_warning_paths(source_node, sink_node, node1, step,_,_,  _),  plausible_edge(edge, node1, node2), plausible_path(node2, sink_node), node2 = sink_node, !library_node(node2, _), step<20. 
 
-plausible_warning_paths(source_node, sink_node, node2, step, edge, lib) :- tmp_plausible_warning_paths(source_node, sink_node, node2, step, edge, lib),tmp_plausible_warning_paths(source_node, sink_node, some_node, _, _, _), some_node = sink_node.
+plausible_warning_paths(source_node, sink_node, node2, step, edge, node1, lib) :- tmp_plausible_warning_paths(source_node, sink_node, node2, step, edge, node1, lib),tmp_plausible_warning_paths(source_node, sink_node, some_node, _, _, _, _), some_node = sink_node.
 
-lib_on_plausible_warning_path(source_node, sink_node, lib, step) :- tmp_plausible_warning_paths(source_node, sink_node, node, step, _, _), library_node(node, lib).
+lib_on_plausible_warning_path(source_node, sink_node, lib, step) :- tmp_plausible_warning_paths(source_node, sink_node, node, step, _, _, _), library_node(node, lib).
 
 

@@ -27,10 +27,9 @@
 .decl warning(warning_id:number, source:number, sink:number)
 .input warning
 
-.decl tmp_warning_paths(source:number, sink:number, node:number, step: number, edge:number, lib: number)
-.output tmp_warning_paths
+.decl tmp_warning_paths(source:number, sink:number, node:number, step: number, edge:number, prev_node:number, lib: number)
 
-.decl warning_paths(source:number, sink:number, node:number, step: number, edge:number, lib: number)
+.decl warning_paths(source:number, sink:number, node:number, step: number, edge:number, prev_node:number, lib: number)
 .output warning_paths
 
 .decl lib_on_warning_path(source:number, sink:number, lib:number, step: number)
@@ -55,15 +54,15 @@ tmp_path(source_node, sink_node, node2, step+1) :- tmp_path(source_node, sink_no
 
 has_cycle(source_node, sink_node, node2, step2) :- tmp_path(source_node, sink_node, node2, step),  tmp_path(source_node, sink_node, node2, step2), step < step2.
 
-tmp_warning_paths(source_node, sink_node, source_node, 0, -1, -1) :- warning(_, source_node, sink_node).
-tmp_warning_paths(source_node, sink_node, node2, step+1, edge, lib) :- tmp_warning_paths(source_node, sink_node, node1, step,_, _),  edge(edge, node1, node2), path(node2, sink_node), library_node(node2, lib), step<20. 
-tmp_warning_paths(source_node, sink_node, node2, step+1, edge, lib) :- tmp_warning_paths(source_node, sink_node, node1, step,_, _),  edge(edge, node1, node2), path(node2, sink_node), node2 = sink_node, library_node(node2, lib) , step<20. 
-tmp_warning_paths(source_node, sink_node, node2, step+1, edge, -1) :- tmp_warning_paths(source_node, sink_node, node1, step,_, _),  edge(edge, node1, node2), path(node2, sink_node), !library_node(node2, _), step<20. 
-tmp_warning_paths(source_node, sink_node, node2, step+1, edge, -1) :- tmp_warning_paths(source_node, sink_node, node1, step,_, _),  edge(edge, node1, node2), path(node2, sink_node), node2 = sink_node, !library_node(node2, _), step<20. 
+tmp_warning_paths(source_node, sink_node, source_node, 0, -1, -1, -1) :- warning(_, source_node, sink_node).
+tmp_warning_paths(source_node, sink_node, node2, step+1, edge, node1, lib) :- tmp_warning_paths(source_node, sink_node, node1, step,_, _, _),  edge(edge, node1, node2), path(node2, sink_node), library_node(node2, lib), step<20. 
+tmp_warning_paths(source_node, sink_node, node2, step+1, edge, node1, lib) :- tmp_warning_paths(source_node, sink_node, node1, step,_,_, _),  edge(edge, node1, node2), path(node2, sink_node), node2 = sink_node, library_node(node2, lib) , step<20. 
+tmp_warning_paths(source_node, sink_node, node2, step+1, edge, node1, -1) :- tmp_warning_paths(source_node, sink_node, node1, step,_, _, _),  edge(edge, node1, node2), path(node2, sink_node), !library_node(node2, _), step<20. 
+tmp_warning_paths(source_node, sink_node, node2, step+1, edge, node1, -1) :- tmp_warning_paths(source_node, sink_node, node1, step,_, _,_),  edge(edge, node1, node2), path(node2, sink_node), node2 = sink_node, !library_node(node2, _), step<20. 
 
-warning_paths(source_node, sink_node, node2, step, edge, lib) :- tmp_warning_paths(source_node, sink_node, node2, step, edge, lib), tmp_warning_paths(source_node, sink_node, some_node, _, _, _), some_node = sink_node.
+warning_paths(source_node, sink_node, node2, step, edge, node1, lib) :- tmp_warning_paths(source_node, sink_node, node2, step, edge, node1, lib), tmp_warning_paths(source_node, sink_node, some_node, _, _, _, _), some_node = sink_node.
 
-lib_on_warning_path(source_node, sink_node, lib, step) :- warning_paths(source_node, sink_node, node, step, _, _), library_node(node, lib).
+lib_on_warning_path(source_node, sink_node, lib, step) :- warning_paths(source_node, sink_node, node, step, _, _, _), library_node(node, lib).
 
 
 

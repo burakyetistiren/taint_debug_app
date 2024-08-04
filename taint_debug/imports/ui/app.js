@@ -80,13 +80,13 @@ Meteor.startup(() => {
           factNodes[key] = factNodes[key].map(String);
         }
 
-        const { sinks, sources, sanitizers, apis } = factNodes;
+        const { sinks, sources, sanitizers, apiNodes, apiLibs } = factNodes;
         console.log('Fact nodes:', factNodes);
 
         console.log('Sinks:', sinks);
         console.log('Sources:', sources);
         console.log('Sanitizers:', sanitizers);
-        console.log('APIs:', apis);
+        console.log('APIs:', apiNodes);
 
         // for the first time the graph is shown, show just the sources and sinks
 
@@ -108,7 +108,7 @@ Meteor.startup(() => {
           } else if (sanitizers.includes(nodeId)) {
             color = '#21d900';
             console.log(`Node ${nodeId} is a sanitizer, assigned color: green`);
-          } else if (apis.includes(nodeId)) {
+          } else if (apiNodes.includes(nodeId)) {
             color = '#FFFF00';
             console.log(`Node ${nodeId} is an API, assigned color: yellow`);
           }

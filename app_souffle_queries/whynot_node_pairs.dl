@@ -78,5 +78,5 @@ nodes_on_path(query_start, query_end, query_start, 0, -1) :-whynot_node_pairs_an
 nodes_on_path(query_start, query_end, x, steps + 1, -1) :- 
         nodes_on_path(query_start, query_end, a, steps, _), plausible_edge(_, a, x), plausible_warning_paths(query_start, query_end, x, steps + 1, _, -1).
 nodes_on_path(query_start, query_end, x, steps + 1, lib) :- 
-        nodes_on_path(query_start, query_end, a, steps, _), plausible_edge(_, a, x), plausible_warning_paths(query_start, query_end, x, steps + 1, _, lib).
+        nodes_on_path(query_start, query_end, a, steps, _), plausible_edge(e, a, x), plausible_warning_paths(query_start, query_end, x, steps + 1, e, lib).
 
