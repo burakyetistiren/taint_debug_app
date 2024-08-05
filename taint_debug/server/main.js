@@ -82,8 +82,8 @@ Meteor.startup(() => {
   const sources = readFactFile('source.facts');
   const sanitizers = readCurrentSanitizers();
   const apiNodes = readLibraryNodes();
-  const apiLibs = readLibs();
-
+  const apiMapping = readLibMapping();
+  const apiLibs =  Array.from(new Set(Object.values(apiMapping)));
 
   // Save facts data to Meteor
   Meteor.methods({
@@ -140,17 +140,19 @@ function readLibraryNodes() {
            });
 }
 
-function readLibs() {
+function readLibMapping() {
   const filepath = path.join(ANALYSIS_PATH, 'souffle_files/', 'library_node.facts');
   console.log('Reading file:', filepath);
   if (!fs.existsSync(filepath)) return [];
   const data = fs.readFileSync(filepath, 'utf8');
+  // return map of nodeId to libId
   return data.split('\n')
            .filter(Boolean)
-           .map(line => {
-               const [firstValue, secondValue] = line.split('\t');
-               return Number(secondValue);
-           });
+           .reduce((map, line) => {
+              const [nodeId, libId] = line.split('\t');
+              map[nodeId] = libId;
+              return map;
+            }, {});
 }
 
 function readNodeMapping() {
@@ -182,6 +184,8 @@ function setupAndReadAnalysisData() {
 
   
   const nodeMapping = readNodeMapping();
+  const apiMapping = readLibMapping();
+  
   var nodesToInsert = [];
   Object.keys(nodeMapping).forEach(nodeId => {
     const code = codeSnippetOfNodeWithHighlight(nodeId, nodeMapping);
@@ -192,6 +196,7 @@ function setupAndReadAnalysisData() {
     node.colNum = parseInt(nodeMapping[nodeId]['column']) - 1;
     node.endColNum =  parseInt(nodeMapping[nodeId]['end_column']);
     node.nodeId = parseInt(nodeId);
+    node.description = nodeMapping[nodeId].description + (apiMapping[nodeId] ? " (library " + apiMapping[nodeId] + ")" : "");
 
     nodesToInsert.push(node);
     // console.log('inserted node');
