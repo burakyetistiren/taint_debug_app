@@ -519,6 +519,7 @@ Meteor.methods({
         .map(row => row.split('\t').map(Number))
         .map(row => row.slice(-3))
         .filter(row => row.length == 3);
+      console.log(sourceId, sinkId)
       console.log("nodesOnPath", nodesOnPath)
 
       // remove old QueryResults without the same sourceId 

@@ -60,14 +60,16 @@ function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceI
       });
     });
     // also the source and sink nodes
-    cyNodesToShow.push({
-      data: { id: 'node_' + sourceId, description: sourceId + ' Source', 'original-background-color': '#2ECC40', 'original-text-color': '#FFFFFF' },
-      style: { 'background-color': '#2ECC40', 'color': '#FFFFFF' }
-    });
-    cyNodesToShow.push({
-      data: { id: 'node_' + sinkId, description: sinkId + ' Sink', 'original-background-color': '#FF4136', 'original-text-color': '#FFFFFF' },
-      style: { 'background-color': '#FF4136', 'color': '#FFFFFF' }
-    });
+    if (queryType != 'common_paths') {
+      cyNodesToShow.push({
+        data: { id: 'node_' + sourceId, description: sourceId + ' Source', 'original-background-color': '#2ECC40', 'original-text-color': '#FFFFFF' },
+        style: { 'background-color': '#2ECC40', 'color': '#FFFFFF' }
+      });
+      cyNodesToShow.push({
+        data: { id: 'node_' + sinkId, description: sinkId + ' Sink', 'original-background-color': '#FF4136', 'original-text-color': '#FFFFFF' },
+        style: { 'background-color': '#FF4136', 'color': '#FFFFFF' }
+      });
+    }
 
       console.log('Nodes:', cyNodesToShow);
 
@@ -379,7 +381,7 @@ Template.queries.events({
     const queryType = $(event.target).closest('.query-box').attr('data-query');
 
     // write to session
-    Session.set('selectedSecondSinkId', selectedSinkId);
+    Session.set('selectedSecondSinkId', selectedSecondSinkId);
     Session.set('queryType', queryType);
 
       // fetch the first pair dropdowns values
