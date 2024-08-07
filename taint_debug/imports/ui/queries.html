@@ -46,9 +46,11 @@
       </h3>
     </div>
     {{#each queries}}
-      <div class="query-box">
+      <div class="query-box" data-query="{{queryType}}">
         <h3>
           {{description}}
+
+          
           Source:
           <select id="src-{{@index}}" class="src-dropdown">
             {{#each sources}}
@@ -61,6 +63,33 @@
               <option value="{{this}}">{{this}}</option>
             {{/each}}
           </select>
+            {{#if pairedQuery}}
+              Source:
+              <select id="second-src-{{@index}}" class="second-src-dropdown">
+              {{#each secondPairSources}}
+                <option value="{{this}}">{{this}}</option>
+              {{/each}}
+              </select>
+              Sink:
+              <select id="second-sink-{{@index}}" class="second-sink-dropdown">
+              {{#each secondPairSinks}}
+                <option value="{{this}}">{{this}}</option>
+              {{/each}}
+              </select>
+            {{/if}}
+
+            {{#if whatIfQuery}}
+            API:
+            <select id="api-{{@index}}" class="api-dropdown">
+            {{#each apis}}
+              <option value="{{this}}">{{this}}</option>
+            {{/each}}
+            </select>
+
+            {{/if}}
+            
+
+            
         </h3>
       </div>
     {{/each}}

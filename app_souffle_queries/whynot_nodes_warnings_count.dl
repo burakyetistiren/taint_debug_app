@@ -1,0 +1,50 @@
+.decl edge(id:number, x:number, y:number)
+.input edge
+
+.decl node(id:number)
+.input node
+
+.decl library_flow(edge:number, id:number)
+.input library_flow
+
+.decl   library_node(node:number)
+.input library_node
+
+.decl path(x:number, y:number)
+.output path
+
+.decl source(node:number)
+.input source
+
+.decl sink( node:number)
+.input sink
+
+.decl plausible_edge(id:number, start: number, end: number)
+.input plausible_edge
+
+
+.decl warning(id:number, source: number, sink: number)
+.input warning
+
+.decl   hypothetical_path(start:number, end:number, node:number)
+.output hypothetical_path
+
+
+.decl plausible_path(start: number, end: number)
+.output plausible_path
+
+
+.decl num_times_node_involved_in_hypothetical_path(node:number, num:number)
+.output num_times_node_involved_in_hypothetical_path
+
+
+path(x, y) :- edge(_, x, y).
+path(x, y) :- path(x, z), edge(_, z, y).
+
+plausible_path(x, y) :- plausible_edge(_, x, y).
+plausible_path(x, y) :- plausible_path(x, z), plausible_edge(_, z, y).
+
+
+hypothetical_path(start, end, a) :- !warning(_, start, end), node(a),  plausible_path(start, a), source(start), sink(end), plausible_path(a, end), !path(a, end).
+
+num_times_node_involved_in_hypothetical_path(node, num) :- node(node), num = count : { hypothetical_path(_, _,  node) }.

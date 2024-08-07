@@ -1,0 +1,20 @@
+.decl edge(id:number, x:number, y:number)
+.input edge
+
+.decl node(id:number)
+.input node
+
+.decl path(x:number, y:number)
+
+// node a is on the path x -> y, 
+.decl nodes_on_path(a:number, steps: number)
+.output nodes_on_path
+
+.decl target_path(start:number, end:number)
+.input target_path
+
+path(x, y) :- edge(_, x, y).
+path(x, y) :- path(x, z), edge(_, z, y).
+
+nodes_on_path(start, 0) :- target_path(start, _), node(start).
+nodes_on_path(x, steps + 1) :- nodes_on_path(a, steps), edge(_, a, x), target_path(_,m end), x != end.

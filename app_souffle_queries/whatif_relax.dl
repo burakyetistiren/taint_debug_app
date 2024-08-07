@@ -1,0 +1,49 @@
+
+.decl warning_paths(source:number, sink:number, node:number, step: number, edge:number, lib: number)
+.input warning_paths
+
+.decl plausible_warning_paths(source:number, sink:number, node:number, step: number, edge:number, lib:number)
+.input plausible_warning_paths
+
+.decl edge(id:number, x:number, y:number)
+.input edge
+
+.decl node(id:number)
+.input node
+
+.decl path(x:number, y:number)
+.output path
+
+.decl whatif_relax(src: number, sink: number, lib: number)
+.input whatif_relax
+
+.decl libs_for_enabling_flow(src: number, sink: number, lib: number)
+.output libs_for_enabling_flow
+
+.decl whatif_relax_answer(src: number, sink: number, lib: number)
+.output whatif_relax_answer
+
+.decl nodes_on_path(query_start: number, query_end:number, a:number, steps: number, libnode: number)
+.output nodes_on_path
+
+path(x, y) :- edge(_, x, y).
+path(x, x) :- node(x).
+path(x, y) :- path(x, z), edge(_, z, y).
+
+
+libs_for_enabling_flow(src, sink, lib) :- whatif_relax(src, sink, _), plausible_warning_paths(src, sink, _, _, _, lib), !warning_paths(src, sink, _, _ ,_ , lib), lib != -1.
+
+
+// the answer is yes if all `libs` but one are in warning_paths(src, sink, _, _, _, lib)
+// and the remaining lib is in plausible_warning_paths(src, sink, _, _, _, lib)
+whatif_relax_answer(src, sink, lib) :- whatif_relax(src, sink, lib), 
+    !warning_paths(src, sink, _, _, _, _), 
+    libs_for_enabling_flow(src, sink, lib),  c = count : {libs_for_enabling_flow(src, sink, _)}, c=1.
+
+// nodes_on_path shows the path that is now enabled by the lib
+nodes_on_path(query_start, query_end, query_start, 0, -1) :- 
+    plausible_warning_paths(query_start, query_end, query_start, _, _, _),
+    whatif_relax(query_start, query_end, _).
+nodes_on_path(query_start, query_end, x, steps, lib) :- 
+    plausible_warning_paths(query_start, query_end, x, steps, _, lib),
+    whatif_relax(query_start, query_end, _).

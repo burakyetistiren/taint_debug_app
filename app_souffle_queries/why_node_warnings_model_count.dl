@@ -1,0 +1,38 @@
+// count the number of times a library model is involved in a path of a warning
+.decl edge(id:number, x:number, y:number)
+.input edge
+
+.decl node(id:number)
+.input node
+
+.decl library_flow(edge:number, id:number)
+.input library_flow
+
+.decl path(x:number, y:number)
+.output path
+
+.decl warning(id:number, source: number, sink: number)
+.input warning
+
+.decl why_node(node:number)
+.input why_node
+
+.decl why_node_answer(node:number, edge:number)
+
+.decl  library_flow_on_path( source:number, node:number, edge:number)
+.output library_flow_on_path
+
+.decl num_times_model_involved_in_path(lib:number, num:number)
+.output num_times_model_involved_in_path
+
+path(x, y) :- edge(_, x, y).
+path(x, y) :- path(x, z), edge(_, z, y).
+
+library_flow_on_path(source, node,  e) :- edge(e, a, b), library_flow(e, _), path(source, a), path(b, node).
+library_flow_on_path(source, node,  e) :- edge(e, source, b), library_flow(e, _), path(b, node).
+library_flow_on_path(source, node,  e) :- edge(e, a, node), library_flow(e, _), path(source, a).
+
+why_node_answer(node, y) :- why_node(node), library_flow_on_path(_, node,  y).
+
+num_times_model_involved_in_path(lib, num) :- library_flow(_, lib), num = count : { why_node_answer(_, edge), library_flow(edge, lib) }.
+

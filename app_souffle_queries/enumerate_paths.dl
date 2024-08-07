@@ -1,0 +1,12 @@
+.decl edge(id:number, x:number, y:number)
+.input edge
+
+.decl path(x:number, y:number)
+
+.decl all_paths(x:number, y:number)
+.output all_paths
+
+path(x, y) :- edge(_, x, y).
+path(x, y) :- path(x, z), edge(_, z, y).
+
+all_paths(x, y) :- path(x, y).

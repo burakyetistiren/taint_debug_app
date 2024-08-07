@@ -8,6 +8,7 @@ import 'tippy.js/dist/tippy.css';
 import { createPopper } from '@popperjs/core';
 
 import { Paths, Libs, Nodes } from '../api/paths.js';
+import { QueryResults } from '../api/queryresults.js';
 
 import './queries.html';
 import './queries.js';
@@ -18,6 +19,7 @@ import './cytoscapeContainer.html';
 window.Paths = Paths;
 window.Libs = Libs;
 window.Nodes = Nodes;
+window.QueryResults = QueryResults;
 console.log('Paths:', Paths);
 
 // Register the popper extension
@@ -54,15 +56,17 @@ function makeTippy(ele, text) {
 }
 
 Meteor.startup(() => {
-  const nodes = [];
+  let nodes = [];
   const edges = [];
 
   Meteor.defer(() => {
     Meteor.call('readGraphData', (error, result) => {
+      // return;
       if (error) {
         console.error('Error reading file:', error);
         return;
       }
+
 
       // Fetch the node type information
       Meteor.call('getFactNodes', (error, factNodes) => {
@@ -76,16 +80,22 @@ Meteor.startup(() => {
           factNodes[key] = factNodes[key].map(String);
         }
 
-        const { sinks, sources, sanitizers, apis } = factNodes;
+        const { sinks, sources, sanitizers, apiNodes, apiLibs } = factNodes;
         console.log('Fact nodes:', factNodes);
 
         console.log('Sinks:', sinks);
         console.log('Sources:', sources);
         console.log('Sanitizers:', sanitizers);
-        console.log('APIs:', apis);
+        console.log('APIs:', apiNodes);
 
-        result.nodes.forEach(node => {
-          const nodeId = node.nodeId.toString();
+        // for the first time the graph is shown, show just the sources and sinks
+
+        Object.keys(result.nodes).forEach(nodeId => {
+        // var sourcesAndSinks = sinks.concat(sources);
+        // var sourcesAndSinksNodeIds = sourcesAndSinks.map(nodeId => nodeId.toString());
+        // sourcesAndSinks.forEach(nodeId => {
+          // const nodeId = node.nodeId.toString();
+          const node  = result.nodes[nodeId];
           let color = '#0074D9'; // Default color
           let textColor = '#FFFFFF'; // Default text color
 
@@ -98,7 +108,7 @@ Meteor.startup(() => {
           } else if (sanitizers.includes(nodeId)) {
             color = '#21d900';
             console.log(`Node ${nodeId} is a sanitizer, assigned color: green`);
-          } else if (apis.includes(nodeId)) {
+          } else if (apiNodes.includes(nodeId)) {
             color = '#FFFF00';
             console.log(`Node ${nodeId} is an API, assigned color: yellow`);
           }
@@ -107,11 +117,19 @@ Meteor.startup(() => {
             style: { 'background-color': color, 'color': textColor }
           });
         });
+        // for easy debugging , limit to only nodes under 100
+        nodes = nodes.filter(node => parseInt(node.data.id.replace('node_', '')) < 500);
+        
         console.log('Nodes:', nodes);
 
-        result.edges.forEach(edge => edges.push({
+        result.edges
+        // for easy debugging , limit to only nodes under 100
+        .filter(edge => parseInt(edge.sourceId) < 500 && parseInt(edge.targetId) < 500)
+        .forEach(edge => edges.push({
           data: { id: 'edge_' + edge.edgeId.toString(), source: 'node_' + edge.sourceId.toString(), target: 'node_' + edge.targetId.toString(), description: "Warning " + edge.warningNumber + " id:" + edge.edgeId }
-        }));
+        }))
+        
+        ;
 
         // Initialize Cytoscape with nodes and edges
         let cy = cytoscape({

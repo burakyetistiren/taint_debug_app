@@ -1,0 +1,29 @@
+// count the number of times a node is involved in a path of a warning
+
+
+.decl edge(id:number, x:number, y:number)
+.input edge
+
+.decl node(id:number)
+.input node
+
+.decl library_flow(edge:number, id:number)
+.input library_flow
+
+.decl path(x:number, y:number)
+
+.decl warning(id:number, source: number, sink: number)
+.input warning
+
+.decl warning_path(warning_id:number, a:number)
+
+.decl num_times_node_involved_in_path(node:number, num:number)
+.output num_times_node_involved_in_path
+
+path(x, y) :- edge(_, x, y).
+path(x, y) :- path(x, z), edge(_, z, y).
+
+warning_path(warning_id, a) :- warning(warning_id, source, sink), node(a), path(source, a), path(a, sink).
+
+num_times_node_involved_in_path(node, num) :- node(node), num = count : { warning_path(_, node) }.
+

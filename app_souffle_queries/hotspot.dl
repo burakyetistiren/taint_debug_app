@@ -1,0 +1,14 @@
+.decl node(id:float)
+.input node
+
+.decl frequencies(id:float, indeg:float, outdeg:float)
+.input frequencies
+
+.decl frequencies_means(indeg_mean:float, outdeg_mean:float)
+.input frequencies_means
+
+.decl hotspots(id:float)
+.output hotspots
+
+hotspots(x) :- node(x), frequencies(x, indeg, outdeg), frequencies_means(indeg_mean, outdeg_mean), indeg > indeg_mean, outdeg > indeg.
+hotspots(x) :- node(x), frequencies(x, indeg, outdeg), frequencies_means(indeg_mean, outdeg_mean), outdeg > outdeg_mean, outdeg > indeg.

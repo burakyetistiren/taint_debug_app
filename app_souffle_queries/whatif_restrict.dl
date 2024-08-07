@@ -1,0 +1,42 @@
+
+.decl warning_paths(source:number, sink:number, node:number, step: number, edge:number, lib: number)
+.input warning_paths
+
+
+.decl edge(id:number, x:number, y:number)
+.input edge
+
+.decl node(id:number)
+.input node
+
+.decl path_no_lib(src:number, sink:number, node:number, step:number)
+.output path_no_lib
+
+.decl whatif_restrict(src: number, sink: number, lib: number)
+.input whatif_restrict
+
+.decl whatif_restrict_answer(src: number, sink: number, lib: number)
+.output whatif_restrict_answer
+
+.decl nodes_on_path(query_start: number, query_end:number, a:number, steps: number, libnode: number)
+.output nodes_on_path
+
+
+path_no_lib(src, sink, node, 0) :- whatif_restrict(src, sink, _), warning_paths(src, sink, node, 0, _, _).
+path_no_lib(src, sink, next, step+1) :- whatif_restrict(src, sink, lib), 
+    path_no_lib(src, sink, node, step), edge(_, node, next), 
+    warning_paths(src, sink, next, step+1, _, lib2), lib!=lib2.
+
+
+// let's determine if tehre is a path from src to sink that does not go through lib
+whatif_restrict_answer(src, sink, lib) :- whatif_restrict(src, sink, lib), 
+    path_no_lib(src, sink, sink, _).
+    
+
+// nodes_on_path shows the path that is blocked by the lib
+nodes_on_path(query_start, query_end, query_start, 0, -1) :- 
+    warning_paths(query_start, query_end, query_start, _, _, _),
+    whatif_restrict(query_start, query_end, _).
+nodes_on_path(query_start, query_end, x, steps, lib) :- 
+    warning_paths(query_start, query_end, x, steps, _, lib),
+    whatif_restrict(query_start, query_end, _).

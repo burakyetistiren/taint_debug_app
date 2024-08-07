@@ -26,7 +26,15 @@ Template.path.helpers({
     return this.left.description + ' to ' + this.right.description;
   },
   start() {
-    return this.left.code;
+    // return this.left.code;
+    // console.log(this.left.nodeId);
+    var node = Nodes.findOne({ nodeId: this.left.nodeId });
+    var retVal = node?.code
+    
+    return retVal;
+  },
+  startNodeId() {
+    return this.left.nodeId;
   },
   topIntermediateCode() {
     return this.middle ? this.middle[0].code : null;
@@ -35,7 +43,15 @@ Template.path.helpers({
     return this.middle ? this.middle.length : 0;
   },
   end() {
-    return this.right.code;
+    // return this.right.code;
+    // return Nodes.findOne({ nodeId: this.right.nodeId }).code;
+    var node = Nodes.findOne({ nodeId: this.right.nodeId });
+    var retVal = node?.code;
+
+    return retVal;
+  },
+  endNodeId() {
+    return this.right.nodeId;
   },
   isCurrentlyInspectedWarning() {
     return Session.get('inspectedWarning') == this._id;
@@ -69,21 +85,51 @@ Template.path.events({
     pathContent.style.display = 'none';
     collapseButton.innerHTML = 'Expand';
   }
+
+  
+    //  hljs on the left, right
+    // get child with class start from pathContent
+    var pathContentElement = document.getElementById('pathContent_' + this.warningNumber);
+    var startchild = pathContentElement.getElementsByClassName('start')[0];
+    hljs.highlightBlock(startchild, { language: 'java' });
+
+    var allMiddles = pathContentElement.getElementsByClassName('middle');
+    for (var i = 0; i < allMiddles.length; i++) {
+      hljs.highlightBlock(allMiddles[i], { language: 'java' });
+      allMiddles[i].innerHTML = start.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
+    }
+  
+    var endchild = pathContentElement.getElementsByClassName('end')[0];
+    hljs.highlightBlock(endchild, { language: 'java' });
+    // Replace <focus> in the content of the .start,.end blocks with <strong>
+    
+      startchild.innerHTML = startchild.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
+      endchild.innerHTML = endchild.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
+
+    
+
+  // hljs.highlightBlock(this.find('.start'), { language: 'java' });
+  // Replace <focus> in the content of the .start blocks with <strong>
+  // $(pathContent).findAll('.start,.end,.middle').forEach(function(start) {
+  //   start.innerHTML = start.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
+  // });
+  
 }
 
 });
 
 Template.path.onRendered(function() {
+
   // hljs on the left, right
-  hljs.highlightBlock(this.find('.start'), { language: 'java' });
-  this.findAll('.middle').forEach(function(middle) {
-    hljs.highlightBlock(middle, { language: 'java' });
-  });
-  hljs.highlightBlock(this.find('.end'), { language: 'java' });
+  // hljs.highlightBlock(this.find('.start'), { language: 'java' });
+  // this.findAll('.middle').forEach(function(middle) {
+  //   hljs.highlightBlock(middle, { language: 'java' });
+  // });
+  // hljs.highlightBlock(this.find('.end'), { language: 'java' });
   // Replace <focus> in the content of the .start blocks with <strong>
-  this.findAll('.start,.end,.middle').forEach(function(start) {
-    start.innerHTML = start.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
-  });
+  // this.findAll('.start,.end,.middle').forEach(function(start) {
+  //   start.innerHTML = start.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
+  // });
 });
 
 Template.intermediateNodes.helpers({
@@ -123,6 +169,9 @@ Template.intermediateNodes.helpers({
   libStateDescription() {
     const reported = Paths.findOne(Session.get('inspectedWarning')).reported;
     return reported ? 'going through' : 'ending because of';
+  },
+  showCode(nodeId) {
+    return Nodes.findOne({ nodeId: nodeId })?.code;
   }
 });
 
@@ -230,14 +279,14 @@ Template.sourceSinkPair.helpers({
 });
 
 Template.sourceSinkPair.onRendered(function() {
-  // hljs on the left, right
-  hljs.highlightBlock(this.find('.start'), { language: 'java' });
-  this.findAll('.middle').forEach(function(middle) {
-    hljs.highlightBlock(middle, { language: 'java' });
-  });
-  hljs.highlightBlock(this.find('.end'), { language: 'java' });
-  // Replace <focus> in the content of the .start blocks with <strong>
-  this.findAll('.start,.end,.middle').forEach(function(start) {
-    start.innerHTML = start.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
-  });
+  // // hljs on the left, right
+  // hljs.highlightBlock(this.find('.start'), { language: 'java' });
+  // this.findAll('.middle').forEach(function(middle) {
+  //   hljs.highlightBlock(middle, { language: 'java' });
+  // });
+  // hljs.highlightBlock(this.find('.end'), { language: 'java' });
+  // // Replace <focus> in the content of the .start blocks with <strong>
+  // this.findAll('.start,.end,.middle').forEach(function(start) {
+  //   start.innerHTML = start.innerHTML.replace(/---focus---/g, '<strong class="focus" style="background-color: red;color: white!important;">').replace(/---\/focus---/g, '</strong>');
+  // });
 });

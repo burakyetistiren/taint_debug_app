@@ -1,0 +1,40 @@
+.decl edge(id:number, x:number, y:number)
+.input edge
+
+.decl node(id:number)
+.input node
+
+.decl library_flow(edge:number, id:number)
+.input library_flow
+
+.decl   library_node(node:number)
+.input library_node
+
+.decl path(x:number, y:number)
+
+.decl path_through(x:number, a:number, y:number)
+.output path_through
+
+.decl path_through_subpath(x:number, start:number, end:number, y:number)
+.output path_through_subpath
+
+.decl node_occurences_on_paths(node:number, num_occurences:number)
+.output node_occurences_on_paths
+
+.decl subpath_occurences_on_paths(start: number, end: number, num_occurences: number)
+.output subpath_occurences_on_paths
+
+
+path(x, y) :- edge(_, x, y).
+path(x, y) :- path(x, z), edge(_, z, y).
+
+// count the number of path going through a
+path_through(x, a, y) :- library_node(a), node(x), node(y), path(x, y), path(x, a), path(a, y).
+path_through(a, a, y) :- library_node(a),  node(y), path(a, y).
+path_through(x, a, a) :- library_node(a), node(x),  path(x, a).
+
+path_through_subpath(x, start, end, y) :- path(x, start), path(start, end), path(end, y).
+
+node_occurences_on_paths(a, num_occurences) :- node(a), num_occurences = count : {path_through(_, a, _)}.
+
+subpath_occurences_on_paths(start, end, num_occurences) :- path(start, end), num_occurences = count : {path_through_subpath(_, start, end, _)}.

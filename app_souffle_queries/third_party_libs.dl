@@ -1,0 +1,7 @@
+.decl library_flow(edge:number, id:number)
+.input library_flow
+
+.decl third_party_libs(id: number)
+.output third_party_libs
+
+third_party_libs(id) :- library_flow(_, id).
