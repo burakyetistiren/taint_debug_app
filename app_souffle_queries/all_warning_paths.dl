@@ -45,6 +45,9 @@
 .decl has_cycle(source:number, sink:number, node:number, step:number)
 .output has_cycle
 
+.decl library_paths_count(lib: number, cnt: number)
+.output library_paths_count
+
 path(x, y) :- edge(_, x, y).
 path(x, x) :- node(x).
 path(x, y) :- path(x, z), edge(_, z, y).
@@ -64,6 +67,6 @@ warning_paths(source_node, sink_node, node2, step, edge, node1, lib) :- tmp_warn
 
 lib_on_warning_path(source_node, sink_node, lib, step) :- warning_paths(source_node, sink_node, node, step, _, _, _), library_node(node, lib).
 
-
+library_paths_count(lib, cnt) :- lib_on_warning_path(_, _, lib, _), cnt = count : { lib_on_warning_path(_, _, lib, _) }.
 
 

@@ -1,0 +1,33 @@
+
+.decl warning_paths(source:number, sink:number, node:number, step: number, edge:number, lib: number)
+.input warning_paths
+
+.decl sinks_affected(source:number, api:number)
+.input sinks_affected
+
+.decl node(id:number)
+.input node
+
+
+.decl library_node(lib:number, node:number)
+.input library_node
+
+.decl sinks_affected_answer(source:number, api:number, sink:number)
+.output sinks_affected_answer
+
+.decl nodes_on_path(query_start: number, query_end:number, a:number, steps: number, libnode: number)
+.output nodes_on_path
+
+// find the sinks affected by the source
+sinks_affected_answer(source, api, sink) :- sinks_affected(source, api), warning_paths(source, sink, _, _, _, api).
+
+// nodes_on_path shows the path that is now broken by the missing lib
+nodes_on_path(query_start, query_end, query_start, 0, -1) :- sinks_affected_answer(query_start, _, query_end).
+nodes_on_path(query_start, query_end, x, steps, -1) :- 
+        sinks_affected_answer(query_start, _, query_end),
+        warning_paths(query_start, query_end, x, steps, _, _),  !library_node(x, _).
+nodes_on_path(query_start, query_end, x, steps, lib) :- 
+        sinks_affected_answer(query_start, _, query_end),
+        warning_paths(query_start, query_end, x, steps, _, _),  library_node(x, lib).
+
+

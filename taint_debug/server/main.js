@@ -175,6 +175,26 @@ function readNodeMapping() {
   return nodeMapping;
 }
 
+function filterPathsLibs(map) {
+  map.forEach((value, key) => {
+      const filteredPaths = [];
+
+      value.sort((a, b) => a.step - b.step);
+
+      for (let i = 0; i < value.length; i++) {
+          const current = value[i];
+
+          if (i === 0 || current.prevNode === filteredPaths[filteredPaths.length - 1].nodeId) {
+              filteredPaths.push(current);
+          }
+      }
+
+      map.set(key, filteredPaths);
+  });
+}
+
+
+
 function setupAndReadAnalysisData() {
   let pathsLibs = new Map();
   let codeSets = [];
@@ -234,13 +254,20 @@ function setupAndReadAnalysisData() {
       
       if (!pathsLibs.has(key)) {
         pathsLibs.set(key, []);
-        pathsLibs.get(key).push({ nodeId: node, lib: libIndex, edgeId: edge, prevNode: prevNode });
+        pathsLibs.get(key).push({ nodeId: node, lib: libIndex, edgeId: edge, step: step, prevNode: prevNode });
         warningToReported.set(key, false);
 
         nodePairToEdgeId.set(key, edge);
       }
       
     });
+  }).then(() => {
+    console.log('Processing paths. ');
+    // we only show one path for each warning
+    // for each item for each pathsLibs's value
+    // identify one node for each step
+    filterPathsLibs(pathsLibs);
+    
   }).then(() => {
     console.log('Finished reading plausible_warning_paths.csv. Processing.');
 
@@ -265,7 +292,7 @@ function setupAndReadAnalysisData() {
           nodeId: source,
           description: nodeMapping[source].description,
         },
-        middle: nodeLibIndicesAndEdgeId.map(({ nodeId, lib, edgeId, prevNode }) => ({
+        middle: nodeLibIndicesAndEdgeId.map(({ nodeId, lib, edgeId, step, prevNode }) => ({
           code: '', // codeSnippetOfNodeWithHighlight(nodeId, nodeMapping),
           nodeId: nodeId,
           lib: lib,
@@ -489,6 +516,10 @@ Meteor.methods({
       fs.writeFileSync(queryFactsFile, `${sourceId}\t${sinkId}\t${secondSourceId}\t${secondSinkId}\n`);
     } else if (['whatif_relax', 'whatif_restrict'].includes(queryType)) {
       fs.writeFileSync(queryFactsFile, `${sourceId}\t${sinkId}\t${selectedAPIId}\n`);
+    } else if (['sinks_affected'].includes(queryType)) {
+      fs.writeFileSync(queryFactsFile, `${sourceId}\t${selectedAPIId}\n`);
+    } else if (['global_impact'].includes(queryType)) {
+      fs.writeFileSync(queryFactsFile, `${sourceId}\t${sinkId}\n`);
     }
 
     // Execute Souffle query
