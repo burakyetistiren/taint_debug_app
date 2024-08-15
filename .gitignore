@@ -1,3 +1,15 @@
 telemetry/
-analysis_files/souffle_files/all.debug
-analysis_files/souffle_files/nodes.debug
+analysis_files
+analysis_files/souffle_files
+souffle_output/hypothetical_library_flow_from_node.csv
+souffle_output/hypothetical_library_flow_on_path.csv
+souffle_output/library_flow_on_path.csv
+souffle_output/libs_for_enabling_flow.csv
+souffle_output/nodes_on_path.csv
+souffle_output/path.csv
+souffle_output/plausible_path.csv
+souffle_output/whatif_relax_answer.csv
+souffle_output/why_node_pair_answer.csv
+souffle_output/whynot_node_pairs_answer.csv
+analysis_files/plausible_warning_paths.csv
+analysis_files/warning_paths.csv
