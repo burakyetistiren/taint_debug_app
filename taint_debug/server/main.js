@@ -550,13 +550,13 @@ Meteor.methods({
         .map(row => row.split('\t').map(Number))
         .map(row => row.slice(-3))
         .filter(row => row.length == 3);
-      console.log(sourceId, sinkId)
+      console.log(sourceId, sinkId, selectedAPIId)
       console.log("nodesOnPath", nodesOnPath)
 
-      // remove old QueryResults without the same sourceId 
-      QueryResults.remove({ sourceId: { '$ne' : sourceId}  });
+      // // remove old QueryResults without the same sourceId 
+      // QueryResults.remove({ sourceId: { '$ne' : sourceId}  });
 
-      QueryResults.insert({ queryType, sourceId, sinkId, libNodes, nodesOnPath });
+      QueryResults.insert({ queryType, sourceId, sinkId, selectedAPIId, libNodes, nodesOnPath });
 
       
     }));

@@ -14,7 +14,7 @@ function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceI
     }
     
     // fetch latest QueryResults
-    const queryResults = QueryResults.findOne({sourceId: sourceId, sinkId: sinkId});
+    const queryResults = QueryResults.findOne({sourceId: sourceId, sinkId: sinkId, selectedAPIId: selectedAPIId});
     
     // const queryResults = result;
     console.log('QueryResults:', queryResults);
