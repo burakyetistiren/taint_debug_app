@@ -1,97 +1,91 @@
 <template name="queries">
-    <style>
-      .query-box {
-        border: 1px solid #ccc;
-        padding: 15px;
-        margin: 10px 0;
-        border-radius: 5px;
-        background-color: #f9f9f9;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      }
-      .query-box h3 {
-        margin: 0 0 10px;
-        font-size: 1.5em;
-        color: #333;
-      }
-      .query-box label {
-        margin-right: 5px;
-      }
-      .query-box select {
-        margin-right: 20px;
-        padding: 5px;
-      }
-      .highlighted {
-        background-color: red !important;
-      }
-    </style>
-    <h1>Query</h1>
-    <div class="query-box">
+  <style>
+    .query-box {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .query-box h3 {
+      margin: 0 0 10px;
+      font-size: 1.5em;
+      color: #333;
+    }
+    .query-box label {
+      margin-right: 5px;
+    }
+    .query-box select {
+      margin-right: 20px;
+      padding: 5px;
+    }
+    .highlighted {
+      background-color: red !important;
+    }
+  </style>
+  <h1>Query</h1>
+  <div class="query-box">
+    <h3>
+      Focus on node:
+      <select id="focus-node" class="focus-dropdown-node">
+        {{#each nodes}}
+          <option value="{{id}}">{{id}} - {{description}}</option>
+        {{/each}}
+      </select>
+    </h3>
+  </div>
+  <div class="query-box">
+    <h3>
+      Focus on edge:
+      <select id="focus-edge" class="focus-dropdown-edge">
+        {{#each edges}}
+          <option value="{{id}}">{{id}} - {{description}}</option>
+        {{/each}}
+      </select>
+    </h3>
+  </div>
+  {{#each queries}}
+    <div class="query-box" data-query="{{queryType}}">
       <h3>
-        Focus on node:
-        <select id="focus-node" class="focus-dropdown-node">
-          {{#each nodes}}
-            <option value="{{this}}">{{this}}</option>
+        {{description}}
+        
+        Source:
+        <select id="src-{{@index}}" class="src-dropdown">
+          {{#each sources}}
+            <option value="{{id}}">{{id}} - {{description}}</option>
           {{/each}}
         </select>
-      </h3>
-    </div>
-    <div class="query-box">
-      <h3>
-        Focus on edge:
-        <select id="focus-edge" class="focus-dropdown-edge">
-          {{#each edges}}
-            <option value="{{this}}">{{this}}</option>
+        Sink:
+        <select id="sink-{{@index}}" class="sink-dropdown">
+          {{#each sinks}}
+            <option value="{{id}}">{{id}} - {{description}}</option>
           {{/each}}
         </select>
-      </h3>
-    </div>
-    {{#each queries}}
-      <div class="query-box" data-query="{{queryType}}">
-        <h3>
-          {{description}}
-
-          
+        {{#if pairedQuery}}
           Source:
-          <select id="src-{{@index}}" class="src-dropdown">
-            {{#each sources}}
-              <option value="{{this}}">{{this}}</option>
+          <select id="second-src-{{@index}}" class="second-src-dropdown">
+            {{#each secondPairSources}}
+              <option value="{{id}}">{{id}} - {{description}}</option>
             {{/each}}
           </select>
           Sink:
-          <select id="sink-{{@index}}" class="sink-dropdown">
-            {{#each sinks}}
-              <option value="{{this}}">{{this}}</option>
+          <select id="second-sink-{{@index}}" class="second-sink-dropdown">
+            {{#each secondPairSinks}}
+              <option value="{{id}}">{{id}} - {{description}}</option>
             {{/each}}
           </select>
-            {{#if pairedQuery}}
-              Source:
-              <select id="second-src-{{@index}}" class="second-src-dropdown">
-              {{#each secondPairSources}}
-                <option value="{{this}}">{{this}}</option>
-              {{/each}}
-              </select>
-              Sink:
-              <select id="second-sink-{{@index}}" class="second-sink-dropdown">
-              {{#each secondPairSinks}}
-                <option value="{{this}}">{{this}}</option>
-              {{/each}}
-              </select>
-            {{/if}}
+        {{/if}}
 
-            {{#if whatIfQuery}}
-            API:
-            <select id="api-{{@index}}" class="api-dropdown">
-            {{#each apis}}
-              <option value="{{this}}">{{this}}</option>
-            {{/each}}
-            </select>
-
-            {{/if}}
-            
-
-            
-        </h3>
-      </div>
-    {{/each}}
-  </template>
-  
+        {{#if whatIfQuery}}
+        API:
+        <select id="api-{{@index}}" class="api-dropdown">
+          {{#each apis}}
+            <option value="{{this}}">{{this}}</option>
+          {{/each}}
+        </select>
+        {{/if}}
+      </h3>
+    </div>
+  {{/each}}
+</template>

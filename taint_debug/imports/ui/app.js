@@ -60,235 +60,241 @@ Meteor.startup(() => {
   const edges = [];
 
   Meteor.defer(() => {
-    Meteor.call('readGraphData', (error, result) => {
-      // return;
+    // Fetch the node mapping
+    Meteor.call('readNodeNames', (error, nodeMapping) => {
       if (error) {
-        console.error('Error reading file:', error);
+        console.error('Error fetching node mapping:', error);
         return;
       }
 
-
-      // Fetch the node type information
-      Meteor.call('getFactNodes', (error, factNodes) => {
+      // Fetch the graph data
+      Meteor.call('readGraphData', (error, result) => {
         if (error) {
-          console.error('Error fetching fact nodes:', error);
+          console.error('Error reading graph data:', error);
           return;
         }
 
-        // Convert every element in factNodes to string
-        for (var key in factNodes) {
-          factNodes[key] = factNodes[key].map(String);
-        }
-
-        const { sinks, sources, sanitizers, apiNodes, apiLibs } = factNodes;
-        console.log('Fact nodes:', factNodes);
-
-        console.log('Sinks:', sinks);
-        console.log('Sources:', sources);
-        console.log('Sanitizers:', sanitizers);
-        console.log('APIs:', apiNodes);
-
-        // for the first time the graph is shown, show just the sources and sinks
-
-        Object.keys(result.nodes).forEach(nodeId => {
-        // var sourcesAndSinks = sinks.concat(sources);
-        // var sourcesAndSinksNodeIds = sourcesAndSinks.map(nodeId => nodeId.toString());
-        // sourcesAndSinks.forEach(nodeId => {
-          // const nodeId = node.nodeId.toString();
-          const node  = result.nodes[nodeId];
-          let color = '#0074D9'; // Default color
-          let textColor = '#FFFFFF'; // Default text color
-
-          if (sinks.includes(nodeId)) {
-            color = '#FF0000';
-            console.log(`Node ${nodeId} is a sink, assigned color: red`);
-          } else if (sources.includes(nodeId)) {
-            color = '#FF8C00';
-            console.log(`Node ${nodeId} is a source, assigned color: orange`);
-          } else if (sanitizers.includes(nodeId)) {
-            color = '#21d900';
-            console.log(`Node ${nodeId} is a sanitizer, assigned color: green`);
-          } else if (apiNodes.includes(nodeId)) {
-            color = '#FFFF00';
-            console.log(`Node ${nodeId} is an API, assigned color: yellow`);
+        // Fetch the node type information
+        Meteor.call('getFactNodes', (error, factNodes) => {
+          if (error) {
+            console.error('Error fetching fact nodes:', error);
+            return;
           }
-          nodes.push({
-            data: { id: 'node_' + nodeId, description: nodeId + ' ' + node.description, 'original-background-color': color, 'original-text-color': textColor },
-            style: { 'background-color': color, 'color': textColor }
-          });
-        });
-        // for easy debugging , limit to only nodes under 100
-        nodes = nodes.filter(node => parseInt(node.data.id.replace('node_', '')) < 500);
-        
-        console.log('Nodes:', nodes);
 
-        result.edges
-        // for easy debugging , limit to only nodes under 100
-        .filter(edge => parseInt(edge.sourceId) < 500 && parseInt(edge.targetId) < 500)
-        .forEach(edge => edges.push({
-          data: { id: 'edge_' + edge.edgeId.toString(), source: 'node_' + edge.sourceId.toString(), target: 'node_' + edge.targetId.toString(), description: "Warning " + edge.warningNumber + " id:" + edge.edgeId }
-        }))
-        
-        ;
-
-        // Initialize Cytoscape with nodes and edges
-        let cy = cytoscape({
-          container: document.getElementById('cy'),
-          style: [{
-            selector: 'node',
-            style: {
-              'label': 'data(description)',
-              'text-valign': 'center',
-              'text-halign': 'center',
-              'background-color': 'data(background-color)', // Use the dynamic background color
-              'color': 'data(color)', // Use the dynamic text color
-              'text-outline-width': 2,
-              'text-outline-color': '#0074d9',
-              'font-size': 12
-            }
-          }, {
-            selector: 'edge',
-            style: {
-              'label': 'data(description)',
-              'curve-style': 'bezier',
-              'target-arrow-shape': 'triangle',
-              'line-color': '#AAAAAA',
-              'target-arrow-color': '#AAAAAA',
-              'width': 2,
-              'font-size': 10,
-              'color': '#FFFFFF',
-              'text-outline-width': 1,
-              'text-outline-color': '#AAAAAA'
-            }
-          }, {
-            selector: '.highlighted',
-            style: {
-              'background-color': '#FF0000',
-              'color': '#FFFFFF',
-              'text-outline-width': 2,
-              'text-outline-color': '#FF0000'
-            }
-          }],
-          elements: { nodes, edges },
-          layout: {
-            name: 'breadthfirst', // Use breadthfirst layout
-            animate: true,
-            fit: true,
-            padding: 30,
-            directed: true, // Ensure directed layout
-            spacingFactor: 1.5, // Increase spacing between nodes
-            nodeDimensionsIncludeLabels: true, // Include labels in node dimensions
-            avoidOverlap: true // Avoid overlapping nodes
+          // Convert every element in factNodes to string
+          for (var key in factNodes) {
+            factNodes[key] = factNodes[key].map(String);
           }
-        });
 
-        window.cyInstance = cy; // Expose Cytoscape instance globally
+          const { sinks, sources, sanitizers, apiNodes, apiLibs } = factNodes;
+          console.log('Fact nodes:', factNodes);
 
-        // Function to reset all nodes and edges to their original colors
-        function resetColors() {
-          cy.nodes().forEach(node => {
-            node.removeClass('highlighted');
-            node.style('background-color', node.data('original-background-color'));
-            node.style('color', node.data('original-text-color'));
-          });
-          cy.edges().removeClass('highlighted');
-        }
+          console.log('Sinks:', sinks);
+          console.log('Sources:', sources);
+          console.log('Sanitizers:', sanitizers);
+          console.log('APIs:', apiNodes);
 
-        cy.on('tap', 'node', function(evt) {
-          var node = evt.target;
-          resetColors(); // Reset colors before highlighting the clicked node
-          if (node.hasClass('highlighted')) {
-            node.removeClass('highlighted');
-            node.style('background-color', node.data('original-background-color')); // Revert to original color
-            node.style('color', node.data('original-text-color')); // Revert to original text color
-          } else {
-            node.addClass('highlighted');
-            node.style('background-color', '#808080'); // Change color to gray
-            node.style('color', '#FFFFFF'); // Change text color to white
-            cy.animate({
-              center: { eles: node },
-              zoom: 2
-            }, {
-              duration: 200
+          Object.keys(result.nodes).forEach(nodeId => {
+            const node = result.nodes[nodeId];
+            let color = '#0074D9'; // Default color
+            let textColor = '#FFFFFF'; // Default text color
+
+            if (sinks.includes(nodeId)) {
+              color = '#FF0000';
+              console.log(`Node ${nodeId} is a sink, assigned color: red`);
+            } else if (sources.includes(nodeId)) {
+              color = '#FF8C00';
+              console.log(`Node ${nodeId} is a source, assigned color: orange`);
+            } else if (sanitizers.includes(nodeId)) {
+              color = '#21d900';
+              console.log(`Node ${nodeId} is a sanitizer, assigned color: green`);
+            } else if (apiNodes.includes(nodeId)) {
+              color = '#FFFF00';
+              console.log(`Node ${nodeId} is an API, assigned color: yellow`);
+            }
+
+            // Use the node description from the mapping
+            const nodeToAdd = nodeMapping[nodeId];
+
+            const nodeDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || nodeId;
+
+            nodes.push({
+              data: { id: 'node_' + nodeId, description: nodeDescription, 'original-background-color': color, 'original-text-color': textColor },
+              style: { 'background-color': color, 'color': textColor }
             });
+          });
+
+          // For easy debugging, limit to only nodes under 100
+          nodes = nodes.filter(node => parseInt(node.data.id.replace('node_', '')) < 500);
+
+          console.log('Nodes:', nodes);
+
+          result.edges
+            // For easy debugging, limit to only nodes under 100
+            .filter(edge => parseInt(edge.sourceId) < 500 && parseInt(edge.targetId) < 500)
+            .forEach(edge => edges.push({
+              data: { id: 'edge_' + edge.edgeId.toString(), source: 'node_' + edge.sourceId.toString(), target: 'node_' + edge.targetId.toString(), description: "Warning " + edge.warningNumber + " id:" + edge.edgeId }
+            }));
+
+          // Initialize Cytoscape with nodes and edges
+          let cy = cytoscape({
+            container: document.getElementById('cy'),
+            style: [{
+              selector: 'node',
+              style: {
+                'label': 'data(description)',
+                'text-valign': 'center',
+                'text-halign': 'center',
+                'background-color': 'data(background-color)', // Use the dynamic background color
+                'color': 'data(color)', // Use the dynamic text color
+                'text-outline-width': 2,
+                'text-outline-color': '#0074d9',
+                'font-size': 12
+              }
+            }, {
+              selector: 'edge',
+              style: {
+                'label': 'data(description)',
+                'curve-style': 'bezier',
+                'target-arrow-shape': 'triangle',
+                'line-color': '#AAAAAA',
+                'target-arrow-color': '#AAAAAA',
+                'width': 2,
+                'font-size': 10,
+                'color': '#FFFFFF',
+                'text-outline-width': 1,
+                'text-outline-color': '#AAAAAA'
+              }
+            }, {
+              selector: '.highlighted',
+              style: {
+                'background-color': '#FF0000',
+                'color': '#FFFFFF',
+                'text-outline-width': 2,
+                'text-outline-color': '#FF0000'
+              }
+            }],
+            elements: { nodes, edges },
+            layout: {
+              name: 'breadthfirst', // Use breadthfirst layout
+              animate: true,
+              fit: true,
+              padding: 30,
+              directed: true, // Ensure directed layout
+              spacingFactor: 1.5, // Increase spacing between nodes
+              nodeDimensionsIncludeLabels: true, // Include labels in node dimensions
+              avoidOverlap: true // Avoid overlapping nodes
+            }
+          });
+
+          window.cyInstance = cy; // Expose Cytoscape instance globally
+
+          // Function to reset all nodes and edges to their original colors
+          function resetColors() {
+            cy.nodes().forEach(node => {
+              node.removeClass('highlighted');
+              node.style('background-color', node.data('original-background-color'));
+              node.style('color', node.data('original-text-color'));
+            });
+            cy.edges().removeClass('highlighted');
           }
 
-          // Scroll to the corresponding code snippet
-          const nodeId = node.id().replace('node_', '');
-          const elementToScrollTo = document.getElementById("node_" + nodeId);
-          if (elementToScrollTo) {
-            elementToScrollTo.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
+          cy.on('tap', 'node', function(evt) {
+            var node = evt.target;
+            resetColors(); // Reset colors before highlighting the clicked node
+            if (node.hasClass('highlighted')) {
+              node.removeClass('highlighted');
+              node.style('background-color', node.data('original-background-color')); // Revert to original color
+              node.style('color', node.data('original-text-color')); // Revert to original text color
+            } else {
+              node.addClass('highlighted');
+              node.style('background-color', '#808080'); // Change color to gray
+              node.style('color', '#FFFFFF'); // Change text color to white
+              cy.animate({
+                center: { eles: node },
+                zoom: 2
+              }, {
+                duration: 200
+              });
+            }
 
-          console.log('tapped ' + node.id());
-          console.log('node data:', node);
-          console.log('edge data:', node._private.edges[0]._private.data.id);
-
-          var referenceId = node._private.edges[0]._private.data.description;
-          // Get the reference ID of the node Warning 17 id:14 --> 17
-          referenceId = referenceId.split(" ")[1];
-
-          console.log('referenceId:', referenceId);
-
-          // Expand the pathContent div and ensure all child divs are displayed
-          const pathContent = document.getElementById('pathContent_' + referenceId);
-          const collapseButton = document.getElementById('collapse-button_' + referenceId);
-
-          console.log('pathContent:', pathContent);
-
-          if (pathContent) {
-            pathContent.style.display = 'block';
-            collapseButton.innerHTML = 'Collapse';
-
-            const pathId = Paths.findOne({ warningNumber: parseInt(referenceId) })._id;
-            console.log('pathId:', pathId);
-            Session.set('inspectedWarning', pathId);
-
-            // Use the same logic as in Template.questionChoices.events to ensure the div is fully expanded
-            const currentWarning = Session.get('inspectedWarning');
-            Session.set('whyNodeModel', currentWarning);
-            Session.set('inspectedLib', '');
-
-            // Scroll to the relevant code snippet
-            const elementToScrollTo = document.getElementById("warning_" + referenceId);
+            // Scroll to the corresponding code snippet
+            const nodeId = node.id().replace('node_', '');
+            const elementToScrollTo = document.getElementById("node_" + nodeId);
             if (elementToScrollTo) {
               elementToScrollTo.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
-          }
+
+            console.log('tapped ' + node.id());
+            console.log('node data:', node);
+            console.log('edge data:', node._private.edges[0]._private.data.id);
+
+            var referenceId = node._private.edges[0]._private.data.description;
+            // Get the reference ID of the node Warning 17 id:14 --> 17
+            referenceId = referenceId.split(" ")[1];
+
+            console.log('referenceId:', referenceId);
+
+            // Expand the pathContent div and ensure all child divs are displayed
+            const pathContent = document.getElementById('pathContent_' + referenceId);
+            const collapseButton = document.getElementById('collapse-button_' + referenceId);
+
+            console.log('pathContent:', pathContent);
+
+            if (pathContent) {
+              pathContent.style.display = 'block';
+              collapseButton.innerHTML = 'Collapse';
+
+              const pathId = Paths.findOne({ warningNumber: parseInt(referenceId) })._id;
+              console.log('pathId:', pathId);
+              Session.set('inspectedWarning', pathId);
+
+              // Use the same logic as in Template.questionChoices.events to ensure the div is fully expanded
+              const currentWarning = Session.get('inspectedWarning');
+              Session.set('whyNodeModel', currentWarning);
+              Session.set('inspectedLib', '');
+
+              // Scroll to the relevant code snippet
+              const elementToScrollTo = document.getElementById("warning_" + referenceId);
+              if (elementToScrollTo) {
+                elementToScrollTo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }
+            }
+          });
+
+          cy.on('tap', 'edge', function(evt) {
+            var edge = evt.target;
+            resetColors(); // Reset colors before highlighting the clicked edge
+            if (edge.hasClass('highlighted')) {
+              edge.removeClass('highlighted');
+            } else {
+              edge.addClass('highlighted');
+              cy.animate({
+                center: { eles: edge },
+                zoom: 2
+              }, {
+                duration: 200
+              });
+            }
+            console.log('tapped ' + edge.id());
+            console.log('edge data:', edge);
+
+            var referenceId = edge.data('description');
+            var warningNumber = referenceId.split(" ")[1];
+            var elementToScrollTo = document.getElementById("warning_" + warningNumber);
+            if (elementToScrollTo) {
+              elementToScrollTo.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          });
+
+          cy.on('tap', function(event) {
+            if (event.target === cy) {
+              resetColors();
+            }
+          });
+
+          console.log('Cytoscape elements:', cy.elements().jsons());
         });
-
-        cy.on('tap', 'edge', function(evt) {
-          var edge = evt.target;
-          resetColors(); // Reset colors before highlighting the clicked edge
-          if (edge.hasClass('highlighted')) {
-            edge.removeClass('highlighted');
-          } else {
-            edge.addClass('highlighted');
-            cy.animate({
-              center: { eles: edge },
-              zoom: 2
-            }, {
-              duration: 200
-            });
-          }
-          console.log('tapped ' + edge.id());
-          console.log('edge data:', edge);
-
-          var referenceId = edge.data('description');
-          var warningNumber = referenceId.split(" ")[1];
-          var elementToScrollTo = document.getElementById("warning_" + warningNumber);
-          if (elementToScrollTo) {
-            elementToScrollTo.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-        });
-
-        cy.on('tap', function(event) {
-          if (event.target === cy) {
-            resetColors();
-          }
-        });
-
-        console.log('Cytoscape elements:', cy.elements().jsons());
       });
     });
   });

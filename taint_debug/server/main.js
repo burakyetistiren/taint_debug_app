@@ -395,6 +395,25 @@ function readDataflowJson() {
 }
 
 Meteor.methods({
+    readNodeNames() {
+    const nodeMapping = {};
+    const lines = fs.readFileSync(path.join(ANALYSIS_PATH, 'souffle_files/nodes.debug'), 'utf8').split('\n');
+    lines.forEach(line => {
+      if (line.trim()) {
+        const [nodeId, file, lineNum, column, endLineNum, endColNum, description] = line.trim().split(',');
+        nodeMapping[Number(nodeId)] = {
+          nodeId: Number(nodeId),
+          file,
+          line: Number(lineNum),
+          column: Number(column),
+          end_line: Number(endLineNum),
+          end_column: Number(endColNum),
+          description,
+        };
+      }
+    });
+    return nodeMapping;
+  },
   readFileContents(filePath) {
     var file = fs.readFileSync(path.join(PROJECT_PATH, filePath), 'utf8');
     return file;
