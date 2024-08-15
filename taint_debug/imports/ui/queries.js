@@ -80,6 +80,7 @@ function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceI
     cy.layout({ name: 'cose' }).run();
   });
 }
+let nodeMapping = {};
 
 Template.queries.onCreated(function() {
   this.nodes = new ReactiveVar([]);
@@ -90,58 +91,54 @@ Template.queries.onCreated(function() {
   this.libraries = new ReactiveVar([]);
   
   Meteor.defer(() => {
-    Meteor.call('readNodeNames', (error, nodeMapping) => {
+    Meteor.call('readNodeNames', (error, result) => {
       if (error) {
         console.error('Error reading node mapping:', error);
         return;
       }
 
-      Meteor.call('getFactNodes', (error, result) => {
+      nodeMapping = result;  // Store the node mapping globally
+
+      Meteor.call('getFactNodes', (error, factNodesResult) => {
         if (error) {
           console.error('Error reading graph data:', error);
         } else {
-          const nodes = result.nodes.map(node => {
-            const nodeId = node.nodeId; // Extract nodeId from the object
-            const nodeToAdd = nodeMapping[nodeId]; // Look up in nodeMapping using nodeId
-      
+          const nodes = factNodesResult.nodes.map(node => {
+            const nodeId = node.nodeId;
+            const nodeToAdd = nodeMapping[nodeId];
+
             if (!nodeToAdd) {
               console.error(`Node with ID ${nodeId} not found in nodeMapping`);
               return { id: nodeId, description: 'Unknown' };
             }
-      
-            nodeToAdd.file = nodeToAdd.file.split('/').pop(); // Remove the path from the file name
+
+            nodeToAdd.file = nodeToAdd.file.split('/').pop();
             const nodeDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || nodeId;
             return { id: nodeId, description: nodeDescription };
           });
-          const edges = result.edges.map(edge => ({
+          const edges = factNodesResult.edges.map(edge => ({
             id: edge.edgeId,
             description: edge.description,
           }));
-          const sources = result.sources.map(sourceId => {
+          const sources = factNodesResult.sources.map(sourceId => {
             const nodeToAdd = nodeMapping[sourceId];
-            nodeToAdd.file = nodeToAdd.file.split('/').pop(); // Remove the path from the file name
+            nodeToAdd.file = nodeToAdd.file.split('/').pop();
             const sourceDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || sourceId;
-            return {id: sourceId, description: sourceDescription};
+            return { id: sourceId, description: sourceDescription };
           });
-          const sinks = result.sinks.map(sinkId => {
+          const sinks = factNodesResult.sinks.map(sinkId => {
             const nodeToAdd = nodeMapping[sinkId];
-            nodeToAdd.file = nodeToAdd.file.split('/').pop(); // Remove the path from the file name
+            nodeToAdd.file = nodeToAdd.file.split('/').pop();
             const sinkDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || sinkId;
-            return { id: sinkId, description: sinkDescription};
+            return { id: sinkId, description: sinkDescription };
           });
-          
-          console.log('Nodes:', nodes);
-          console.log('Edges:', edges);
-          console.log('Sources:', sources);
-          console.log('Sinks:', sinks);
-
 
           this.nodes.set(nodes);
           this.edges.set(edges);
           this.sources.set(sources);
           this.sinks.set(sinks);
-          this.libraryNodes.set(result.apis);
-          this.libraries.set(result.apiLibs);
+          this.libraryNodes.set(factNodesResult.apis);
+          this.libraries.set(factNodesResult.apiLibs);
 
           console.log('Library Nodes:', this.libraryNodes);
         }
@@ -149,6 +146,7 @@ Template.queries.onCreated(function() {
     });
   });
 });
+
 
 Template.queries.helpers({
   queries() {
@@ -306,9 +304,14 @@ Template.queries.events({
   'change .src-dropdown'(event) {
     const selectedSourceId = $(event.target).val();
 
+    console.log('Selected source:', selectedSourceId);  
+
     console.log('Selected source:', selectedSourceId);
 
     const selectedSinkId = $(event.target).closest('.query-box').find('.sink-dropdown').val();
+
+    console.log('Selected sink:', selectedSinkId);
+
     const queryType = $(event.target).closest('.query-box').attr('data-query');
 
     Session.set('selectedSourceId', selectedSourceId);
@@ -404,8 +407,14 @@ function fetchSinks(queryType, selectedSourceId) {
   const sinks = paths.map(path => path.right.nodeId);
 
   return [...new Set(sinks)].map(sinkId => {
-    const node = Nodes.findOne({ nodeId: sinkId });
-    return { id: sinkId, description: node ? node.description : '' };
+    const nodeToAdd = nodeMapping[sinkId];
+    if (!nodeToAdd) {
+      console.error(`Node with ID ${sinkId} not found in nodeMapping`);
+      return { id: sinkId, description: 'Unknown' };
+    }
+    nodeToAdd.file = nodeToAdd.file.split('/').pop();
+    const sinkDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || sinkId;
+    return { id: sinkId, description: sinkDescription };
   });
 }
 
@@ -419,7 +428,13 @@ function fetchSources(queryType, selectedSinkId) {
   const sources = paths.map(path => path.left.nodeId);
 
   return [...new Set(sources)].map(sourceId => {
-    const node = Nodes.findOne({ nodeId: sourceId });
-    return { id: sourceId, description: node ? node.description : '' };
+    const nodeToAdd = nodeMapping[sourceId];
+    if (!nodeToAdd) {
+      console.error(`Node with ID ${sourceId} not found in nodeMapping`);
+      return { id: sourceId, description: 'Unknown' };
+    }
+    nodeToAdd.file = nodeToAdd.file.split('/').pop();
+    const sourceDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || sourceId;
+    return { id: sourceId, description: sourceDescription };
   });
 }
