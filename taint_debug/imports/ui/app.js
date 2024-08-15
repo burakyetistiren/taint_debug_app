@@ -115,7 +115,7 @@ Meteor.startup(() => {
 
             // Use the node description from the mapping
             const nodeToAdd = nodeMapping[nodeId];
-
+            nodeToAdd.file = nodeToAdd.file.split('/').pop(); // Remove the path from the file name
             const nodeDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || nodeId;
 
             nodes.push({

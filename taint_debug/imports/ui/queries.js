@@ -100,21 +100,32 @@ Template.queries.onCreated(function() {
         if (error) {
           console.error('Error reading graph data:', error);
         } else {
-          const nodes = result.nodes.map(node => ({
-            id: node.nodeId,
-            description: node.description,
-          }));
+          const nodes = result.nodes.map(node => {
+            const nodeId = node.nodeId; // Extract nodeId from the object
+            const nodeToAdd = nodeMapping[nodeId]; // Look up in nodeMapping using nodeId
+      
+            if (!nodeToAdd) {
+              console.error(`Node with ID ${nodeId} not found in nodeMapping`);
+              return { id: nodeId, description: 'Unknown' };
+            }
+      
+            nodeToAdd.file = nodeToAdd.file.split('/').pop(); // Remove the path from the file name
+            const nodeDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || nodeId;
+            return { id: nodeId, description: nodeDescription };
+          });
           const edges = result.edges.map(edge => ({
             id: edge.edgeId,
             description: edge.description,
           }));
           const sources = result.sources.map(sourceId => {
             const nodeToAdd = nodeMapping[sourceId];
+            nodeToAdd.file = nodeToAdd.file.split('/').pop(); // Remove the path from the file name
             const sourceDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || sourceId;
             return {id: sourceId, description: sourceDescription};
           });
           const sinks = result.sinks.map(sinkId => {
             const nodeToAdd = nodeMapping[sinkId];
+            nodeToAdd.file = nodeToAdd.file.split('/').pop(); // Remove the path from the file name
             const sinkDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || sinkId;
             return { id: sinkId, description: sinkDescription};
           });
