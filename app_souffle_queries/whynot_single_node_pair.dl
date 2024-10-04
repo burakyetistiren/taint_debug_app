@@ -1,0 +1,55 @@
+.decl edge(id:number, x:number, y:number)
+.input edge
+
+.decl node(id:number)
+.input node
+
+.decl library_flow(edge:number, id:number)
+.input library_flow
+
+.decl   whynot_single_node_pair(start:number, end:number)
+.input whynot_single_node_pair
+
+.decl   library_node(node:number)
+.input library_node
+
+.decl path(x:number, y:number)
+.output path
+
+.decl   library_flow_on_path(end:number, start:number, edge:number)
+.output library_flow_on_path
+
+.decl plausible_edge(id:number, start: number, end: number)
+.input plausible_edge
+
+.decl plausible_path(start: number, end: number)
+.output plausible_path
+
+.decl hypothetical_library_flow_from_node(node:number)
+.output hypothetical_library_flow_from_node
+
+.decl   hypothetical_library_flow_on_path(end:number, start:number, libnode:number)
+.output hypothetical_library_flow_on_path
+
+.decl   whynot_single_node_pair_answer(start:number, end:number, answer:number)
+.output whynot_single_node_pair_answer
+
+
+path(x, y) :- edge(_, x, y).
+path(x, y) :- path(x, z), edge(_, z, y).
+
+plausible_path(x, y) :- plausible_edge(_, x, y).
+plausible_path(x, y) :- plausible_path(x, z), plausible_edge(_, z, y).
+
+library_flow_on_path(end, start, e) :- edge(e, a, b), library_flow(e, _), path(start, a), path(b, end).
+library_flow_on_path(end, start, e) :- edge(e, start, b), library_flow(e, _), path(b, end).
+library_flow_on_path(end, start, e) :- edge(e, a, end), library_flow(e, _), path(start, a).
+
+
+hypothetical_library_flow_from_node(node) :- library_node(node), !edge(_, node, _).
+
+hypothetical_library_flow_on_path(end, start, libnode) :- hypothetical_library_flow_from_node(libnode), plausible_path(start, libnode), plausible_edge(_, libnode, end).
+
+
+whynot_single_node_pair_answer(start, end, libnode) :- whynot_single_node_pair(start, end), hypothetical_library_flow_on_path_to_x(end, start, libnode).
+

@@ -1,0 +1,25 @@
+// produces the model nodes that we know currently allows flow
+
+.decl edge(id:number, x:number, y:number)
+.input edge
+
+.decl node(id:number)
+.input node
+
+.decl library_flow(edge:number, id:number)
+.input library_flow
+
+.decl library_node(node:number, id:number)
+.input library_node
+
+.decl library_can_flow(id: number)
+.output  library_can_flow
+
+// library_can_flow when a node is involved in a edge that has library_flow
+
+library_can_flow(id) :- library_flow(e, _), edge(e, _, n1), library_node(n1, id).
+
+
+
+
+

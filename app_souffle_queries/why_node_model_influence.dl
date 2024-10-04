@@ -1,0 +1,49 @@
+.decl edge(id:number, x:number, y:number)
+.input edge
+
+.decl node(id:number)
+.input node
+
+.decl library_flow(edge:number, id:number)
+.input library_flow
+
+
+.decl library_node(node:number, lib:number)
+.input library_node
+
+.decl node_centrality(node:number, centrality:float)
+.input node_centrality
+
+.decl why_node(node:number)
+.input why_node
+
+.decl path(x:number, y:number)
+// .output path
+
+.decl  library_flow_on_path( start:number, end:number, edge:number)
+.output library_flow_on_path
+
+
+// node a is on the path x -> y, 
+.decl nodes_on_path(query: number, a:number, steps: number)
+.output nodes_on_path
+
+.decl why_node_model_influence_answer(node:number, lib:number, influence: float)
+.output why_node_model_influence_answer
+
+
+path(x, y) :- edge(_, x, y).
+path(x, y) :- path(x, z), edge(_, z, y).
+
+
+library_flow_on_path(start, end,  e) :- edge(e, a, b), library_flow(e, _), path(start, a), path(b, end).
+library_flow_on_path(start, end,  e) :- edge(e, start, b), library_flow(e, _), path(b, end).
+library_flow_on_path(start, end,  e) :- edge(e, a, end), library_flow(e, _), path(start, a).
+
+
+why_node_model_influence_answer(query, lib, influence) :- why_node(query), library_flow_on_path(_, query,  answer_edge), edge(answer_edge, _, answer) , library_node(answer, lib), node_centrality(lib, influence).
+
+nodes_on_path(query, start, 0) :- node(start), why_node(query), library_flow_on_path(_, query,  libedge), edge(libedge, start, _).
+nodes_on_path(query, x, steps + 1) :- nodes_on_path(query, a, steps), edge(_, a, x), path(x, target_node), why_node(target_node).
+
+

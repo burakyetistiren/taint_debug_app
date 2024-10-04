@@ -1,0 +1,80 @@
+// identifying library nodes from positive and negative example
+
+.decl edge(id:number, x:number, y:number)
+.input edge
+
+.decl plausible_edge(id:number, x:number, y:number)
+.input plausible_edge
+
+.decl node(id:number)
+.input node
+
+.decl library_flow(edge:number, id:number)
+.input library_flow
+
+
+.decl library_node(node:number, lib:number)
+.input library_node
+
+.decl positive_path(source:number, sink:number)
+.input positive_path
+
+.decl negative_path(source:number, sink:number)
+.input negative_path
+
+// .decl source(source_node:number)
+// .input source
+
+// .decl sink(sink_node:number)
+// .input sink
+
+.decl plausible_warning(warning_id:number, source:number, sink:number)
+.input plausible_warning
+
+.decl tmp_plausible_warning_paths(source:number, sink:number, node:number, step: number, edge:number,  prev_node:number, lib:number)
+.output tmp_plausible_warning_paths
+
+.decl plausible_warning_paths(source:number, sink:number, node:number, step: number, edge:number,  prev_node:number, lib:number)
+.output plausible_warning_paths
+
+.decl lib_on_plausible_warning_path(source:number, sink:number, lib:number, step: number)
+.output lib_on_plausible_warning_path
+
+.decl tmp_path(source:number, sink:number, node:number, step:number)
+// .output tmp_path
+
+.decl path(x:number, y:number)
+// .output path
+
+.decl has_cycle(source:number, sink:number, node:number, step:number)
+.output has_cycle
+
+
+.decl plausible_path(source:number, sink:number)
+
+
+path(x, y) :- edge(_, x, y).
+path(x, x) :- node(x).
+path(x, y) :- path(x, z), edge(_, z, y).
+
+tmp_path(source_node, sink_node, source_node, 0) :- plausible_warning(_, source_node, sink_node).
+tmp_path(source_node, sink_node, node2, step+1) :- tmp_path(source_node, sink_node, node1, step),  plausible_edge(_, node1, node2), step<20. 
+
+has_cycle(source_node, sink_node, node2, step2) :- tmp_path(source_node, sink_node, node2, step),  tmp_path(source_node, sink_node, node2, step2), step < step2.
+
+plausible_path(x, y) :- plausible_edge(_, x, y).
+plausible_path(x, x) :- node(x).
+plausible_path(x, y) :- plausible_path(x, z), plausible_edge(_, z, y), z != y.
+
+
+tmp_plausible_warning_paths(source_node, sink_node, source_node, 0, -1, -1, -1) :-    plausible_warning(_, source_node, sink_node).
+tmp_plausible_warning_paths(source_node, sink_node, node2, step+1,  edge, node1, lib) :- tmp_plausible_warning_paths(source_node, sink_node, node1, step,_, _, _),  plausible_edge(edge, node1, node2), plausible_path(node2, sink_node), !has_cycle(source_node, sink_node, node2, step), library_node(node2, lib), step < 20. 
+tmp_plausible_warning_paths(source_node, sink_node, node2, step+1, edge, node1, lib) :- tmp_plausible_warning_paths(source_node, sink_node, node1, step,_, _,  _),  plausible_edge(edge, node1, node2), plausible_path(node2, sink_node), node2 = sink_node, library_node(node2, lib) , step<20. 
+tmp_plausible_warning_paths(source_node, sink_node, node2, step+1,  edge, node1, -1) :- tmp_plausible_warning_paths(source_node, sink_node, node1, step,_,_,  _ ),  plausible_edge(edge, node1, node2), plausible_path(node2, sink_node), !has_cycle(source_node, sink_node, node2, step), !library_node(node2, _), step < 20. 
+tmp_plausible_warning_paths(source_node, sink_node, node2, step+1, edge, node1, -1) :- tmp_plausible_warning_paths(source_node, sink_node, node1, step,_,_,  _),  plausible_edge(edge, node1, node2), plausible_path(node2, sink_node), node2 = sink_node, !library_node(node2, _), step<20. 
+
+plausible_warning_paths(source_node, sink_node, node2, step, edge, node1, lib) :- tmp_plausible_warning_paths(source_node, sink_node, node2, step, edge, node1, lib),tmp_plausible_warning_paths(source_node, sink_node, some_node, _, _, _, _), some_node = sink_node.
+
+lib_on_plausible_warning_path(source_node, sink_node, lib, step) :- tmp_plausible_warning_paths(source_node, sink_node, node, step, _, _, _), library_node(node, lib).
+
+
