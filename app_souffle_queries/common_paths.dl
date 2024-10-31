@@ -7,11 +7,8 @@
 .decl library_node(edge:number, id:number)
 .input library_node
 
-.decl path1(node:number, step:number, lib: number)
-.output path1
-
-.decl path2(node:number, step:number, lib: number)
-.output path2
+.decl warning_paths(source:number, sink:number, node:number, step: number, edge:number, lib: number)
+.input warning_paths
 
 .decl common_paths(start1: number, end1: number, start2: number, end2 : number)
 .input common_paths
@@ -39,25 +36,19 @@ end1(x) :- common_paths(_, x, _, _).
 start2(x) :- common_paths(_, _, x, _).
 end2(x) :- common_paths(_, _, _, x).
 
-path1(node, 0, 0) :- start1(node).
-path1(next, step+1, lib) :- path1(node, step, _), edge(_, node, next), library_node(next, lib), end1(end), node != end, step < 10.
-path1(next, step+1, -1) :- path1(node, step, _), edge(_, node, next), !library_node(next, _), end1(end), node != end, step < 10.
 
 
-path2(node, 0, 0) :- start2(node).
-path2(next, step+1, lib) :- path2(node, step, _), edge(_, node, next), library_node(next, lib), end2(end), node != end, step < 10.
-path2(next, step+1, -1) :- path2(node, step, _), edge(_, node, next), !library_node(next, _), end2(end), node != end, step < 10.
 
 
-common_paths_answer(lib) :- path1(_, _, lib), path2(_, _, lib), lib != -1.
+common_paths_answer(lib) :- start1(s1), end1(e1), start2(s2), end2(e2), warning_paths(s1, e1, _, _, _, lib), warning_paths(s2, e2, _, _, _, lib), lib != -1.
 
 // common path nodes goes into nodes_on_path
 // so does path1 and path2 
-nodes_on_path(query_start, query_end, a, steps, libnode) :- 
-        common_paths(query_start, query_end, _, _),
-        path1(a, steps, libnode). 
-nodes_on_path(query_start, query_end, a, steps, libnode) :-
-        common_paths(query_start, query_end, _, _),
-        path2(a, steps, libnode).
+// nodes_on_path(query_start, query_end, a, steps, libnode) :- 
+//         common_paths(query_start, query_end, _, _),
+//         path1(a, steps, libnode), path2(a, _, libnode). 
 
-        
+nodes_on_path(start1, end1, a, steps, lib) :- 
+    common_paths(start1, end1, start2, end2),
+    warning_paths(start1, end1, a, steps, _,  lib),
+    warning_paths(start2, end2, a, step2, _,  lib).

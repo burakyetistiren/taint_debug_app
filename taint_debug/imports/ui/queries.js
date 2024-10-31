@@ -12,7 +12,8 @@ function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceI
       console.log('Query result:', result);
     }
     
-    const queryResults = QueryResults.findOne({ sourceId: sourceId, sinkId: sinkId });
+    // fetch latest QueryResults
+    const queryResults = QueryResults.findOne({sourceId: sourceId, sinkId: sinkId, selectedAPIId: selectedAPIId});
     
     console.log('QueryResults:', queryResults);
 
@@ -47,15 +48,17 @@ function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceI
         style: { 'background-color': color, 'color': textColor }
       });
     });
-
-    cyNodesToShow.push({
-      data: { id: 'node_' + sourceId, description: sourceId + ' Source', 'original-background-color': '#2ECC40', 'original-text-color': '#FFFFFF' },
-      style: { 'background-color': '#2ECC40', 'color': '#FFFFFF' }
-    });
-    cyNodesToShow.push({
-      data: { id: 'node_' + sinkId, description: sinkId + ' Sink', 'original-background-color': '#FF4136', 'original-text-color': '#FFFFFF' },
-      style: { 'background-color': '#FF4136', 'color': '#FFFFFF' }
-    });
+    // also the source and sink nodes
+    if (queryType != 'common_paths') {
+      cyNodesToShow.push({
+        data: { id: 'node_' + sourceId, description: sourceId + ' Source', 'original-background-color': '#2ECC40', 'original-text-color': '#FFFFFF' },
+        style: { 'background-color': '#2ECC40', 'color': '#FFFFFF' }
+      });
+      cyNodesToShow.push({
+        data: { id: 'node_' + sinkId, description: sinkId + ' Sink', 'original-background-color': '#FF4136', 'original-text-color': '#FFFFFF' },
+        style: { 'background-color': '#FF4136', 'color': '#FFFFFF' }
+      });
+    }
 
     console.log('Nodes:', cyNodesToShow);
 
@@ -151,11 +154,13 @@ Template.queries.onCreated(function() {
 Template.queries.helpers({
   queries() {
     return [
-      { description: "WhyFlow: Tracking data flows from", queryType: "why_node_pair" , whyQuery : true},
-      { description: "WhyNotFlow: Identifying sanitizers that remove data flows from", queryType: "whynot_node_pairs" , whyQuery: true},
-      { description: "CommonFlows: Common API usages between different flow paths from", queryType: "common_paths", whyQuery: true, pairedQuery: true},
-      { description: "What If Relax: ", queryType: "whatif_relax", whatIfQuery: true},
-      { description: "What If Restrict: ", queryType: "whatif_restrict", whatIfQuery: true},
+      { description: "WhyFlow: Tracking data flows from", queryType: "why_node_pair" , showSource : true, showSink: true},
+      { description: "WhyNotFlow: Identifying sanitizers that remove data flows from", queryType: "whynot_node_pairs" , showSource: true, showSink: true},
+      { description: "CommonFlows: Common API usages between different flow paths from", queryType: "common_paths", showSource: true, showSink: true, pairedQuery: true},
+      { description: "Affected sinks: ", queryType: "sinks_affected", selectAPI: true, showSource: true},
+      { description: "Global Impact: ", queryType: "global_impact", showSource : true, showSink: true},
+      { description: "What If Relax: ", queryType: "whatif_relax", selectAPI: true, showSource : true, showSink: true},
+      { description: "What If Restrict: ", queryType: "whatif_restrict", selectAPI: true, showSource : true, showSink: true},
     ];
   },
   sources() {
@@ -368,6 +373,7 @@ Template.queries.events({
     const selectedSecondSourceId = $(event.target).closest('.query-box').find('.second-src-dropdown').val();
     const queryType = $(event.target).closest('.query-box').attr('data-query');
 
+    // write to session
     Session.set('selectedSecondSinkId', selectedSecondSinkId);
     Session.set('queryType', queryType);
 

@@ -62,6 +62,15 @@
             <option value="{{id}}">{{id}} - {{description}}</option>
           {{/each}}
         </select>
+      </h3>
+    </div>
+    {{#each queries}}
+      <div class="query-box" data-query="{{queryType}}">
+        <h3>
+          {{description}}
+
+          
+          {{#if showSource}}
         {{#if pairedQuery}}
           Source:
           <select id="second-src-{{@index}}" class="second-src-dropdown">
@@ -69,15 +78,52 @@
               <option value="{{id}}">{{id}} - {{description}}</option>
             {{/each}}
           </select>
+          {{/if}}
+
+          {{#if showSink}}
           Sink:
           <select id="second-sink-{{@index}}" class="second-sink-dropdown">
             {{#each secondPairSinks}}
               <option value="{{id}}">{{id}} - {{description}}</option>
             {{/each}}
           </select>
+
+          {{/if}}
+            {{#if pairedQuery}}
+              Source:
+              <select id="second-src-{{@index}}" class="second-src-dropdown">
+              {{#each secondPairSources}}
+                <option value="{{this}}">{{this}}</option>
+              {{/each}}
+              </select>
+              Sink:
+              <select id="second-sink-{{@index}}" class="second-sink-dropdown">
+              {{#each secondPairSinks}}
+                <option value="{{this}}">{{this}}</option>
+              {{/each}}
+              </select>
+            {{/if}}
+
+            {{#if selectAPI}}
+            API:
+            <select id="api-{{@index}}" class="api-dropdown">
+            {{#each apis}}
+              <option value="{{this}}">{{this}}</option>
+            {{/each}}
+            </select>
+
+            {{/if}}
+            
+
+            
+        </h3>
+      </div>
+    {{/each}}
+  </template>
+  
         {{/if}}
 
-        {{#if whatIfQuery}}
+        {{#if selectAPI}}
         API:
         <select id="api-{{@index}}" class="api-dropdown">
           {{#each apis}}
