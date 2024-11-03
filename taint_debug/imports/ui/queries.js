@@ -157,10 +157,10 @@ Template.queries.helpers({
       { description: "WhyFlow: Tracking data flows from", queryType: "why_node_pair" , showSource : true, showSink: true},
       { description: "WhyNotFlow: Identifying sanitizers that remove data flows from", queryType: "whynot_node_pairs" , showSource: true, showSink: true},
       { description: "CommonFlows: Common API usages between different flow paths from", queryType: "common_paths", showSource: true, showSink: true, pairedQuery: true},
-      { description: "Affected sinks: ", queryType: "sinks_affected", selectAPI: true, showSource: true},
+      { description: "Affected sinks: ", queryType: "sinks_affected", selectApiQuery: true, showSource: true},
       { description: "Global Impact: ", queryType: "global_impact", showSource : true, showSink: true},
-      { description: "What If Relax: ", queryType: "whatif_relax", selectAPI: true, showSource : true, showSink: true},
-      { description: "What If Restrict: ", queryType: "whatif_restrict", selectAPI: true, showSource : true, showSink: true},
+      // { description: "What If Relax: ", queryType: "whatif_relax", selectAPI: true, showSource : true, showSink: true},
+      // { description: "What If Restrict: ", queryType: "whatif_restrict", selectAPI: true, showSource : true, showSink: true},
     ];
   },
   sources() {

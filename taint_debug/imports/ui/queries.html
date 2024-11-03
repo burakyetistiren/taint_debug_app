@@ -50,18 +50,22 @@
       <h3>
         {{description}}
         
+        {{#if showSource}}
         Source:
         <select id="src-{{@index}}" class="src-dropdown">
           {{#each sources}}
             <option value="{{id}}">{{id}} - {{description}}</option>
           {{/each}}
         </select>
+        {{/if}}
+        {{#if showSink}}
         Sink:
         <select id="sink-{{@index}}" class="sink-dropdown">
           {{#each sinks}}
             <option value="{{id}}">{{id}} - {{description}}</option>
           {{/each}}
         </select>
+        {{/if}}
         {{#if pairedQuery}}
           Source:
           <select id="second-src-{{@index}}" class="second-src-dropdown">
@@ -77,7 +81,7 @@
           </select>
         {{/if}}
 
-        {{#if whatIfQuery}}
+        {{#if selectApiQuery}}
         API:
         <select id="api-{{@index}}" class="api-dropdown">
           {{#each apis}}
