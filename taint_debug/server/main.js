@@ -8,6 +8,8 @@ export const Paths = new Mongo.Collection('paths');
 export const Libs = new Mongo.Collection('libs');
 export const Nodes = new Mongo.Collection('nodes');
 export const Edges = new Mongo.Collection('edges');
+export const Sources = new Mongo.Collection('sources');
+export const Sinks = new Mongo.Collection('sinks');
 export const QueryResults = new Mongo.Collection('queryResults');
 
 const PROJECT_PATH = process.env.PWD;
@@ -78,8 +80,8 @@ Meteor.startup(() => {
 
 
   // Read additional facts files
-  const sinks =  readFactFile('sink.facts');
-  const sources = readFactFile('source.facts');
+  const sinks = getSinksFromPlausibleWarningPaths()
+  const sources = getSourcesFromPlausibleWarningPaths();
   const sanitizers = readCurrentSanitizers();
   const apiNodes = readLibraryNodes();
   const apiMapping = readLibMapping();
@@ -90,7 +92,8 @@ Meteor.startup(() => {
     getFactNodes() {
       return {
         
-        nodes: Nodes.find({}).fetch(),
+        nodes: [],
+        // Nodes.find({}).fetch(), // this isn't used?
         edges: [],
 
         sinks,
@@ -112,6 +115,22 @@ function readFactFile(filename) {
   if (!fs.existsSync(filepath)) return [];
   const data = fs.readFileSync(filepath, 'utf8');
   return data.split('\n').filter(Boolean).map(Number);
+}
+
+function getSinksFromPlausibleWarningPaths() {
+  // just read from the database
+  let sinks = Sinks.find().fetch();
+
+  // return nodeId
+  return sinks.map(sink => sink.nodeId);
+}
+
+function getSourcesFromPlausibleWarningPaths() {
+  // just read from the database
+  let sources = Sources.find().fetch();
+
+  // return nodeId
+  return sources.map(source => source.nodeId);
 }
 
 function readCurrentSanitizers() {
@@ -182,6 +201,8 @@ function setupAndReadAnalysisData() {
   let warningToReported = new Map();
   let nodePairToEdgeId = new Map();
 
+  let plausibleSources = new Set();
+  let plausibleSinks = new Set();
   
   const nodeMapping = readNodeMapping();
   const apiMapping = readLibMapping();
@@ -251,6 +272,21 @@ function setupAndReadAnalysisData() {
     });
     return paths;
   }).then(paths => {
+    paths.forEach(({ source, sink, nodeLibIndicesAndEdgeId, reported }) => {
+      plausibleSources.add(source);
+      plausibleSinks.add(sink);
+    });
+
+    // log
+    console.log('plausibleSources:', plausibleSources.size);
+    console.log('plausibleSinks:', plausibleSinks.size);
+    // insert sources and sinks
+    Sources.batchInsert(Array.from(plausibleSources).map(source => ({ nodeId: source, description: nodeMapping[source].description })));
+    Sinks.batchInsert(Array.from(plausibleSinks).map(sink => ({ nodeId: sink, description: nodeMapping[sink].description })));
+
+    return paths;
+  })
+  .then(paths => {
     
     console.log(' Processing the data.');
     paths.forEach(({ source, sink, nodeLibIndicesAndEdgeId, reported }) => {
