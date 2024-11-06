@@ -73,15 +73,23 @@
       }
     </style>
 
-    <div class="row" style="height: 50vh;"> <!-- First row -->
-      <div class="column view-container"> <!-- First column of the first row -->
+    <!--
+    <div class="row" style="height: 50vh;">  
+      <div class="column view-container"> 
         {{> queries}}
       </div>
-      <div class="column view-container graph-view"> <!-- Second column of the first row -->
+      <div class="column view-container graph-view"> 
         <h1>Graph view</h1>
         {{> cytoscapeContainer}}
       </div>
     </div>
+    -->
+    <div class="row" style="height: 50vh;">  
+      <div class="column view-container"> 
+        {{> queries}}
+      </div>
+    </div>
+
 
     <div class="row full-width"> <!-- Second row -->
       <div class="column taint-paths-view"> <!-- Full width for taint paths -->

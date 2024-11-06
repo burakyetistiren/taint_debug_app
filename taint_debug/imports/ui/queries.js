@@ -150,6 +150,11 @@ Template.queries.onCreated(function() {
   });
 });
 
+Template.registerHelper('eq', (a, b) => {
+  return a === b;
+});
+
+
 
 Template.queries.helpers({
   queries() {

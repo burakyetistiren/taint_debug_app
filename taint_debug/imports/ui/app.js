@@ -101,22 +101,29 @@ Meteor.startup(() => {
 
             if (sinks.includes(nodeId)) {
               color = '#FF0000';
-              console.log(`Node ${nodeId} is a sink, assigned color: red`);
+              //console.log(`Node ${nodeId} is a sink, assigned color: red`);
             } else if (sources.includes(nodeId)) {
               color = '#FF8C00';
-              console.log(`Node ${nodeId} is a source, assigned color: orange`);
+              //console.log(`Node ${nodeId} is a source, assigned color: orange`);
             } else if (sanitizers.includes(nodeId)) {
               color = '#21d900';
-              console.log(`Node ${nodeId} is a sanitizer, assigned color: green`);
+              //console.log(`Node ${nodeId} is a sanitizer, assigned color: green`);
             } else if (apiNodes.includes(nodeId)) {
               color = '#FFFF00';
-              console.log(`Node ${nodeId} is an API, assigned color: yellow`);
+              //console.log(`Node ${nodeId} is an API, assigned color: yellow`);
             }
 
             // Use the node description from the mapping
             const nodeToAdd = nodeMapping[nodeId];
-            nodeToAdd.file = nodeToAdd.file.split('/').pop(); // Remove the path from the file name
-            const nodeDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || nodeId;
+            const firstIndex = nodeToAdd.file.indexOf("/src/main/java/");
+            const secondIndex = nodeToAdd.file.indexOf("/src/main/java/", firstIndex + 1);
+          
+            // If there is a second occurrence, get the substring from that point onward
+            if (secondIndex !== -1) {
+              const targetPath = nodeToAdd.file.substring(secondIndex + "/src/main/java/".length);
+              nodeToAdd.file = targetPath.replace(/\//g, ".");
+            }
+            const nodeDescription = nodeToAdd.file + ", " + nodeToAdd.description || nodeId;
 
             nodes.push({
               data: { id: 'node_' + nodeId, description: nodeDescription, 'original-background-color': color, 'original-text-color': textColor },
@@ -125,17 +132,20 @@ Meteor.startup(() => {
           });
 
           // For easy debugging, limit to only nodes under 100
-          nodes = nodes.filter(node => parseInt(node.data.id.replace('node_', '')) < 500);
+          //nodes = nodes.filter(node => parseInt(node.data.id.replace('node_', '')) < 500);
 
           console.log('Nodes:', nodes);
 
           result.edges
             // For easy debugging, limit to only nodes under 100
-            .filter(edge => parseInt(edge.sourceId) < 500 && parseInt(edge.targetId) < 500)
+            //.filter(edge => parseInt(edge.sourceId) < 500 && parseInt(edge.targetId) < 500)
             .forEach(edge => edges.push({
               data: { id: 'edge_' + edge.edgeId.toString(), source: 'node_' + edge.sourceId.toString(), target: 'node_' + edge.targetId.toString(), description: "Warning " + edge.warningNumber + " id:" + edge.edgeId }
-            }));
-
+            }));   
+            
+          console.log('Edges:', edges);
+          
+          /** 
           // Initialize Cytoscape with nodes and edges
           let cy = cytoscape({
             container: document.getElementById('cy'),
@@ -294,6 +304,7 @@ Meteor.startup(() => {
           });
 
           console.log('Cytoscape elements:', cy.elements().jsons());
+          */
         });
       });
     });
