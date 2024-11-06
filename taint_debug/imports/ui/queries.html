@@ -1,95 +1,196 @@
 <template name="queries">
   <style>
+    .query-container {
+      padding: 20px;
+      background-color: #f5f5f5;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .query-header {
+      font-size: 1.8em;
+      color: #007BFF;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
     .query-box {
-      border: 1px solid #ccc;
+      background-color: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
       padding: 15px;
-      margin: 10px 0;
-      border-radius: 5px;
-      background-color: #f9f9f9;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      margin-bottom: 15px;
+      transition: box-shadow 0.3s;
+    }
+    .query-box:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
     }
     .query-box h3 {
-      margin: 0 0 10px;
-      font-size: 1.5em;
+      font-size: 1.25em;
       color: #333;
+      margin-bottom: 8px;
     }
     .query-box label {
-      margin-right: 5px;
+      font-weight: bold;
+      color: #666;
     }
     .query-box select {
+      padding: 8px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 5px;
       margin-right: 20px;
-      padding: 5px;
     }
-    .highlighted {
-      background-color: red !important;
+    .query-icon {
+      font-size: 1.2em;
+      color: #007BFF;
     }
   </style>
-  <h1>Query</h1>
-  <div class="query-box">
-    <h3>
-      Focus on node:
+
+  <div class="query-container">
+    <div class="query-header">
+      <span class="query-icon">🔍</span>
+      <h1>Query Options</h1>
+    </div>
+
+    <!-- Focus on Node Query -->
+    <div class="query-box">
+      <h3>Focus on Node</h3>
+      <label for="focus-node">Select Node:</label>
       <select id="focus-node" class="focus-dropdown-node">
         {{#each nodes}}
           <option value="{{id}}">{{id}} - {{description}}</option>
         {{/each}}
       </select>
-    </h3>
-  </div>
-  <div class="query-box">
-    <h3>
-      Focus on edge:
+    </div>
+
+    <!-- Focus on Edge Query -->
+    <div class="query-box">
+      <h3>Focus on Edge</h3>
+      <label for="focus-edge">Select Edge:</label>
       <select id="focus-edge" class="focus-dropdown-edge">
         {{#each edges}}
           <option value="{{id}}">{{id}} - {{description}}</option>
         {{/each}}
       </select>
-    </h3>
-  </div>
-  {{#each queries}}
-    <div class="query-box" data-query="{{queryType}}">
-      <h3>
-        {{description}}
-        
-        {{#if showSource}}
-        Source:
-        <select id="src-{{@index}}" class="src-dropdown">
-          {{#each sources}}
-            <option value="{{id}}">{{id}} - {{description}}</option>
-          {{/each}}
-        </select>
-        {{/if}}
-        {{#if showSink}}
-        Sink:
-        <select id="sink-{{@index}}" class="sink-dropdown">
-          {{#each sinks}}
-            <option value="{{id}}">{{id}} - {{description}}</option>
-          {{/each}}
-        </select>
-        {{/if}}
-        {{#if pairedQuery}}
-          Source:
+    </div>
+
+    <!-- Dynamic Queries Based on Query Type -->
+    {{#each queries}}
+      {{#if (eq queryType "why_node_pair")}}
+        <div class="query-box" data-query="why_node_pair">
+          <h3>{{description}}</h3>
+          <label for="src-{{@index}}">Source Node:</label>
+          <select id="src-{{@index}}" class="src-dropdown">
+            {{#each sources}}
+              <option value="{{id}}">{{id}} - {{description}}</option>
+            {{/each}}
+          </select>
+          <span>to</span>
+          <label for="sink-{{@index}}">Sink Node:</label>
+          <select id="sink-{{@index}}" class="sink-dropdown">
+            {{#each sinks}}
+              <option value="{{id}}">{{id}} - {{description}}</option>
+            {{/each}}
+          </select>
+          <p>Identifies APIs that contribute to the existance of a specific flow.</p>
+        </div>
+      {{/if}}
+
+      {{#if (eq queryType "whynot_node_pairs")}}
+        <div class="query-box" data-query="whynot_node_pairs">
+          <h3>{{description}}</h3>
+          <label for="src-{{@index}}">Source Node:</label>
+          <select id="src-{{@index}}" class="src-dropdown">
+            {{#each sources}}
+              <option value="{{id}}">{{id}} - {{description}}</option>
+            {{/each}}
+          </select>
+          <span>to</span>
+          <label for="sink-{{@index}}">Sink Node:</label>
+          <select id="sink-{{@index}}" class="sink-dropdown">
+            {{#each sinks}}
+              <option value="{{id}}">{{id}} - {{description}}</option>
+            {{/each}}
+          </select>
+          <p>Identifies APIs that act as sanitizers in certain flows.</p>
+        </div>
+      {{/if}}
+
+      {{#if (eq queryType "common_paths")}}
+        <div class="query-box" data-query="common_paths">
+          <h3>{{description}}</h3>
+          <label for="src-{{@index}}">First Source Node:</label>
+          <select id="src-{{@index}}" class="src-dropdown">
+            {{#each sources}}
+              <option value="{{id}}">{{id}} - {{description}}</option>
+            {{/each}}
+          </select>
+          <span>to</span>
+          <label for="sink-{{@index}}">First Sink Node:</label>
+          <select id="sink-{{@index}}" class="sink-dropdown">
+            {{#each sinks}}
+              <option value="{{id}}">{{id}} - {{description}}</option>
+            {{/each}}
+          </select>
+          <span>and</span>
+          <label for="second-src-{{@index}}">Second Source Node:</label>
           <select id="second-src-{{@index}}" class="second-src-dropdown">
             {{#each secondPairSources}}
               <option value="{{id}}">{{id}} - {{description}}</option>
             {{/each}}
           </select>
-          Sink:
+          <span>to</span>
+          <label for="second-sink-{{@index}}">Second Sink Node:</label>
           <select id="second-sink-{{@index}}" class="second-sink-dropdown">
             {{#each secondPairSinks}}
               <option value="{{id}}">{{id}} - {{description}}</option>
             {{/each}}
           </select>
-        {{/if}}
+          <p>Identifies common subpaths and APIs between two flows.</p>
+        </div>
+      {{/if}}
 
-        {{#if selectApiQuery}}
-        API:
-        <select id="api-{{@index}}" class="api-dropdown">
-          {{#each apis}}
-            <option value="{{this}}">{{this}}</option>
-          {{/each}}
-        </select>
-        {{/if}}
-      </h3>
-    </div>
-  {{/each}}
+      {{#if (eq queryType "sinks_affected")}}
+        <div class="query-box" data-query="sinks_affected">
+          <h3>{{description}}</h3>
+          <label for="api-{{@index}}">API:</label>
+          <select id="api-{{@index}}" class="api-dropdown">
+            {{#each apis}}
+              <option value="{{this}}">{{id}} - {{description}}</option>
+            {{/each}}
+          </select>
+          <span>to act as a sanitizer starting from</span>
+          <label for="src-{{@index}}">Source Node:</label>
+          <select id="src-{{@index}}" class="src-dropdown">
+            {{#each sources}}
+              <option value="{{id}}">{{id}} - {{description}}</option>
+            {{/each}}
+          </select>
+          <p>Identifies sinks that can be affected by the removal specific API.</p>
+        </div>
+      {{/if}}
+
+      {{#if (eq queryType "global_impact")}}
+        <div class="query-box" data-query="global_impact">
+          <h3>{{description}}</h3>
+          <label for="src-{{@index}}">Source Node:</label>
+          <select id="src-{{@index}}" class="src-dropdown">
+            {{#each sources}}
+              <option value="{{id}}">{{id}} - {{description}}</option>
+            {{/each}}
+          </select>
+          <span>to</span>
+          <label for="sink-{{@index}}">Sink Node:</label>
+          <select id="sink-{{@index}}" class="sink-dropdown">
+            {{#each sinks}}
+              <option value="{{id}}">{{id}} - {{description}}</option>
+            {{/each}}
+          </select>
+          <p>Rank APIs by frequency across all flows.</p>
+        </div>
+      {{/if}}
+    {{/each}}
+  </div>
 </template>

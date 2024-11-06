@@ -175,26 +175,6 @@ function readNodeMapping() {
   return nodeMapping;
 }
 
-function filterPathsLibs(map) {
-  map.forEach((value, key) => {
-      const filteredPaths = [];
-
-      value.sort((a, b) => a.step - b.step);
-
-      for (let i = 0; i < value.length; i++) {
-          const current = value[i];
-
-          if (i === 0 || current.prevNode === filteredPaths[filteredPaths.length - 1].nodeId) {
-              filteredPaths.push(current);
-          }
-      }
-
-      map.set(key, filteredPaths);
-  });
-}
-
-
-
 function setupAndReadAnalysisData() {
   let pathsLibs = new Map();
   let codeSets = [];
@@ -254,20 +234,13 @@ function setupAndReadAnalysisData() {
       
       if (!pathsLibs.has(key)) {
         pathsLibs.set(key, []);
-        pathsLibs.get(key).push({ nodeId: node, lib: libIndex, edgeId: edge, step: step, prevNode: prevNode });
+        pathsLibs.get(key).push({ nodeId: node, lib: libIndex, edgeId: edge, prevNode: prevNode });
         warningToReported.set(key, false);
 
         nodePairToEdgeId.set(key, edge);
       }
       
     });
-  }).then(() => {
-    console.log('Processing paths. ');
-    // we only show one path for each warning
-    // for each item for each pathsLibs's value
-    // identify one node for each step
-    filterPathsLibs(pathsLibs);
-    
   }).then(() => {
     console.log('Finished reading plausible_warning_paths.csv. Processing.');
 
@@ -292,7 +265,7 @@ function setupAndReadAnalysisData() {
           nodeId: source,
           description: nodeMapping[source].description,
         },
-        middle: nodeLibIndicesAndEdgeId.map(({ nodeId, lib, edgeId, step, prevNode }) => ({
+        middle: nodeLibIndicesAndEdgeId.map(({ nodeId, lib, edgeId, prevNode }) => ({
           code: '', // codeSnippetOfNodeWithHighlight(nodeId, nodeMapping),
           nodeId: nodeId,
           lib: lib,
@@ -441,6 +414,9 @@ Meteor.methods({
     });
     return nodeMapping;
   },
+  readLibMapping() {
+    return readLibMapping();
+  },
   readFileContents(filePath) {
     var file = fs.readFileSync(path.join(PROJECT_PATH, filePath), 'utf8');
     return file;
@@ -523,6 +499,17 @@ Meteor.methods({
 
     return { nodes: nodeMapping, edges: edges };
   },
+  readAllPaths() {
+    const lines = fs.readFileSync(path.join(ANALYSIS_PATH, 'souffle_files/all_paths.debug'), 'utf8').split('\n');
+    const paths = [];
+    lines.forEach(line => {
+      if (line.trim()) {
+        const [source, sink, ...middle] = line.trim().split('\t');
+        paths.push({ source, sink, middle });
+      }
+    });
+
+  },
   runQuery(queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId) {
     console.log('Running query:', queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId);
 
@@ -535,10 +522,6 @@ Meteor.methods({
       fs.writeFileSync(queryFactsFile, `${sourceId}\t${sinkId}\t${secondSourceId}\t${secondSinkId}\n`);
     } else if (['whatif_relax', 'whatif_restrict'].includes(queryType)) {
       fs.writeFileSync(queryFactsFile, `${sourceId}\t${sinkId}\t${selectedAPIId}\n`);
-    } else if (['sinks_affected'].includes(queryType)) {
-      fs.writeFileSync(queryFactsFile, `${sourceId}\t${selectedAPIId}\n`);
-    } else if (['global_impact'].includes(queryType)) {
-      fs.writeFileSync(queryFactsFile, `${sourceId}\t${sinkId}\n`);
     }
 
     // Execute Souffle query
@@ -569,13 +552,12 @@ Meteor.methods({
         .map(row => row.split('\t').map(Number))
         .map(row => row.slice(-3))
         .filter(row => row.length == 3);
-      console.log(sourceId, sinkId, selectedAPIId)
       console.log("nodesOnPath", nodesOnPath)
 
-      // // remove old QueryResults without the same sourceId 
-      // QueryResults.remove({ sourceId: { '$ne' : sourceId}  });
+      // remove old QueryResults without the same sourceId 
+      QueryResults.remove({ sourceId: { '$ne' : sourceId}  });
 
-      QueryResults.insert({ queryType, sourceId, sinkId, selectedAPIId, libNodes, nodesOnPath });
+      QueryResults.insert({ queryType, sourceId, sinkId, libNodes, nodesOnPath });
 
       
     }));

@@ -8,7 +8,6 @@ import './paths.js';
 
 
 Template.body.helpers({
-
     message() {
         return "Hello!";
     },
@@ -49,17 +48,13 @@ Template.body.helpers({
                 }
                 // check if nodesOnPath contains any queryResultsNodes
                 var containsAny = false;
-                var containsAll = true;
-
                 for (var j = 0; j < queryResultsNodes.length; j++) {
                     if (nodesOnPath.includes(queryResultsNodes[j][0])) {
                         containsAny = true;
-                    } else {
-                        containsAll = false;
+                        break;
                     }
                 }
-
-                if (containsAll) {
+                if (containsAny) {
                     pathsToDisplay.push(paths[i]);
 
                 }
