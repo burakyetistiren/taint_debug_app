@@ -159,13 +159,11 @@ Template.registerHelper('eq', (a, b) => {
 Template.queries.helpers({
   queries() {
     return [
-      { description: "WhyFlow: Tracking data flows from", queryType: "why_node_pair" , showSource : true, showSink: true},
-      { description: "WhyNotFlow: Identifying sanitizers that remove data flows from", queryType: "whynot_node_pairs" , showSource: true, showSink: true},
-      { description: "CommonFlows: Common API usages between different flow paths from", queryType: "common_paths", showSource: true, showSink: true, pairedQuery: true},
-      { description: "Affected sinks: ", queryType: "sinks_affected", selectAPI: true, showSource: true},
-      { description: "Global Impact: ", queryType: "global_impact", showSource : true, showSink: true},
-      { description: "What If Relax: ", queryType: "whatif_relax", selectAPI: true, showSource : true, showSink: true},
-      { description: "What If Restrict: ", queryType: "whatif_restrict", selectAPI: true, showSource : true, showSink: true},
+      { description: "WhyNotFlow: Which APIs are sanitizers that disconnect a flow from a source to a sink?", queryType: "why_node_pair" , showSource : true, showSink: true},
+      { description: "WhyFlow: Which APIs are intermediaries from a source to a sink?", queryType: "whynot_node_pairs" , showSource: true, showSink: true},
+      { description: "CommonFlows: which intermediaries are common between two pairs of a source and a sink?", queryType: "common_paths", showSource: true, showSink: true, pairedQuery: true},
+      { description: "AffectedSinks: What are sinks that would be no longer reachable if this API X becomes a sanitizer?", queryType: "sinks_affected", selectAPI: true, showSource: true},
+      { description: "GlobalImpact: Rank the global impact of intermediary APIs from a source and a sink based on frequency.", queryType: "global_impact", showSource : true, showSink: true},,
     ];
   },
   sources() {
