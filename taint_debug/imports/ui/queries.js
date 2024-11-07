@@ -214,9 +214,11 @@ Template.queries.helpers({
 
   },
   apis() {
-    let values = Template.instance().libraries.get();
+    // let values = Template.instance().libraries.get();
 
-    // remove duplicate and sort
+    // fetch from Libs
+    
+    let values = Libs.find({}).fetch();
 
     values = values.filter((v, i, a) => a.indexOf(v) === i);
     values.sort();

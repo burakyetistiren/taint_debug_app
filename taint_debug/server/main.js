@@ -100,7 +100,7 @@ Meteor.startup(() => {
         sources,
         sanitizers,
         apiNodes,
-        apiLibs
+        apiMapping
       };
     },
     readDataflowJson() {
@@ -169,7 +169,7 @@ function readLibMapping() {
            .filter(Boolean)
            .reduce((map, line) => {
               const [nodeId, libId] = line.split('\t');
-              map[nodeId] = libId;
+              map[nodeId.trim()] = libId.trim();
               return map;
             }, {});
 }
@@ -558,6 +558,10 @@ Meteor.methods({
       fs.writeFileSync(queryFactsFile, `${sourceId}\t${sinkId}\t${secondSourceId}\t${secondSinkId}\n`);
     } else if (['whatif_relax', 'whatif_restrict'].includes(queryType)) {
       fs.writeFileSync(queryFactsFile, `${sourceId}\t${sinkId}\t${selectedAPIId}\n`);
+    } else if (['sinks_affected'].includes(queryType)) {
+      fs.writeFileSync(queryFactsFile, `${sourceId}\t${selectedAPIId}\n`);
+    } else if (['global_impact'].includes(queryType)) {
+      fs.writeFileSync(queryFactsFile, `${sourceId}\t${sinkId}\n`);
     }
 
     // Execute Souffle query
