@@ -90,7 +90,7 @@ function openGraphPopup() {
 
         const cy = cytoscape({
           container: cyContainer, // Set the container in the popup
-          elements: { nodes: [], edges: [] }, // Use nodes and edges from your data
+          elements: { nodes, edges}, // Use nodes and edges from your data
           style: [
             {
               selector: 'node',
