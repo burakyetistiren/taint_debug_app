@@ -6,10 +6,69 @@
       body {
         margin: 0;
         padding: 0;
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
       }
       #cy {
+        flex-grow: 1;
         width: 100vw;
-        height: 100vh;
+        height: calc(100vh - 180px); /* Reserve space for query boxes and controls */
+      }
+      .controls {
+        display: flex;
+        gap: 10px;
+        background-color: #f4f4f4;
+        padding: 10px;
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 5px;
+        z-index: 1000;
+      }
+      .control-button {
+        padding: 8px 12px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .query-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        background-color: #f5f5f5;
+        padding: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+        margin-bottom: 10px;
+        width: 100vw;
+        box-sizing: border-box;
+      }
+      .query-box {
+        background-color: #ffffff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 10px;
+        width: 45%; /* Adjust width to make them smaller */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
+      }
+      .query-box h3 {
+        font-size: 1em;
+        color: #333;
+        margin-bottom: 8px;
+      }
+      .query-box label {
+        font-weight: bold;
+        color: #666;
+      }
+      .query-box select {
+        padding: 6px;
+        font-size: 0.9em;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 100%;
       }
       .close {
         position: absolute;
@@ -17,12 +76,46 @@
         right: 10px;
         font-size: 24px;
         cursor: pointer;
+        z-index: 1001; /* Keep above other elements */
       }
     </style>
   </head>
   <body>
+    <!-- Close Button -->
     <span id="closeButton" class="close">&times;</span>
-    <div id="cy"></div> <!-- This is the container for Cytoscape -->
+
+    <!-- Query Container with Focus on Node and Focus on Edge -->
+    <div class="query-container">
+      <div class="query-box">
+        <h3>Focus on Node</h3>
+        <label for="focus-node">Select Node:</label>
+        <select id="focus-node" class="focus-dropdown-node">
+          <!-- Options will be populated dynamically in queries.js -->
+        </select>
+      </div>
+
+      <div class="query-box">
+        <h3>Focus on Edge</h3>
+        <label for="focus-edge">Select Edge:</label>
+        <select id="focus-edge" class="focus-dropdown-edge">
+          <!-- Options will be populated dynamically in queries.js -->
+        </select>
+      </div>
+    </div>
+
+    <!-- Cytoscape Container -->
+    <div id="cy"></div>
+
+    <!-- Control Buttons -->
+    <div class="controls">
+      <button id="zoomInButton" class="control-button">Zoom In</button>
+      <button id="zoomOutButton" class="control-button">Zoom Out</button>
+      <button id="resetZoomButton" class="control-button">Reset Zoom</button>
+      <button id="fitButton" class="control-button">Fit to Screen</button>
+      <button id="reorganizeButton" class="control-button">Reorganize Graph</button>
+      <button id="removeFocusButton" class="control-button">Remove Focus</button>
+    </div>
+
     <script>
       // Close button functionality for the popup window
       document.getElementById('closeButton').onclick = function () {

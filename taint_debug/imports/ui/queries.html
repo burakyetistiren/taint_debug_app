@@ -54,28 +54,6 @@
       <h1>Query Options</h1>
     </div>
 
-    <!-- Focus on Node Query -->
-    <div class="query-box">
-      <h3>Focus on Node</h3>
-      <label for="focus-node">Select Node:</label>
-      <select id="focus-node" class="focus-dropdown-node">
-        {{#each nodes}}
-          <option value="{{id}}">{{id}} - {{description}}</option>
-        {{/each}}
-      </select>
-    </div>
-
-    <!-- Focus on Edge Query -->
-    <div class="query-box">
-      <h3>Focus on Edge</h3>
-      <label for="focus-edge">Select Edge:</label>
-      <select id="focus-edge" class="focus-dropdown-edge">
-        {{#each edges}}
-          <option value="{{id}}">{{id}} - {{description}}</option>
-        {{/each}}
-      </select>
-    </div>
-
     <!-- Dynamic Queries Based on Query Type -->
     {{#each queries}}
       {{#if (eq queryType "why_node_pair")}}

@@ -54,10 +54,110 @@ function openGraphPopupWithResults(nodes, edges) {
         }
       ],
       layout: {
-        name: 'cose' // Layout algorithm
+        name: 'cose' // Initial layout for the graph
       }
     });
-    popup.cyInstance = cy;
+
+    // Populate Node and Edge Dropdowns
+    const nodeDropdown = popup.document.getElementById('focus-node');
+    const edgeDropdown = popup.document.getElementById('focus-edge');
+
+    nodes.forEach(node => {
+      const option = popup.document.createElement('option');
+      option.value = node.data.id;
+      option.textContent = `${node.data.id} - ${node.data.description}`;
+      nodeDropdown.appendChild(option);
+    });
+
+    edges.forEach(edge => {
+      const option = popup.document.createElement('option');
+      option.value = edge.data.id;
+      option.textContent = `${edge.data.id} - ${edge.data.description}`;
+      edgeDropdown.appendChild(option);
+    });
+
+    // Event listeners for focus functionality
+    nodeDropdown.addEventListener('change', function () {
+      focusOnNode(cy, this.value);
+    });
+
+    edgeDropdown.addEventListener('change', function () {
+      focusOnEdge(cy, this.value);
+    });
+
+    // Attach event listeners for zoom and reorganize controls
+    popup.document.getElementById('zoomInButton').onclick = function () {
+      cy.zoom(cy.zoom() + 0.2);
+    };
+    popup.document.getElementById('zoomOutButton').onclick = function () {
+      cy.zoom(cy.zoom() - 0.2);
+    };
+    popup.document.getElementById('resetZoomButton').onclick = function () {
+      cy.zoom(1);
+    };
+    popup.document.getElementById('fitButton').onclick = function () {
+      cy.fit();
+    };
+    popup.document.getElementById('removeFocusButton').onclick = function () {
+      removeFocus(cy);
+    };
+    popup.document.getElementById('reorganizeButton').onclick = function () {
+      reorganizeGraph(cy);
+    };
+
+    // Function to focus on a specific node by ID
+    function focusOnNode(cy, nodeId) {
+      removeFocus(cy); // Remove any previous focus
+      const selectedNode = cy.getElementById(nodeId);
+      if (selectedNode) {
+        selectedNode.addClass('highlighted');
+        selectedNode.style({ 'background-color': '#808080', 'color': '#FFFFFF' });
+        cy.animate({ center: { eles: selectedNode }, zoom: 2 }, { duration: 300 });
+      }
+    }
+
+    // Function to focus on a specific edge by ID
+    function focusOnEdge(cy, edgeId) {
+      removeFocus(cy); // Remove any previous focus
+      const selectedEdge = cy.getElementById(edgeId);
+      if (selectedEdge) {
+        selectedEdge.addClass('highlighted');
+        selectedEdge.style({ 'line-color': '#FF0000', 'target-arrow-color': '#FF0000' });
+        cy.animate({ center: { eles: selectedEdge }, zoom: 2 }, { duration: 300 });
+      }
+    }
+
+    // Function to remove focus from all elements
+    function removeFocus(cy) {
+      cy.elements().removeClass('highlighted');
+      cy.nodes().forEach(node => {
+        node.style({ 'background-color': node.data('original-background-color'), 'color': node.data('original-text-color') });
+      });
+      cy.edges().forEach(edge => {
+        edge.style({ 'line-color': '#aaaaaa', 'target-arrow-color': '#aaaaaa' });
+      });
+    }
+
+    // Function to reorganize the graph layout
+    function reorganizeGraph(cy) {
+      cy.layout({
+        name: 'cose', // Reapply the 'cose' layout to reorganize the graph
+        animate: true
+      }).run();
+    }
+
+    // Highlight style for focused elements
+    cy.style()
+      .selector('.highlighted')
+      .style({
+        'background-color': '#FF851B',
+        'line-color': '#FF4136',
+        'target-arrow-color': '#FF4136',
+        'color': '#FFFFFF'
+      })
+      .update();
+
+    popup.cyInstance = cy; // Expose for debugging
   };
 }
 
