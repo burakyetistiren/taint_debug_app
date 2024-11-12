@@ -1,5 +1,6 @@
 <!-- /public/cytoscapePopup.html -->
-<head>
+<html>
+  <head>
     <title>Graph Popup</title>
     <style>
       body {
@@ -21,12 +22,12 @@
   </head>
   <body>
     <span id="closeButton" class="close">&times;</span>
-    <div id="cy"></div>
+    <div id="cy"></div> <!-- This is the container for Cytoscape -->
+    <script>
+      // Close button functionality for the popup window
+      document.getElementById('closeButton').onclick = function () {
+        window.close();
+      };
+    </script>
   </body>
-  <script>
-    // Close button functionality for the popup window
-    document.getElementById('closeButton').onclick = function () {
-      window.close();
-    };
-  </script>
-  
+</html>

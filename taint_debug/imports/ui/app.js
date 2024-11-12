@@ -70,61 +70,75 @@ function convertToString(value) {
   }
 }
 
-// Function to open a new window with the Cytoscape graph
 function openGraphPopup() {
   // Open the popup window and set dimensions
   const popup = window.open('/cytoscapePopup.html', 'GraphPopup', 'width=800,height=600');
 
-  // Initialize Cytoscape once the popup window's content is fully loaded
-  popup.onload = function () {
-    const cy = cytoscape({
-      container: popup.document.getElementById('cy'), // Set the container in the popup
-      elements: { nodes, edges }, // Ensure nodes and edges are defined
-      style: [
-        {
-          selector: 'node',
-          style: {
-            'label': 'data(description)',
-            'text-valign': 'center',
-            'text-halign': 'center',
-            'background-color': 'data(background-color)', 
-            'color': 'data(color)',
-            'text-outline-width': 2,
-            'text-outline-color': '#0074d9',
-            'font-size': 12
-          }
-        },
-        {
-          selector: 'edge',
-          style: {
-            'label': 'data(description)',
-            'curve-style': 'bezier',
-            'target-arrow-shape': 'triangle',
-            'line-color': '#AAAAAA',
-            'target-arrow-color': '#AAAAAA',
-            'width': 2,
-            'font-size': 10,
-            'color': '#FFFFFF',
-            'text-outline-width': 1,
-            'text-outline-color': '#AAAAAA'
-          }
-        }
-      ],
-      layout: {
-        name: 'breadthfirst',
-        animate: true,
-        fit: true,
-        padding: 30,
-        directed: true,
-        spacingFactor: 1.5,
-        nodeDimensionsIncludeLabels: true,
-        avoidOverlap: true
-      }
-    });
+  // Check if popup opened successfully
+  if (!popup) {
+    console.error("Popup could not be opened. Check if popups are blocked.");
+    return;
+  }
 
-    popup.cyInstance = cy;
+  // Wait until the popup's DOM is fully loaded
+  popup.onload = function () {
+    const intervalId = setInterval(() => {
+      const cyContainer = popup.document.getElementById('cy');
+      if (cyContainer) {
+        // Once the container is found, initialize Cytoscape
+        clearInterval(intervalId);
+
+        const cy = cytoscape({
+          container: cyContainer, // Set the container in the popup
+          elements: { nodes: [], edges: [] }, // Use nodes and edges from your data
+          style: [
+            {
+              selector: 'node',
+              style: {
+                'label': 'data(description)',
+                'text-valign': 'center',
+                'text-halign': 'center',
+                'background-color': 'data(background-color)', 
+                'color': 'data(color)',
+                'text-outline-width': 2,
+                'text-outline-color': '#0074d9',
+                'font-size': 12
+              }
+            },
+            {
+              selector: 'edge',
+              style: {
+                'label': 'data(description)',
+                'curve-style': 'bezier',
+                'target-arrow-shape': 'triangle',
+                'line-color': '#AAAAAA',
+                'target-arrow-color': '#AAAAAA',
+                'width': 2,
+                'font-size': 10,
+                'color': '#FFFFFF',
+                'text-outline-width': 1,
+                'text-outline-color': '#AAAAAA'
+              }
+            }
+          ],
+          layout: {
+            name: 'breadthfirst',
+            animate: true,
+            fit: true,
+            padding: 30,
+            directed: true,
+            spacingFactor: 1.5,
+            nodeDimensionsIncludeLabels: true,
+            avoidOverlap: true
+          }
+        });
+
+        popup.cyInstance = cy; // Make cy instance available for debugging
+      }
+    }, 100); // Check every 100ms until cyContainer is found
   };
 }
+
 
 Template.mainTemplate.events({
   'click #openGraphButton': function () {
@@ -134,7 +148,6 @@ Template.mainTemplate.events({
 
 let nodes = [];
 let edges = [];
-let button = null;
 
 Meteor.startup(() => {
   nodes = [];
