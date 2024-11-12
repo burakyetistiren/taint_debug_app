@@ -231,13 +231,13 @@ Meteor.startup(() => {
           });
 
           // For easy debugging, limit to only nodes under 100
-          nodes = nodes.filter(node => parseInt(node.data.id.replace('node_', '')) < 500);
+          //nodes = nodes.filter(node => parseInt(node.data.id.replace('node_', '')) < 500);
 
           console.log('Nodes:', nodes);
 
           result.edges
             // For easy debugging, limit to only nodes under 100
-            .filter(edge => parseInt(edge.sourceId) < 500 && parseInt(edge.targetId) < 500)
+            //.filter(edge => parseInt(edge.sourceId) < 500 && parseInt(edge.targetId) < 500)
             .forEach(edge => edges.push({
               data: { id: 'edge_' + edge.edgeId.toString(), source: 'node_' + edge.sourceId.toString(), target: 'node_' + edge.targetId.toString(), description: "Warning " + edge.warningNumber + " id:" + edge.edgeId }
             }));   

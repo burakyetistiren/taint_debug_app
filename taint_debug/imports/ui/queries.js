@@ -3,18 +3,74 @@ import { Paths, Libs, Edges, Nodes } from '../api/paths.js';
 import { QueryResults } from '../api/queryresults.js';
 import './queries.html';
 
+import cytoscape from 'cytoscape';
+
+function openGraphPopupWithResults(nodes, edges) {
+  const popup = window.open('/cytoscapePopup.html', 'GraphPopup', 'width=800,height=600');
+
+  if (!popup) {
+    console.error("Popup could not be opened. Check if popups are blocked.");
+    return;
+  }
+
+  popup.onload = function () {
+    const cyContainer = popup.document.getElementById('cy');
+    if (!cyContainer) {
+      console.error('Cytoscape container not found in popup');
+      return;
+    }
+
+    const cy = cytoscape({
+      container: cyContainer,
+      elements: { nodes, edges },
+      style: [
+        {
+          selector: 'node',
+          style: {
+            'label': 'data(description)',
+            'text-valign': 'center',
+            'text-halign': 'center',
+            'background-color': 'data(original-background-color)',
+            'color': 'data(original-text-color)',
+            'font-size': '14px',
+            'text-outline-width': 2,
+            'text-outline-color': '#000000'
+          }
+        },
+        {
+          selector: 'edge',
+          style: {
+            'label': 'data(description)',
+            'curve-style': 'bezier',
+            'target-arrow-shape': 'triangle',
+            'line-color': '#aaaaaa',
+            'target-arrow-color': '#aaaaaa',
+            'width': 2,
+            'font-size': '10px',
+            'color': '#000000',
+            'text-outline-width': 1,
+            'text-outline-color': '#ffffff'
+          }
+        }
+      ],
+      layout: {
+        name: 'cose' // Layout algorithm
+      }
+    });
+    popup.cyInstance = cy;
+  };
+}
+
 function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId) {
   console.log('Running query:', queryType, sourceId, sinkId);
   Meteor.call('runQuery', queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId, (error, result) => {
     if (error) {
       console.error('Error running query:', error);
-    } else {
-      console.log('Query result:', result);
+      return;
     }
     
-    // fetch latest QueryResults
-    const queryResults = QueryResults.findOne({sourceId: sourceId, sinkId: sinkId, selectedAPIId: selectedAPIId});
-    
+    // Fetch the latest QueryResults
+    const queryResults = QueryResults.findOne({ sourceId: sourceId, sinkId: sinkId, selectedAPIId: selectedAPIId });
     console.log('QueryResults:', queryResults);
 
     if (!queryResults) {
@@ -22,11 +78,9 @@ function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceI
       return;
     }
 
-    const cy = window.cyInstance;
-    
     const nodesToKeep = queryResults.nodesOnPath;
     const cyNodesToShow = [];
-    
+
     nodesToKeep.forEach(nodeOnPathTuple => {
       const nodeId = nodeOnPathTuple[0];
       const libNode = nodeOnPathTuple[2];
@@ -41,15 +95,15 @@ function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceI
       if (libNode != -1) {
         color = '#FF851B';
       }
-      
 
       cyNodesToShow.push({
-        data: { id: 'node_' + nodeId, description: nodeId + ' ' + node.description, 'original-background-color': color, 'original-text-color': textColor },
+        data: { id: 'node_' + nodeId, description: nodeId + ' ' + (node?.description || ''), 'original-background-color': color, 'original-text-color': textColor },
         style: { 'background-color': color, 'color': textColor }
       });
     });
-    // also the source and sink nodes
-    if (queryType != 'common_paths') {
+
+    // Add source and sink nodes
+    if (queryType !== 'common_paths') {
       cyNodesToShow.push({
         data: { id: 'node_' + sourceId, description: sourceId + ' Source', 'original-background-color': '#2ECC40', 'original-text-color': '#FFFFFF' },
         style: { 'background-color': '#2ECC40', 'color': '#FFFFFF' }
@@ -65,24 +119,18 @@ function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceI
     const nodeIdsToKeep = cyNodesToShow.map(node => node.data.id);
 
     const allEdges = Edges.find({}).fetch();
-    const edgesToKeep = allEdges.filter(edge => 
-      nodeIdsToKeep.includes('node_' + edge.sourceId) && nodeIdsToKeep.includes('node_' + edge.targetId)
-    );
-
-    cy.elements().remove();
-
-    cy.add(cyNodesToShow);
-
-    edgesToKeep.forEach(edge => {
-      cy.add({
+    const edgesToKeep = allEdges
+      .filter(edge => nodeIdsToKeep.includes('node_' + edge.sourceId) && nodeIdsToKeep.includes('node_' + edge.targetId))
+      .map(edge => ({
         group: 'edges',
         data: { source: 'node_' + edge.sourceId, target: 'node_' + edge.targetId }
-      });
-    });
+      }));
 
-    cy.layout({ name: 'cose' }).run();
+    // Open the popup and initialize the graph with nodes and edges
+    openGraphPopupWithResults(cyNodesToShow, edgesToKeep);
   });
 }
+
 let nodeMapping = {};
 
 Template.queries.onCreated(function() {
