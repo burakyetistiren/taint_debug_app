@@ -1,0 +1,32 @@
+<!-- /public/cytoscapePopup.html -->
+<head>
+    <title>Graph Popup</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #cy {
+        width: 100vw;
+        height: 100vh;
+      }
+      .close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 24px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <span id="closeButton" class="close">&times;</span>
+    <div id="cy"></div>
+  </body>
+  <script>
+    // Close button functionality for the popup window
+    document.getElementById('closeButton').onclick = function () {
+      window.close();
+    };
+  </script>
+  

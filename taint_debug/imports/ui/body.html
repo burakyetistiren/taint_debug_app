@@ -3,6 +3,10 @@
 </head>
 
 <body>
+  {{> mainTemplate }}
+</body>
+
+<template name="mainTemplate">
     <style>
       .row {
         display: flex;
@@ -84,15 +88,17 @@
       </div>
     </div>
     -->
+
+    <button id="openGraphButton">Open Graph</button>
+
     <div class="row" style="height: 50vh;">  
       <div class="column view-container"> 
         {{> queries}}
       </div>
     </div>
 
-
-    <div class="row full-width"> <!-- Second row -->
-      <div class="column taint-paths-view"> <!-- Full width for taint paths -->
+    <div class="row full-width">
+      <div class="column taint-paths-view">
         <h1>Taint paths</h1>
         {{#each pathsToDisplay}}
           {{> path}}
@@ -100,10 +106,10 @@
       </div>
     </div>
 
-    <div class="row full-width"> <!-- New row for JSON view -->
+    <div class="row full-width">
       <div class="column json-view-container">
         <h1>JSON View</h1>
         {{> jsonView}}
       </div>
     </div>
-</body>
+</template> 

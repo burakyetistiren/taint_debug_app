@@ -14,7 +14,7 @@ import './queries.html';
 import './queries.js';
 import './query.html';
 import './query.js';
-import './cytoscapeContainer.html';
+import './cytoscapeModal.html';
 
 window.Paths = Paths;
 window.Libs = Libs;
@@ -55,9 +55,89 @@ function makeTippy(ele, text) {
   });
 }
 
+function convertToString(value) {
+  if (Array.isArray(value)) {
+    return value.map(String);
+  } else if (typeof value === 'object' && value !== null) {
+    const result = {};
+    for (const key in value) {
+      result[key] = convertToString(value[key]);
+    }
+    return result;
+  } else {
+    return String(value);
+  }
+}
+
+// Function to open a new window with the Cytoscape graph
+function openGraphPopup() {
+  // Open the popup window and set dimensions
+  const popup = window.open('/cytoscapePopup.html', 'GraphPopup', 'width=800,height=600');
+
+  // Initialize Cytoscape once the popup window's content is fully loaded
+  popup.onload = function () {
+    const cy = cytoscape({
+      container: popup.document.getElementById('cy'), // Set the container in the popup
+      elements: { nodes, edges }, // Ensure nodes and edges are defined
+      style: [
+        {
+          selector: 'node',
+          style: {
+            'label': 'data(description)',
+            'text-valign': 'center',
+            'text-halign': 'center',
+            'background-color': 'data(background-color)', 
+            'color': 'data(color)',
+            'text-outline-width': 2,
+            'text-outline-color': '#0074d9',
+            'font-size': 12
+          }
+        },
+        {
+          selector: 'edge',
+          style: {
+            'label': 'data(description)',
+            'curve-style': 'bezier',
+            'target-arrow-shape': 'triangle',
+            'line-color': '#AAAAAA',
+            'target-arrow-color': '#AAAAAA',
+            'width': 2,
+            'font-size': 10,
+            'color': '#FFFFFF',
+            'text-outline-width': 1,
+            'text-outline-color': '#AAAAAA'
+          }
+        }
+      ],
+      layout: {
+        name: 'breadthfirst',
+        animate: true,
+        fit: true,
+        padding: 30,
+        directed: true,
+        spacingFactor: 1.5,
+        nodeDimensionsIncludeLabels: true,
+        avoidOverlap: true
+      }
+    });
+
+    popup.cyInstance = cy;
+  };
+}
+
+Template.mainTemplate.events({
+  'click #openGraphButton': function () {
+    openGraphPopup();
+  }
+});
+
+let nodes = [];
+let edges = [];
+let button = null;
+
 Meteor.startup(() => {
-  let nodes = [];
-  const edges = [];
+  nodes = [];
+  edges = [];
 
   Meteor.defer(() => {
     // Fetch the node mapping
@@ -82,8 +162,13 @@ Meteor.startup(() => {
           }
 
           // Convert every element in factNodes to string
-          for (var key in factNodes) {
-            factNodes[key] = factNodes[key].map(String);
+          console.log('Fact nodes:', factNodes);
+          for (const key in factNodes) {
+            try {
+              factNodes[key] = convertToString(factNodes[key]);
+            } catch (e) {
+              console.log('Error converting to string:', e);
+            }
           }
 
           const { sinks, sources, sanitizers, apiNodes, apiLibs } = factNodes;
@@ -132,13 +217,13 @@ Meteor.startup(() => {
           });
 
           // For easy debugging, limit to only nodes under 100
-          //nodes = nodes.filter(node => parseInt(node.data.id.replace('node_', '')) < 500);
+          nodes = nodes.filter(node => parseInt(node.data.id.replace('node_', '')) < 500);
 
           console.log('Nodes:', nodes);
 
           result.edges
             // For easy debugging, limit to only nodes under 100
-            //.filter(edge => parseInt(edge.sourceId) < 500 && parseInt(edge.targetId) < 500)
+            .filter(edge => parseInt(edge.sourceId) < 500 && parseInt(edge.targetId) < 500)
             .forEach(edge => edges.push({
               data: { id: 'edge_' + edge.edgeId.toString(), source: 'node_' + edge.sourceId.toString(), target: 'node_' + edge.targetId.toString(), description: "Warning " + edge.warningNumber + " id:" + edge.edgeId }
             }));   
