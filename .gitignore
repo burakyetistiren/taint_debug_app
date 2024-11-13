@@ -13,3 +13,5 @@ souffle_output/why_node_pair_answer.csv
 souffle_output/whynot_node_pairs_answer.csv
 analysis_files/plausible_warning_paths.csv
 analysis_files/warning_paths.csv
+souffle_output/common_paths_answer.csv
+souffle_output/global_impact_answer.csv

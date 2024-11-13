@@ -3,37 +3,201 @@ import { Paths, Libs, Edges, Nodes } from '../api/paths.js';
 import { QueryResults } from '../api/queryresults.js';
 import './queries.html';
 
-function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId) {
-  console.log('Running query:', queryType, sourceId, sinkId);
-  Meteor.call('runQuery', queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId, (error, result) => {
-    if (error) {
-      console.error('Error running query:', error);
-    } else {
-      console.log('Query result:', result);
+import cytoscape from 'cytoscape';
+
+function openGraphPopupWithResults(nodes, edges) {
+  const popup = window.open('/cytoscapePopup.html', 'GraphPopup', 'width=800,height=600');
+
+  if (!popup) {
+    console.error("Popup could not be opened. Check if popups are blocked.");
+    return;
+  }
+
+  popup.onload = function () {
+    const cyContainer = popup.document.getElementById('cy');
+    if (!cyContainer) {
+      console.error('Cytoscape container not found in popup');
+      return;
     }
-    
-    // fetch latest QueryResults
-    const queryResults = QueryResults.findOne({sourceId: sourceId, sinkId: sinkId, selectedAPIId: selectedAPIId});
-    
-    console.log('QueryResults:', queryResults);
+
+    const cy = cytoscape({
+      container: cyContainer,
+      elements: { nodes, edges },
+      style: [
+        {
+          selector: 'node',
+          style: {
+            'label': 'data(description)',
+            'text-valign': 'center',
+            'text-halign': 'center',
+            'background-color': 'data(original-background-color)',
+            'color': 'data(original-text-color)',
+            'font-size': '14px',
+            'text-outline-width': 2,
+            'text-outline-color': '#000000'
+          }
+        },
+        {
+          selector: 'edge',
+          style: {
+            'label': 'data(description)',
+            'curve-style': 'bezier',
+            'target-arrow-shape': 'triangle',
+            'line-color': '#aaaaaa',
+            'target-arrow-color': '#aaaaaa',
+            'width': 2,
+            'font-size': '10px',
+            'color': '#000000',
+            'text-outline-width': 1,
+            'text-outline-color': '#ffffff'
+          }
+        }
+      ],
+      layout: {
+        name: 'cose' // Initial layout for the graph
+      }
+    });
+
+    // Populate Node and Edge Dropdowns
+    const nodeDropdown = popup.document.getElementById('focus-node');
+    const edgeDropdown = popup.document.getElementById('focus-edge');
+
+    nodes.forEach(node => {
+      const option = popup.document.createElement('option');
+      option.value = node.data.id;
+      option.textContent = `${node.data.id} - ${node.data.description}`;
+      nodeDropdown.appendChild(option);
+    });
+
+    edges.forEach(edge => {
+      const option = popup.document.createElement('option');
+      option.value = edge.data.id;
+      option.textContent = `${edge.data.id} - ${edge.data.description}`;
+      edgeDropdown.appendChild(option);
+    });
+
+    // Event listeners for focus functionality
+    nodeDropdown.addEventListener('change', function () {
+      focusOnNode(cy, this.value);
+    });
+
+    edgeDropdown.addEventListener('change', function () {
+      focusOnEdge(cy, this.value);
+    });
+
+    // Attach event listeners for zoom and reorganize controls
+    popup.document.getElementById('zoomInButton').onclick = function () {
+      cy.zoom(cy.zoom() + 0.2);
+    };
+    popup.document.getElementById('zoomOutButton').onclick = function () {
+      cy.zoom(cy.zoom() - 0.2);
+    };
+    popup.document.getElementById('resetZoomButton').onclick = function () {
+      cy.zoom(1);
+    };
+    popup.document.getElementById('fitButton').onclick = function () {
+      cy.fit();
+    };
+    popup.document.getElementById('removeFocusButton').onclick = function () {
+      removeFocus(cy);
+    };
+    popup.document.getElementById('reorganizeButton').onclick = function () {
+      reorganizeGraph(cy);
+    };
+
+    // Function to focus on a specific node by ID
+    function focusOnNode(cy, nodeId) {
+      removeFocus(cy); // Remove any previous focus
+      const selectedNode = cy.getElementById(nodeId);
+      if (selectedNode) {
+        selectedNode.addClass('highlighted');
+        selectedNode.style({ 'background-color': '#808080', 'color': '#FFFFFF' });
+        cy.animate({ center: { eles: selectedNode }, zoom: 2 }, { duration: 300 });
+      }
+    }
+
+    // Function to focus on a specific edge by ID
+    function focusOnEdge(cy, edgeId) {
+      removeFocus(cy); // Remove any previous focus
+      const selectedEdge = cy.getElementById(edgeId);
+      if (selectedEdge) {
+        selectedEdge.addClass('highlighted');
+        selectedEdge.style({ 'line-color': '#FF0000', 'target-arrow-color': '#FF0000' });
+        cy.animate({ center: { eles: selectedEdge }, zoom: 2 }, { duration: 300 });
+      }
+    }
+
+    // Function to remove focus from all elements
+    function removeFocus(cy) {
+      cy.elements().removeClass('highlighted');
+      cy.nodes().forEach(node => {
+        node.style({ 'background-color': node.data('original-background-color'), 'color': node.data('original-text-color') });
+      });
+      cy.edges().forEach(edge => {
+        edge.style({ 'line-color': '#aaaaaa', 'target-arrow-color': '#aaaaaa' });
+      });
+    }
+
+    // Function to reorganize the graph layout
+    function reorganizeGraph(cy) {
+      cy.layout({
+        name: 'cose', // Reapply the 'cose' layout to reorganize the graph
+        animate: true
+      }).run();
+    }
+
+    // Highlight style for focused elements
+    cy.style()
+      .selector('.highlighted')
+      .style({
+        'background-color': '#FF851B',
+        'line-color': '#FF4136',
+        'target-arrow-color': '#FF4136',
+        'color': '#FFFFFF'
+      })
+      .update();
+
+    popup.cyInstance = cy; // Expose for debugging
+  };
+}
+
+async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId) {
+  console.log('Running query:', queryType, sourceId, sinkId);
+
+  try {
+    // Using Promise for async call to ensure we wait for the result
+    const result = await new Promise((resolve, reject) => {
+      Meteor.call('runQuery', queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId, (error, res) => {
+        if (error) reject(error);
+        else resolve(res);
+      });
+    });
+
+    console.log('Query result:', result);
+
+    // Wait for the QueryResults to be updated by periodically checking
+    let queryResults;
+    for (let attempts = 0; attempts < 5; attempts++) { // max 5 retries
+      queryResults = QueryResults.findOne({ sourceId, sinkId, selectedAPIId });
+      if (queryResults) break;
+      await new Promise(r => setTimeout(r, 500)); // wait 500ms before checking again
+    }
 
     if (!queryResults) {
       console.error('No query results found');
       return;
     }
 
-    const cy = window.cyInstance;
-    
     const nodesToKeep = queryResults.nodesOnPath;
     const cyNodesToShow = [];
-    
+
     nodesToKeep.forEach(nodeOnPathTuple => {
       const nodeId = nodeOnPathTuple[0];
       const libNode = nodeOnPathTuple[2];
 
       let color = '#0074D9';
       let textColor = '#FFFFFF';
-      const node = Nodes.findOne({ nodeId: nodeId });
+      const node = Nodes.findOne({ nodeId });
 
       if (nodeId === sourceId) {
         return;
@@ -41,21 +205,21 @@ function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceI
       if (libNode != -1) {
         color = '#FF851B';
       }
-      
 
       cyNodesToShow.push({
-        data: { id: 'node_' + nodeId, description: nodeId + ' ' + node.description, 'original-background-color': color, 'original-text-color': textColor },
+        data: { id: 'node_' + nodeId, description: `${nodeId} ${(node?.description || '')}`, 'original-background-color': color, 'original-text-color': textColor },
         style: { 'background-color': color, 'color': textColor }
       });
     });
-    // also the source and sink nodes
-    if (queryType != 'common_paths') {
+
+    // Add source and sink nodes
+    if (queryType !== 'common_paths') {
       cyNodesToShow.push({
-        data: { id: 'node_' + sourceId, description: sourceId + ' Source', 'original-background-color': '#2ECC40', 'original-text-color': '#FFFFFF' },
+        data: { id: 'node_' + sourceId, description: `${sourceId} Source`, 'original-background-color': '#2ECC40', 'original-text-color': '#FFFFFF' },
         style: { 'background-color': '#2ECC40', 'color': '#FFFFFF' }
       });
       cyNodesToShow.push({
-        data: { id: 'node_' + sinkId, description: sinkId + ' Sink', 'original-background-color': '#FF4136', 'original-text-color': '#FFFFFF' },
+        data: { id: 'node_' + sinkId, description: `${sinkId} Sink`, 'original-background-color': '#FF4136', 'original-text-color': '#FFFFFF' },
         style: { 'background-color': '#FF4136', 'color': '#FFFFFF' }
       });
     }
@@ -65,24 +229,22 @@ function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceI
     const nodeIdsToKeep = cyNodesToShow.map(node => node.data.id);
 
     const allEdges = Edges.find({}).fetch();
-    const edgesToKeep = allEdges.filter(edge => 
-      nodeIdsToKeep.includes('node_' + edge.sourceId) && nodeIdsToKeep.includes('node_' + edge.targetId)
-    );
-
-    cy.elements().remove();
-
-    cy.add(cyNodesToShow);
-
-    edgesToKeep.forEach(edge => {
-      cy.add({
+    const edgesToKeep = allEdges
+      .filter(edge => nodeIdsToKeep.includes('node_' + edge.sourceId) && nodeIdsToKeep.includes('node_' + edge.targetId))
+      .map(edge => ({
         group: 'edges',
         data: { source: 'node_' + edge.sourceId, target: 'node_' + edge.targetId }
-      });
-    });
+      }));
 
-    cy.layout({ name: 'cose' }).run();
-  });
+    // Open the popup and initialize the graph with nodes and edges
+    openGraphPopupWithResults(cyNodesToShow, edgesToKeep);
+
+  } catch (error) {
+    console.error('Error running query:', error);
+  }
 }
+
+
 let nodeMapping = {};
 
 Template.queries.onCreated(function() {
