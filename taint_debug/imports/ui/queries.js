@@ -161,27 +161,17 @@ function openGraphPopupWithResults(nodes, edges) {
   };
 }
 
-async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId) {
+function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId) {
   console.log('Running query:', queryType, sourceId, sinkId);
-
-  try {
-    // Using Promise for async call to ensure we wait for the result
-    const result = await new Promise((resolve, reject) => {
-      Meteor.call('runQuery', queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId, (error, res) => {
-        if (error) reject(error);
-        else resolve(res);
-      });
-    });
-
-    console.log('Query result:', result);
-
-    // Wait for the QueryResults to be updated by periodically checking
-    let queryResults;
-    for (let attempts = 0; attempts < 5; attempts++) { // max 5 retries
-      queryResults = QueryResults.findOne({ sourceId, sinkId, selectedAPIId });
-      if (queryResults) break;
-      await new Promise(r => setTimeout(r, 500)); // wait 500ms before checking again
+  Meteor.call('runQuery', queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId, (error, result) => {
+    if (error) {
+      console.error('Error running query:', error);
+      return;
     }
+    
+    // Fetch the latest QueryResults
+    const queryResults = QueryResults.findOne({ sourceId: sourceId, sinkId: sinkId, selectedAPIId: selectedAPIId });
+    console.log('QueryResults:', queryResults);
 
     if (!queryResults) {
       console.error('No query results found');
@@ -197,7 +187,7 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
 
       let color = '#0074D9';
       let textColor = '#FFFFFF';
-      const node = Nodes.findOne({ nodeId });
+      const node = Nodes.findOne({ nodeId: nodeId });
 
       if (nodeId === sourceId) {
         return;
@@ -207,7 +197,7 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
       }
 
       cyNodesToShow.push({
-        data: { id: 'node_' + nodeId, description: `${nodeId} ${(node?.description || '')}`, 'original-background-color': color, 'original-text-color': textColor },
+        data: { id: 'node_' + nodeId, description: nodeId + ' ' + (node?.description || ''), 'original-background-color': color, 'original-text-color': textColor },
         style: { 'background-color': color, 'color': textColor }
       });
     });
@@ -215,11 +205,11 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
     // Add source and sink nodes
     if (queryType !== 'common_paths') {
       cyNodesToShow.push({
-        data: { id: 'node_' + sourceId, description: `${sourceId} Source`, 'original-background-color': '#2ECC40', 'original-text-color': '#FFFFFF' },
+        data: { id: 'node_' + sourceId, description: sourceId + ' Source', 'original-background-color': '#2ECC40', 'original-text-color': '#FFFFFF' },
         style: { 'background-color': '#2ECC40', 'color': '#FFFFFF' }
       });
       cyNodesToShow.push({
-        data: { id: 'node_' + sinkId, description: `${sinkId} Sink`, 'original-background-color': '#FF4136', 'original-text-color': '#FFFFFF' },
+        data: { id: 'node_' + sinkId, description: sinkId + ' Sink', 'original-background-color': '#FF4136', 'original-text-color': '#FFFFFF' },
         style: { 'background-color': '#FF4136', 'color': '#FFFFFF' }
       });
     }
@@ -238,12 +228,8 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
 
     // Open the popup and initialize the graph with nodes and edges
     openGraphPopupWithResults(cyNodesToShow, edgesToKeep);
-
-  } catch (error) {
-    console.error('Error running query:', error);
-  }
+  });
 }
-
 
 let nodeMapping = {};
 
