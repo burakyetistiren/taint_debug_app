@@ -4,6 +4,24 @@
 
 <body>
   {{> mainTemplate }}
+
+  <div class="row full-width">
+    <div class="column taint-paths-view">
+      <h1>Taint Paths</h1>
+
+      
+      {{#each pathsToDisplay}}
+        {{> path}}
+      {{/each}}
+    </div>
+  </div>
+
+  <div class="row full-width">
+    <div class="column json-view-container">
+      <h1>JSON View</h1>
+      {{> jsonView}}
+    </div>
+  </div>
 </body>
 
 <template name="mainTemplate">
@@ -77,7 +95,7 @@
       }
     </style>
 
-    <!--
+    <!-- 
     <div class="row" style="height: 50vh;">  
       <div class="column view-container"> 
         {{> queries}}
@@ -86,7 +104,7 @@
         <h1>Graph view</h1>
         {{> cytoscapeContainer}}
       </div>
-    </div>
+    </div> 
     -->
 
     <button id="openGraphButton">Open Graph</button>
@@ -97,19 +115,5 @@
       </div>
     </div>
 
-    <div class="row full-width">
-      <div class="column taint-paths-view">
-        <h1>Taint paths</h1>
-        {{#each pathsToDisplay}}
-          {{> path}}
-        {{/each}}
-      </div>
-    </div>
 
-    <div class="row full-width">
-      <div class="column json-view-container">
-        <h1>JSON View</h1>
-        {{> jsonView}}
-      </div>
-    </div>
 </template> 
