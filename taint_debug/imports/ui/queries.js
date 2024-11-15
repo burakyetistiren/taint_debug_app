@@ -4,6 +4,21 @@ import { QueryResults } from '../api/queryresults.js';
 import './queries.html';
 
 import cytoscape from 'cytoscape';
+import coseBilkent from 'cytoscape-cose-bilkent';
+import fcose from 'cytoscape-fcose';
+import cola from 'cytoscape-cola';
+import avsdf from 'cytoscape-avsdf';
+import cise from 'cytoscape-cise';
+import elk from 'cytoscape-elk';
+import klay from 'cytoscape-klay';
+
+cytoscape.use( coseBilkent );
+cytoscape.use( fcose );
+cytoscape.use( cola );
+cytoscape.use( avsdf );
+cytoscape.use( cise );
+cytoscape.use( elk );
+cytoscape.use( klay );
 
 function openGraphPopupWithResults(nodes, edges) {
   const popup = window.open('/cytoscapePopup.html', 'GraphPopup', 'width=800,height=600');
@@ -104,6 +119,28 @@ function openGraphPopupWithResults(nodes, edges) {
     popup.document.getElementById('reorganizeButton').onclick = function () {
       reorganizeGraph(cy);
     };
+    // populate the list
+    const viewList = popup.document.getElementById('viewList');
+    viewList.innerHTML = ''; // Clear previous options
+    
+    // Define the layout options
+    const layoutList = ['cose', 'fcose', 'cose-bilkent', 'grid', 'avsdf', 'cise', 'elk', 'cola', 'klay', 'circle', 'concentric', 'breadthfirst', 'random'];
+    layoutList.forEach(layout => {
+      const option = popup.document.createElement('option');
+      option.value = layout;
+      option.textContent = layout;
+      viewList.appendChild(option);
+    });
+    
+    // Set up the event listener for when the selection changes
+    viewList.onchange = function () {
+      const selectedValue = this.value; // Access the selected option value
+      cy.layout({
+        name: selectedValue,
+        animate: true
+      }).run();
+    };
+    
 
     // Function to focus on a specific node by ID
     function focusOnNode(cy, nodeId) {
@@ -175,15 +212,13 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
 
     console.log('Query result:', result);
 
-    // Wait for the QueryResults to be updated by periodically checking
     let queryResults;
     for (let attempts = 0; attempts < 5; attempts++) { // max 5 retries
       queryResults = QueryResults.findOne({ sourceId, sinkId, selectedAPIId });
-      // wait for the query results to be updated for some time before retrying
-      await new Promise(r => setTimeout(r, 1000)); // wait 500ms before checking again
+      await new Promise(r => setTimeout(r, 1000)); 
 
       if (queryResults) break;
-      await new Promise(r => setTimeout(r, 500)); // wait 500ms before checking again
+      await new Promise(r => setTimeout(r, 500)); 
     }
 
     if (!queryResults) {
