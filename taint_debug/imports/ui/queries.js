@@ -389,7 +389,13 @@ Template.queries.helpers({
     const selectedSourceId = Session.get('selectedSourceId');
 
     if (!selectedSourceId) {
-      return Sinks.find({}).fetch();
+      
+      return Sinks.find({}).fetch().map(sink => {
+        return {
+          id: sink.nodeId,
+          description: sink.description
+        }
+      });
     }
     const queryType = Session.get('queryType'); // TODO we should be reading queryType from the position in the list of queries
 
