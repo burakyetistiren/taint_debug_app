@@ -17,13 +17,15 @@ Template.body.helpers({
     pathsToDisplay() {
         // if no QueryResults, show 5
         // otherwise, show Paths containing the nodes in QueryResults
-
+        console.log('pathsToDisplay() has been called');
         const selectedSinkId = Session.get('selectedSinkId');
         const selectedSourceId = Session.get('selectedSourceId');
 
         if (QueryResults.find({sourceId: selectedSourceId, sinkId: selectedSinkId}).count() === 0) {
+            console.log('No query results found. Rendering any 5 paths.');
             return Paths.find({}, {limit: 5}).fetch();
         } else {
+            console.log('Query results found. Rendering paths containing nodes in query results.');
             var queryResults = QueryResults.find({}).fetch();
             var queryResultsNodes = [];
             for (var i = 0; i < queryResults.length; i++) {

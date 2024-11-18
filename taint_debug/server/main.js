@@ -58,6 +58,7 @@ Meteor.startup(() => {
 
   setupAndReadAnalysisData().then(analysisData => {
     console.log('Finished reading analysis data');
+
     console.log(analysisData['codeSets'].length);
     console.log(analysisData['libSets'].size);
 
@@ -350,61 +351,73 @@ function setupAndReadAnalysisData() {
 
   }).then(() => {
     console.log('setupAndReadAnalysisData: Finished reading plausible_warning_paths.facts. Processing.');
-    console.log(pathsLibs);
+    // console.log(pathsLibs);
     
-    let paths = Array.from(pathsLibs, ([key, value]) => {
+    let sourceSinkPairs = Array.from(pathsLibs, ([key, value]) => {
       // console.log(value)
       const [source, sink] = key.split(',').map(Number);
       
-      return { source, sink, nodeLibIndicesAndEdgeId: value, reported: warningToReported.get(key) };
+      return { source, sink, paths: value, isSourceSinkReported: warningToReported.get(key) };
     });
-    return paths;
-  }).then(paths => {
-    console.log('setupAndReadAnalysisData: Processing the data after reading both reported and plausible paths.');
-    paths.forEach(({ source, sink, nodeLibIndicesAndEdgeId, reported }) => {
+    return sourceSinkPairs;
+  }).then(sourceSinkPairs => {
+    console.log('setupAndReadAnalysisData: Processing the data after reading both reported and plausible sourceSinkPairs.');
+    const isSourceSinkReportedMap = new Map();
+    sourceSinkPairs.forEach(({ source, sink, paths, isSourceSinkReported }) => {
+
       plausibleSources.add(source);
       plausibleSinks.add(sink);
+      isSourceSinkReportedMap.set(source, isSourceSinkReported);
+      isSourceSinkReportedMap.set(sink, isSourceSinkReported);
     });
 
     // log
     console.log('setupAndReadAnalysisData: plausibleSources:', plausibleSources.size);
     console.log('setupAndReadAnalysisData: plausibleSinks:', plausibleSinks.size);
     // insert sources and sinks
-    Sources.batchInsert(Array.from(plausibleSources).map(source => ({ nodeId: source, description: nodeMapping[source].description })));
-    Sinks.batchInsert(Array.from(plausibleSinks).map(sink => ({ nodeId: sink, description: nodeMapping[sink].description })));
+    Sources.batchInsert(Array.from(plausibleSources).map(source => ({ nodeId: source, isReported: isSourceSinkReportedMap.get(source), description: nodeMapping[source].description })));
+    Sinks.batchInsert(Array.from(plausibleSinks).map(sink => ({ nodeId: sink, isReported: isSourceSinkReportedMap.get(sink), description: nodeMapping[sink].description })));
 
-    return paths;
+    return sourceSinkPairs;
   })
-  .then(paths => {
+  .then(sourceSinkPairs => {
     
     console.log('setupAndReadAnalysisData: Processing the data.');
-    paths.forEach(({ source, sink, nodeLibIndicesAndEdgeId, reported }) => {
+    sourceSinkPairs.forEach(({ source, sink, paths, isSourceSinkReported }) => {
 
-      let warningNumber = codeSets.length;
-      let pathNumber = codeSets.length;
-    
-      codeSets.push({
-        warningNumber: warningNumber,
-        pathNumber: pathNumber,
-        reported: reported,
-        left: {
-          code: '', // codeSnippetOfNodeWithHighlight(source, nodeMapping),
-          nodeId: source,
-          description: nodeMapping[source].description,
-        },
-        middle: nodeLibIndicesAndEdgeId.map(({ nodeId, lib, edgeId, prevNode }) => ({
-          code: '', // codeSnippetOfNodeWithHighlight(nodeId, nodeMapping),
-          nodeId: nodeId,
-          lib: lib,
-          edgeId: edgeId,
-          description: nodeMapping[nodeId].description,
-        })),
-        right: {
-          code: '', // codeSnippetOfNodeWithHighlight(sink, nodeMapping),
-          nodeId: sink,
-          description: nodeMapping[sink].description,
-        },
+      // console.log('setupAndReadAnalysisData: Processing source-sink pair:', source, sink, paths, isSourceSinkReported);
+      
+      paths.forEach(({isReported, path}) => {
+
+        var nodeLibIndicesAndEdgeId = path;
+
+        let warningNumber = codeSets.length;
+        let pathNumber = codeSets.length;
+      
+        codeSets.push({
+          warningNumber: warningNumber,
+          pathNumber: pathNumber,
+          reported: isReported,
+          left: {
+            code: '', // codeSnippetOfNodeWithHighlight(source, nodeMapping),
+            nodeId: source,
+            description: nodeMapping[source].description,
+          },
+          middle: nodeLibIndicesAndEdgeId.map(({ nodeId, lib, edgeId, prevNode }) => ({
+            code: '', // codeSnippetOfNodeWithHighlight(nodeId, nodeMapping),
+            nodeId: nodeId,
+            lib: lib,
+            edgeId: edgeId,
+            description: nodeMapping[nodeId].description,
+          })),
+          right: {
+            code: '', // codeSnippetOfNodeWithHighlight(sink, nodeMapping),
+            nodeId: sink,
+            description: nodeMapping[sink].description,
+          },
+        });
       });
+      
     });
 
   }).then(() => {
@@ -688,7 +701,7 @@ Meteor.methods({
       // remove old QueryResults without the same sourceId 
       QueryResults.remove({ sourceId: { '$ne' : sourceId}  });
 
-      QueryResults.insert({ queryType, sourceId, sinkId, libNodes, nodesOnPath });
+      // QueryResults.insert({ queryType, sourceId, sinkId, libNodes, nodesOnPath });
 
       
     }));

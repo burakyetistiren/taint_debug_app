@@ -366,41 +366,48 @@ Template.queries.helpers({
       { description: "GlobalImpact: Rank the global impact of intermediary APIs from a source and a sink based on frequency.", queryType: "global_impact", showSource : true, showSink: true},,
     ];
   },
-  sources() {
-    // const selectedSinkId = Session.get('selectedSinkId');
-
-    // if (!selectedSinkId) {
-      // return Template.instance().sources.get();
-      return Sources.find({}).fetch().map(source => {
+  whySources() {
+    
+      return Sources.find({isReported: true}).fetch().map(source => {
         return {
           id: source.nodeId,
           description: source.description
         }
       });
-    // }
 
-    // const queryType = Session.get('queryType');// TODO we should be reading queryType from the position in the list of queries
-
-    // return fetchSources(queryType, selectedSinkId);
   },
-  sinks() {
+  whyNotSources() {
+      
+        return Sources.find({isReported: false}).fetch().map(source => {
+          return {
+            id: source.nodeId,
+            description: source.description
+          }
+        });
+  },
+  whySinks() {
     
     // fetch current selected source
     const selectedSourceId = Session.get('selectedSourceId');
 
     if (!selectedSourceId) {
       
-      return Sinks.find({}).fetch().map(sink => {
-        return {
-          id: sink.nodeId,
-          description: sink.description
-        }
-      });
+      return [];
     }
-    const queryType = Session.get('queryType'); // TODO we should be reading queryType from the position in the list of queries
-
-    return fetchSinks(queryType, selectedSourceId);
+    return fetchSinks("why_node_pair", selectedSourceId);
   },
+
+  whyNotSinks() {
+    // fetch current selected source
+    const selectedSourceId = Session.get('selectedSourceId');
+
+    if (!selectedSourceId) {
+      
+      return [];
+    }
+    return fetchSinks("whynot_node_pairs", selectedSourceId);
+  },
+
   secondPairSources() {
     const selectedSinkId = Session.get('selectedSecondSinkId');
 

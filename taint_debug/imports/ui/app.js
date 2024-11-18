@@ -7,7 +7,7 @@ import tippy from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 import { createPopper } from '@popperjs/core';
 
-import { Paths, Libs, Nodes } from '../api/paths.js';
+import { Paths, Libs, Nodes, Sources, Sinks } from '../api/paths.js';
 import { QueryResults } from '../api/queryresults.js';
 
 import './queries.html';
@@ -20,6 +20,8 @@ import './body.html';
 window.Paths = Paths;
 window.Libs = Libs;
 window.Nodes = Nodes;
+window.Sources = Sources;
+window.Sinks = Sinks;
 window.QueryResults = QueryResults;
 console.log('Paths:', Paths);
 

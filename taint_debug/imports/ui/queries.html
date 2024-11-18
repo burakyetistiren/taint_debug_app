@@ -61,14 +61,14 @@
           <h3>{{description}}</h3>
           <label for="src-{{@index}}">Source Node:</label>
           <select id="src-{{@index}}" class="src-dropdown">
-            {{#each sources}}
+            {{#each whySources}}
               <option value="{{id}}">{{id}} - {{description}}</option>
             {{/each}}
           </select>
           <span>to</span>
           <label for="sink-{{@index}}">Sink Node:</label>
           <select id="sink-{{@index}}" class="sink-dropdown">
-            {{#each sinks}}
+            {{#each whySinks}}
               <option value="{{id}}">{{id}} - {{description}}</option>
             {{/each}}
           </select>
@@ -81,14 +81,14 @@
           <h3>{{description}}</h3>
           <label for="src-{{@index}}">Source Node:</label>
           <select id="src-{{@index}}" class="src-dropdown">
-            {{#each sources}}
+            {{#each whyNotSources}}
               <option value="{{id}}">{{id}} - {{description}}</option>
             {{/each}}
           </select>
           <span>to</span>
           <label for="sink-{{@index}}">Sink Node:</label>
           <select id="sink-{{@index}}" class="sink-dropdown">
-            {{#each sinks}}
+            {{#each whyNotSinks}}
               <option value="{{id}}">{{id}} - {{description}}</option>
             {{/each}}
           </select>
@@ -101,14 +101,14 @@
           <h3>{{description}}</h3>
           <label for="src-{{@index}}">First Source Node:</label>
           <select id="src-{{@index}}" class="src-dropdown">
-            {{#each sources}}
+            {{#each whySources}}
               <option value="{{id}}">{{id}} - {{description}}</option>
             {{/each}}
           </select>
           <span>to</span>
           <label for="sink-{{@index}}">First Sink Node:</label>
           <select id="sink-{{@index}}" class="sink-dropdown">
-            {{#each sinks}}
+            {{#each whySinks}}
               <option value="{{id}}">{{id}} - {{description}}</option>
             {{/each}}
           </select>
@@ -142,7 +142,7 @@
           <span>to act as a sanitizer starting from</span>
           <label for="src-{{@index}}">Source Node:</label>
           <select id="src-{{@index}}" class="src-dropdown">
-            {{#each sources}}
+            {{#each whySources}}
               <option value="{{id}}">{{id}} - {{description}}</option>
             {{/each}}
           </select>
@@ -155,14 +155,14 @@
           <h3>{{description}}</h3>
           <label for="src-{{@index}}">Source Node:</label>
           <select id="src-{{@index}}" class="src-dropdown">
-            {{#each sources}}
+            {{#each whySources}}
               <option value="{{id}}">{{id}} - {{description}}</option>
             {{/each}}
           </select>
           <span>to</span>
           <label for="sink-{{@index}}">Sink Node:</label>
           <select id="sink-{{@index}}" class="sink-dropdown">
-            {{#each sinks}}
+            {{#each whySinks}}
               <option value="{{id}}">{{id}} - {{description}}</option>
             {{/each}}
           </select>
