@@ -52,6 +52,8 @@ Meteor.startup(() => {
   Libs.remove({});
   Nodes.remove({});
   Edges.remove({});
+  Sources.remove({});
+  Sinks.remove({});
   QueryResults.remove({});
 
   console.log('clear data');
@@ -383,16 +385,23 @@ function setupAndReadAnalysisData() {
 
       plausibleSources.add(source);
       plausibleSinks.add(sink);
-      isSourceSinkReportedMap.set(source, isSourceSinkReported);
-      isSourceSinkReportedMap.set(sink, isSourceSinkReported);
+      if (!isSourceSinkReportedMap.has(source)) {
+        isSourceSinkReportedMap.set(source, new Set());
+      }
+      if (!isSourceSinkReportedMap.has(sink)) {
+        isSourceSinkReportedMap.set(sink, new Set());
+      }
+      isSourceSinkReportedMap.get(source).add(isSourceSinkReported);
+      isSourceSinkReportedMap.get(sink).add(isSourceSinkReported);
+
     });
 
     // log
     console.log('setupAndReadAnalysisData: plausibleSources:', plausibleSources.size);
     console.log('setupAndReadAnalysisData: plausibleSinks:', plausibleSinks.size);
     // insert sources and sinks
-    Sources.batchInsert(Array.from(plausibleSources).map(source => ({ nodeId: source, isReported: isSourceSinkReportedMap.get(source), description: nodeMapping[source].description })));
-    Sinks.batchInsert(Array.from(plausibleSinks).map(sink => ({ nodeId: sink, isReported: isSourceSinkReportedMap.get(sink), description: nodeMapping[sink].description })));
+    Sources.batchInsert(Array.from(plausibleSources).map(source => ({ nodeId: source, isReported: [...isSourceSinkReportedMap.get(source)], description: nodeMapping[source].description })));
+    Sinks.batchInsert(Array.from(plausibleSinks).map(sink => ({ nodeId: sink, isReported: [...isSourceSinkReportedMap.get(sink)], description: nodeMapping[sink].description })));
 
     return sourceSinkPairs;
   })
