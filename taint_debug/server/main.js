@@ -17,6 +17,8 @@ const ANALYSIS_PATH = path.join(PROJECT_PATH, '..', 'analysis_files') + "/";
 const QUERY_PATH = path.join(PROJECT_PATH, '..', 'app_souffle_queries') + "/";
 const QUERY_RESULT_PATH = path.join(PROJECT_PATH, '..', 'souffle_output') + "/";
 
+const SOURCE_CODE_ROOT_DIR = process.env.SOURCE_CODE_ROOT_DIR;
+
 async function readLargeFile(filePath, processLine) {
   const fileStream = fs.createReadStream(filePath, 'utf8');
   const rl = readline.createInterface({
@@ -179,10 +181,13 @@ function readNodeMapping() {
   const lines = fs.readFileSync(path.join(ANALYSIS_PATH, 'souffle_files/nodes.debug'), 'utf8').split('\n');
   lines.forEach(line => {
     if (line.trim()) {
+
+
       const [nodeId, file, lineNum, column, endLineNum, endColNum, description] = line.trim().split(',');
+
       nodeMapping[Number(nodeId)] = {
         nodeId: Number(nodeId),
-        file,
+        file: SOURCE_CODE_ROOT_DIR + file,
         line: Number(lineNum),
         column: Number(column),
         end_line: Number(endLineNum),
@@ -194,8 +199,58 @@ function readNodeMapping() {
   return nodeMapping;
 }
 
+
+function separatePaths(pathsData, isReported) {
+  const result = new Map();;
+  
+  for (const [key, nodes] of pathsData) {
+      const nodeMap = new Map(nodes.map(node => [node.nodeId, node]));
+
+      // console.log(nodeMap)
+      
+      const rootNodes = nodes.filter(node => node.prevNode === -1 && node.step === 0);
+      // console.log(rootNodes)
+      
+      result.set(key, []);
+      
+      rootNodes.forEach(rootNode => {
+          const path = [];
+          let currentNode = rootNode;
+          let expectedStep = 0;
+          
+          const visited = new Set();
+          
+          while (currentNode && !visited.has(currentNode.nodeId)) {
+              if (currentNode.step !== expectedStep) {
+                  break;
+              }
+              
+              path.push(currentNode);
+              visited.add(currentNode.nodeId);
+              expectedStep++;
+              
+              currentNode = Array.from(nodeMap.values()).find(
+                  node => node.prevNode === currentNode.nodeId && 
+                         node.step === expectedStep
+              );
+          }
+          
+          
+          if (path.length > 0) {
+              result.get(key).push({
+                isReported,
+                path
+              });
+          }
+      });
+  }
+  
+  return result;
+}
+
 function setupAndReadAnalysisData() {
   let pathsLibs = new Map();
+  let plausiblePathLibs = new Map();
   let codeSets = [];
   let libSets = new Map();
   let warningToReported = new Map();
@@ -240,46 +295,80 @@ function setupAndReadAnalysisData() {
       if (!pathsLibs.has(key)) {
         pathsLibs.set(key, []);
       }
-      pathsLibs.get(key).push({ nodeId: node, lib: libIndex, edgeId: edge, prevNode: prevNode});
+      pathsLibs.get(key).push({ nodeId: node, lib: libIndex, edgeId: edge, prevNode: prevNode, step: step});
       warningToReported.set(key, true);
 
       nodePairToEdgeId.set(key, edge);
     }
+  }).then(() => {
+    console.log('setupAndReadAnalysisData: splitting up warning paths');
+    console.log(pathsLibs.size);
+    pathsLibs = separatePaths(pathsLibs, true);
+    
 
   }).then(() => {
-    console.log('Finished reading warning_paths.csv. Reading plausible_warning_paths.csv next.');
+    console.log('setupAndReadAnalysisData: Finished reading warning_paths.facts. Reading plausible_warning_paths.facts next.');
     return readLargeFile(path.join(ANALYSIS_PATH, 'souffle_files/plausible_warning_paths.facts'), line => {
       const [source, sink, node, step, edge, prevNode, libIndex] = line.trim().split('\t').map(Number);
 
       const key = `${source},${sink}`;
       
-      if (!pathsLibs.has(key)) {
-        pathsLibs.set(key, []);
-        pathsLibs.get(key).push({ nodeId: node, lib: libIndex, edgeId: edge, prevNode: prevNode });
-        warningToReported.set(key, false);
+      // if (!pathsLibs.has(key)) {
+      //   pathsLibs.set(key, []);
+      //   pathsLibs.get(key).push({ nodeId: node, lib: libIndex, edgeId: edge, step: step, prevNode: prevNode });
+      //   warningToReported.set(key, false);
 
-        nodePairToEdgeId.set(key, edge);
-      }
+      //   nodePairToEdgeId.set(key, edge);
+      // }
       
+      if (!plausiblePathLibs.has(key)) {
+        plausiblePathLibs.set(key, []);
+      }
+      plausiblePathLibs.get(key).push({ nodeId: node, lib: libIndex, edgeId: edge, step: step, prevNode: prevNode });
+      // warningToReported.set(key, false);
+      if (!warningToReported.has(key)) {
+        warningToReported.set(key, false);
+      }
+      nodePairToEdgeId.set(key, edge);
+    
+
     });
   }).then(() => {
-    console.log('Finished reading plausible_warning_paths.csv. Processing.');
+    console.log('setupAndReadAnalysisData: splitting up plausible paths');
+    // console.log(plausiblePathLibs)
+    plausiblePathLibs = separatePaths(plausiblePathLibs, false);
 
+    for (const [key, paths] of plausiblePathLibs) {
+
+      if (!pathsLibs.has(key)) {
+        pathsLibs.set(key, []);
+      }
+      paths.forEach(path => {
+        pathsLibs.get(key).push(path);
+      });
+    }
+
+  }).then(() => {
+    console.log('setupAndReadAnalysisData: Finished reading plausible_warning_paths.facts. Processing.');
+    console.log(pathsLibs);
+    
     let paths = Array.from(pathsLibs, ([key, value]) => {
+      // console.log(value)
       const [source, sink] = key.split(',').map(Number);
       
       return { source, sink, nodeLibIndicesAndEdgeId: value, reported: warningToReported.get(key) };
     });
     return paths;
   }).then(paths => {
+    console.log('setupAndReadAnalysisData: Processing the data after reading both reported and plausible paths.');
     paths.forEach(({ source, sink, nodeLibIndicesAndEdgeId, reported }) => {
       plausibleSources.add(source);
       plausibleSinks.add(sink);
     });
 
     // log
-    console.log('plausibleSources:', plausibleSources.size);
-    console.log('plausibleSinks:', plausibleSinks.size);
+    console.log('setupAndReadAnalysisData: plausibleSources:', plausibleSources.size);
+    console.log('setupAndReadAnalysisData: plausibleSinks:', plausibleSinks.size);
     // insert sources and sinks
     Sources.batchInsert(Array.from(plausibleSources).map(source => ({ nodeId: source, description: nodeMapping[source].description })));
     Sinks.batchInsert(Array.from(plausibleSinks).map(sink => ({ nodeId: sink, description: nodeMapping[sink].description })));
@@ -288,13 +377,15 @@ function setupAndReadAnalysisData() {
   })
   .then(paths => {
     
-    console.log(' Processing the data.');
+    console.log('setupAndReadAnalysisData: Processing the data.');
     paths.forEach(({ source, sink, nodeLibIndicesAndEdgeId, reported }) => {
 
       let warningNumber = codeSets.length;
+      let pathNumber = codeSets.length;
     
       codeSets.push({
         warningNumber: warningNumber,
+        pathNumber: pathNumber,
         reported: reported,
         left: {
           code: '', // codeSnippetOfNodeWithHighlight(source, nodeMapping),
@@ -317,7 +408,7 @@ function setupAndReadAnalysisData() {
     });
 
   }).then(() => {
-    console.log('Reading model.debug next.');
+    console.log('setupAndReadAnalysisData: Reading model.debug next.');
     return readLargeFile(path.join(ANALYSIS_PATH, 'souffle_files/model.debug'), line => {
       if (line.includes('model_node')) {
         const [name, lib] = line.split('model_node(')[1].slice(0, -1).split(',');
@@ -325,7 +416,7 @@ function setupAndReadAnalysisData() {
       }
     })
   }).then(() => {
-    console.log('Finished reading model.debug. Reading lib_centrality.facts next.');
+    console.log('setupAndReadAnalysisData: Finished reading model.debug. Reading lib_centrality.facts next.');
     return readLargeFile(path.join(ANALYSIS_PATH, 'souffle_files/lib_centrality.facts'), line => {
       const [lib, centrality, scaledCentrality] = line.split('\t');
       if (libSets.has(parseInt(lib))) {
@@ -531,7 +622,7 @@ Meteor.methods({
         // console.log('edge, sourceId' + sourceId + ' targetId' + targetId + ' inserted');
       }
     });
-
+    console.log('readGraphData: returning');
 
     return { nodes: nodeMapping, edges: edges };
   },
@@ -547,7 +638,7 @@ Meteor.methods({
 
   },
   runQuery(queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId) {
-    console.log('Running query:', queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId);
+    console.log('Running query:', queryType,'src', sourceId, 'sink', sinkId, '2src', secondSourceId, '2sink', secondSinkId, 'api', selectedAPIId);
 
     // update the query file with the source and sink
     const queryFactsFile = `${ANALYSIS_PATH}/souffle_files/${queryType}.facts`;
