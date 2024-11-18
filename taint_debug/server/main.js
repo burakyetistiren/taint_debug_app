@@ -202,45 +202,37 @@ function readNodeMapping() {
 
 
 function separatePaths(pathsData, isReported) {
-  const result = new Map();;
+  const result = new Map();
   
   for (const [key, nodes] of pathsData) {
       const nodeMap = new Map(nodes.map(node => [node.nodeId, node]));
-
-      // console.log(nodeMap)
-      
-      const rootNodes = nodes.filter(node => node.prevNode === -1 && node.step === 0);
-      // console.log(rootNodes)
+      const sink = parseInt(key.split(',')[1]);
       
       result.set(key, []);
       
-      rootNodes.forEach(rootNode => {
+      const sinkNodes = nodes.filter(node => node.nodeId === sink);
+      // console.log(sinkNodes)
+      
+      sinkNodes.forEach(sinkNode => {
           const path = [];
-          let currentNode = rootNode;
-          let expectedStep = 0;
-          
+          let currentNode = sinkNode;
           const visited = new Set();
           
           while (currentNode && !visited.has(currentNode.nodeId)) {
-              if (currentNode.step !== expectedStep) {
+              path.unshift(currentNode); 
+              visited.add(currentNode.nodeId);
+              
+              currentNode = currentNode.prevNode !== -1 ? nodeMap.get(currentNode.prevNode) : null;
+              
+              if (currentNode && currentNode.step >= path[0].step) {
                   break;
               }
-              
-              path.push(currentNode);
-              visited.add(currentNode.nodeId);
-              expectedStep++;
-              
-              currentNode = Array.from(nodeMap.values()).find(
-                  node => node.prevNode === currentNode.nodeId && 
-                         node.step === expectedStep
-              );
           }
-          
           
           if (path.length > 0) {
               result.get(key).push({
-                isReported,
-                path
+                  isReported,
+                  path
               });
           }
       });
@@ -260,6 +252,10 @@ function setupAndReadAnalysisData() {
   let plausibleSources = new Set();
   let plausibleSinks = new Set();
   
+  // TODO: quick hack
+  let reportedPaths = new Set();
+
+
   const nodeMapping = readNodeMapping();
   const apiMapping = readLibMapping();
   
@@ -306,6 +302,16 @@ function setupAndReadAnalysisData() {
     console.log(pathsLibs.size);
     pathsLibs = separatePaths(pathsLibs, true);
     
+    //  enumerate over the paths, and generate a string based on the nodes visited
+    // add to reportedPaths
+    for (const [key, pathObjs] of pathsLibs) {
+      
+      pathObjs.forEach(pathObj => {
+        let path = pathObj.path;
+        let pathString = path.map(node => node.nodeId).join('->');
+        reportedPaths.add(pathString);
+      });
+    }
 
   }).then(() => {
     console.log('setupAndReadAnalysisData: Finished reading warning_paths.facts. Reading plausible_warning_paths.facts next.');
@@ -339,13 +345,23 @@ function setupAndReadAnalysisData() {
     // console.log(plausiblePathLibs)
     plausiblePathLibs = separatePaths(plausiblePathLibs, false);
 
-    for (const [key, paths] of plausiblePathLibs) {
+    for (const [key, pathObjs] of plausiblePathLibs) {
 
       if (!pathsLibs.has(key)) {
         pathsLibs.set(key, []);
       }
-      paths.forEach(path => {
-        pathsLibs.get(key).push(path);
+
+      
+    
+      pathObjs.forEach(pathObj => {
+
+        // check if the path is already reported
+        let pathString = pathObj.path.map(node => node.nodeId).join('->');
+        if (reportedPaths.has(pathString)) {
+          // console.log('path already reported', pathString);
+          return;
+        }
+        pathsLibs.get(key).push(pathObj);
       });
     }
 
@@ -701,7 +717,7 @@ Meteor.methods({
       // remove old QueryResults without the same sourceId 
       QueryResults.remove({ sourceId: { '$ne' : sourceId}  });
 
-      // QueryResults.insert({ queryType, sourceId, sinkId, libNodes, nodesOnPath });
+      QueryResults.insert({ queryType, sourceId, sinkId, libNodes, nodesOnPath });
 
       
     }));

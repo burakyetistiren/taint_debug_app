@@ -388,7 +388,7 @@ Template.queries.helpers({
   whySinks() {
     
     // fetch current selected source
-    const selectedSourceId = Session.get('selectedSourceId');
+    const selectedSourceId = Session.get('whySelectedSourceId');
 
     if (!selectedSourceId) {
       
@@ -399,7 +399,7 @@ Template.queries.helpers({
 
   whyNotSinks() {
     // fetch current selected source
-    const selectedSourceId = Session.get('selectedSourceId');
+    const selectedSourceId = Session.get('whynotSelectedSourceId');
 
     if (!selectedSourceId) {
       
@@ -545,6 +545,12 @@ Template.queries.events({
 
     Session.set('selectedSourceId', selectedSourceId);
     Session.set('queryType', queryType);
+
+    if (queryType === 'why_node_pair') {
+      Session.set('whySelectedSourceId', selectedSourceId);
+    } else if (queryType === 'whynot_node_pairs') {
+      Session.set('whynotSelectedSourceId', selectedSourceId);
+    }
 
     let selectedSecondSourceId = '';
     let selectedSecondSinkId = '';
