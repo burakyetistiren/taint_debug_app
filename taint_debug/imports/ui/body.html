@@ -8,6 +8,26 @@
 
 <template name="mainTemplate">
     <style>
+        /* Loader styles */
+      .loader {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: 8px solid #f3f3f3;
+        border-radius: 50%;
+        border-top: 8px solid #3498db;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        z-index: 1000;
+        display: none; /* Hidden by default */
+      }
+
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
       .row {
         display: flex;
         flex-direction: row;
@@ -90,6 +110,7 @@
     -->
 
     <button id="openGraphButton">Open Graph</button>
+    <div id="loadingSpinner" class="loader"></div>
 
     <div class="row" style="height: 50vh;">  
       <div class="column view-container"> 

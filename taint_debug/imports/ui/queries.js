@@ -200,6 +200,9 @@ function openGraphPopupWithResults(nodes, edges) {
 
 async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId) {
   console.log('Running query:', queryType, sourceId, sinkId);
+  
+  const loader = document.getElementById('loadingSpinner');
+  loader.style.display = 'block';  // Show loader
 
   try {
     // Using Promise for async call to ensure we wait for the result
@@ -279,8 +282,11 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
 
   } catch (error) {
     console.error('Error running query:', error);
+  } finally {
+    loader.style.display = 'none';  // Hide loader
   }
 }
+
 
 
 let nodeMapping = {};
