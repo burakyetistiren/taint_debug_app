@@ -1,5 +1,5 @@
 import { Template } from 'meteor/templating';
-import { Paths, Libs, Edges, Nodes } from '../api/paths.js';
+import { Paths, Libs, Edges, Nodes, Sources, Sinks } from '../api/paths.js';
 import { QueryResults } from '../api/queryresults.js';
 import './queries.html';
 
@@ -376,7 +376,13 @@ Template.queries.helpers({
     // const selectedSinkId = Session.get('selectedSinkId');
 
     // if (!selectedSinkId) {
-      return Template.instance().sources.get();
+      // return Template.instance().sources.get();
+      return Sources.find({}).fetch().map(source => {
+        return {
+          id: source.nodeId,
+          description: source.description
+        }
+      });
     // }
 
     // const queryType = Session.get('queryType');// TODO we should be reading queryType from the position in the list of queries
@@ -389,7 +395,13 @@ Template.queries.helpers({
     const selectedSourceId = Session.get('selectedSourceId');
 
     if (!selectedSourceId) {
-      return Template.instance().sinks.get();
+      
+      return Sinks.find({}).fetch().map(sink => {
+        return {
+          id: sink.nodeId,
+          description: sink.description
+        }
+      });
     }
     const queryType = Session.get('queryType'); // TODO we should be reading queryType from the position in the list of queries
 
