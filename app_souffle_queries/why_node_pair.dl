@@ -19,6 +19,9 @@
 .decl  library_flow_on_path(end:number, start:number, edge:number)
 .output library_flow_on_path
 
+.decl warning_paths(source:number, sink:number, node:number, step: number, edge:number, prev_node:number, lib: number)
+.input warning_paths
+
 // node a is on the path x -> y, 
 .decl nodes_on_path(query_start: number, query_end:number, a:number, steps: number, libnode: number)
 .output nodes_on_path
@@ -34,12 +37,17 @@ library_flow_on_path(end, start, e) :- edge(e, a, b), library_flow(e, _), path(s
 
 why_node_pair_answer(start, end, y) :- why_node_pair(start, end), library_flow_on_path(end, start, y).
 
-nodes_on_path(query_start, query_end, query_start, 0, -1) :- node(query_start), why_node_pair_answer(query_start, query_end, _), node(query_end), path(query_start, query_end).
-nodes_on_path(query_start, query_end, x, steps + 1, -1) :- 
-        nodes_on_path(query_start, query_end, a, steps, _), edge(_, a, x), path(x, query_end), 
-        why_node_pair_answer(query_start, query_end, _), !library_node(x, _).
-nodes_on_path(query_start, query_end, x, steps + 1, libnode) :- 
-        nodes_on_path(query_start, query_end, a, steps, _), edge(_, a, x), path(x, query_end), 
-        why_node_pair_answer(query_start, query_end, _), library_node(x, libnode).
+
+nodes_on_path(query_start, query_end, node, step, -1) :- why_node_pair(query_start, query_end), warning_paths(query_start, query_end, node, step, e, _, _), !library_flow(e, _).
+nodes_on_path(query_start, query_end, node, step, lib) :- why_node_pair(query_start, query_end), warning_paths(query_start, query_end, node, step, e, _, lib), library_flow(e, lib).
+
+
+// nodes_on_path(query_start, query_end, query_start, 0, -1) :- node(query_start), why_node_pair(query_start, query_end), node(query_end), path(query_start, query_end).
+// nodes_on_path(query_start, query_end, x, steps + 1, -1) :- 
+//         nodes_on_path(query_start, query_end, a, steps, _), edge(_, a, x), path(x, query_end), steps < 50.
+        // !library_node(x, _).
+// nodes_on_path(query_start, query_end, x, steps + 1, libnode) :- 
+//         nodes_on_path(query_start, query_end, a, steps, _), edge(_, a, x), path(x, query_end), 
+//         library_node(x, libnode).
 
 
