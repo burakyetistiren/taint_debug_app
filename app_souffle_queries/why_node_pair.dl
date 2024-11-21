@@ -39,7 +39,7 @@ why_node_pair_answer(start, end, y) :- why_node_pair(start, end), library_flow_o
 
 
 nodes_on_path(query_start, query_end, node, step, -1) :- why_node_pair(query_start, query_end), warning_paths(query_start, query_end, node, step, e, _, _), !library_flow(e, _).
-nodes_on_path(query_start, query_end, node, step, lib) :- why_node_pair(query_start, query_end), warning_paths(query_start, query_end, node, step, e, _, lib), library_flow(e, lib).
+nodes_on_path(query_start, query_end, node, step, lib) :- why_node_pair(query_start, query_end), warning_paths(query_start, query_end, node, step, e, _, lib), library_flow(e, _).
 
 
 // nodes_on_path(query_start, query_end, query_start, 0, -1) :- node(query_start), why_node_pair(query_start, query_end), node(query_end), path(query_start, query_end).
