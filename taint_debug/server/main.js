@@ -179,6 +179,30 @@ function readLibMapping() {
             }, {});
 }
 
+function readModelNames() {
+  const filepath = path.join(ANALYSIS_PATH, 'souffle_files/', 'model.debug');
+  console.log('Reading file:', filepath);
+  if (!fs.existsSync (filepath)) return [];
+  const data = fs.readFileSync(filepath, 'utf8');
+
+  // look for lines with model_node
+  // the name is the text between 'model_node(' and ,[0-9]+)
+  // the number is the libId
+  // create a map of libId to name
+  return data.split('\n')
+             .filter(line => line.includes('model_node'))
+             .reduce((map, line) => {
+
+              const name = line.match(/model_node\((.+),[0-9]+\)/)[1];
+              const libId = line.match(/model_node\(.+,([0-9]+)\)/)[1];
+              
+              map[libId] = name;  
+              
+              // map[libId] = 'dummy';
+              return map;
+             }, {});
+}
+
 function readNodeMapping() {
   const nodeMapping = {};
   const lines = fs.readFileSync(path.join(ANALYSIS_PATH, 'souffle_files/nodes.debug'), 'utf8').split('\n');
@@ -207,24 +231,28 @@ function separatePaths(pathsData, isReported) {
   const result = new Map();
   
   for (const [key, nodes] of pathsData) {
-      const nodeMap = new Map(nodes.map(node => [node.nodeId, node]));
+      const nodeMap = new Map(nodes.map(node => [(node.nodeId, node.step), node]));
       const sink = parseInt(key.split(',')[1]);
+      const source = parseInt(key.split(',')[0]);
       
       result.set(key, []);
       
       const sinkNodes = nodes.filter(node => node.nodeId === sink);
       // console.log(sinkNodes)
-      
+
+
       sinkNodes.forEach(sinkNode => {
           const path = [];
           let currentNode = sinkNode;
-          const visited = new Set();
+          // const visited = new Set();
           
-          while (currentNode && !visited.has(currentNode.nodeId)) {
+          while (currentNode) {
+            // && !visited.has(currentNode.nodeId)) {
+
               path.unshift(currentNode); 
-              visited.add(currentNode.nodeId);
+              // visited.add(currentNode.nodeId);
               
-              currentNode = currentNode.prevNode !== -1 ? nodeMap.get(currentNode.prevNode) : null;
+              currentNode = currentNode.prevNode !== -1 ? nodeMap.get((currentNode.prevNode, currentNode.step - 1)) : null;
               
               if (currentNode && currentNode.step >= path[0].step) {
                   break;
@@ -232,6 +260,7 @@ function separatePaths(pathsData, isReported) {
           }
           
           if (path.length > 0) {
+            
               result.get(key).push({
                   isReported,
                   path
@@ -259,6 +288,8 @@ function setupAndReadAnalysisData() {
 
 
   const nodeMapping = readNodeMapping();
+  const modelMapping = readModelNames();
+  // console.log(modelMapping)
   const apiMapping = readLibMapping();
   
   var nodesToInsert = [];
@@ -271,7 +302,11 @@ function setupAndReadAnalysisData() {
     node.colNum = parseInt(nodeMapping[nodeId]['column']) - 1;
     node.endColNum =  parseInt(nodeMapping[nodeId]['end_column']);
     node.nodeId = parseInt(nodeId);
-    node.description = nodeMapping[nodeId].description + (apiMapping[nodeId] ? " (library " + apiMapping[nodeId] + ")" : "");
+
+    let lib = apiMapping[nodeId];
+    node.description = nodeMapping[nodeId].description;
+    node.longDescription = nodeMapping[nodeId].description + (apiMapping[nodeId] ? " (model " + lib + ": " + modelMapping[lib] + ")" : "");
+    // node.longDescription = '' + modelMapping[lib];
 
     nodesToInsert.push(node);
     // console.log('inserted node');
@@ -400,7 +435,7 @@ function setupAndReadAnalysisData() {
     console.log('setupAndReadAnalysisData: plausibleSources:', plausibleSources.size);
     console.log('setupAndReadAnalysisData: plausibleSinks:', plausibleSinks.size);
     // insert sources and sinks
-    Sources.batchInsert(Array.from(plausibleSources).map(source => ({ nodeId: source, isReported: [...isSourceSinkReportedMap.get(source)], description: nodeMapping[source].description })));
+    Sources.batchInsert(Array.from(plausibleSources).map(source => ({ nodeId: source, isReported: [...isSourceSinkReportedMap.get(source)], description: nodeMapping[source].longDescription.substr(0, 100) })));
     Sinks.batchInsert(Array.from(plausibleSinks).map(sink => ({ nodeId: sink, isReported: [...isSourceSinkReportedMap.get(sink)], description: nodeMapping[sink].description })));
 
     return sourceSinkPairs;
@@ -566,6 +601,7 @@ Meteor.methods({
     lines.forEach(line => {
       if (line.trim()) {
         const [nodeId, file, lineNum, column, endLineNum, endColNum, description] = line.trim().split(',');
+
         nodeMapping[Number(nodeId)] = {
           nodeId: Number(nodeId),
           file,
@@ -573,7 +609,7 @@ Meteor.methods({
           column: Number(column),
           end_line: Number(endLineNum),
           end_column: Number(endColNum),
-          description,
+          description: description,
         };
       }
     });
