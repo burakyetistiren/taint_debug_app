@@ -1,23 +1,55 @@
 <head>
   <title>Your Meteor App</title>
+  <style>
+    .paths-container {
+      padding: 20px;
+      background-color: #f5f5f5;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .paths-header {
+      font-size: 1.8em;
+      color: #007BFF;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  </style>
 </head>
 
 <body>
   {{> mainTemplate }}
 
+  <!-- Query Options Section -->
   <div class="row full-width">
-    <div class="column taint-paths-view">
-      <h1>Taint Paths</h1>
+    <div class="column view-container">
+      <h1>Query Options</h1>
+      {{> queries}}
+    </div>
+  </div>
 
+  <!-- Taint Paths Section -->
+  <div class="row full-width">
+    <div class="column view-container taint-paths-view">
+      <div class="query-container">
+        <div class="query-header">
+          <span class="taint-paths-icon">🛣️</span>
+          <h1>Taint Paths</h1>
+        </div>
+      </div>
       
+      <!-- Display each taint path -->
       {{#each pathsToDisplay}}
         {{> path}}
       {{/each}}
     </div>
   </div>
 
+  <!-- JSON View Section -->
   <div class="row full-width">
-    <div class="column json-view-container">
+    <div class="column view-container json-view-container">
       <h1>JSON View</h1>
       {{> jsonView}}
     </div>
@@ -25,116 +57,99 @@
 </body>
 
 <template name="mainTemplate">
-    <style>
-        /* Loader styles */
+  <style>
+      /* General Row and Column Layout */
+      .row {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      .column {
+        flex: 1;
+        padding: 10px;
+      }
+
+      /* View Container Styles */
+      .view-container {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      
+      /* Taint Paths and Query Options Header */
+      h1 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      /* Scrollable Section for Taint Paths */
+      .taint-paths-view {
+        height: 50vh;
+        overflow-y: auto;
+      }
+
+      /* JSON View Styling */
+      .json-view-container {
+        height: 50vh;
+        overflow-y: auto;
+      }
+
+      /* Button Styles */
+      .collapse-button, .collapse-button-json {
+        cursor: pointer;
+        color: white;
+        border: none;
+        padding: 10px;
+        font-size: 16px;
+        margin-top: 10px;
+        border-radius: 5px;
+        width: 100%;
+        text-align: center;
+        transition: 0.4s;
+      }
+      
+      /* Color Variants for Buttons */
+      .collapse-button {
+        background-color: #007BFF;
+      }
+      .collapse-button:hover {
+        background-color: #0056b3;
+      }
+      .collapse-button-json {
+        background-color: #ff8c00;
+      }
+      .collapse-button-json:hover {
+        background-color: #cc7000;
+      }
+
+      /* Loader Styles */
       .loader {
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         border: 8px solid #f3f3f3;
-        border-radius: 50%;
         border-top: 8px solid #3498db;
+        border-radius: 50%;
         width: 50px;
         height: 50px;
         animation: spin 1s linear infinite;
         z-index: 1000;
-        display: none; /* Hidden by default */
+        display: none;
       }
 
       @keyframes spin {
         0% { transform: rotate(0deg); }
         100% { transform: rotate(360deg); }
       }
-      .row {
-        display: flex;
-        flex-direction: row;
-      }
-      .column {
-        flex: 1; /* Each column takes equal space */
-      }
-      .full-width {
-        width: 100%; /* Full width for the second row */
-      }
-      .view-container {
-        height: 50vh; /* Assigns half of the vertical height to the views */
-        overflow: auto; /* Allows scrolling if content overflows */
-      }
-      .graph-view {
-        overflow: hidden; /* Prevents scrolling within the Graph view */
-      }
-      .taint-paths-view {
-        height: 50vh;
-        overflow: scroll;
-      }
-      .json-view-container {
-        height: 100%; /* Full height of the parent container */
-        overflow: auto; /* Allows scrolling if content overflows */
-      }
-      .json-view {
-        display: none; /* Initially collapsed */
-        overflow: auto;
-      }
-      .collapse-button {
-        cursor: pointer;
-        background-color: #007BFF;
-        color: white;
-        border: none;
-        padding: 10px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
-        transition-duration: 0.4s;
-        width: 100%;
-      }
-      .collapse-button:hover {
-        background-color: white;
-        color: black;
-        border: 2px solid #007BFF;
-      }
-      .collapse-button-json {
-        cursor: pointer;
-        background-color: #ff8c00;
-        color: white;
-        border: none;
-        padding: 10px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 4px 2px;
-        transition-duration: 0.4s;
-        width: 100%;
-      }
-      .collapse-button-json:hover {
-        background-color: white;
-        color: black;
-        border: 2px solid #ff8c00;
-      }
-    </style>
+  </style>
 
-    <!-- 
-    <div class="row" style="height: 50vh;">  
-      <div class="column view-container"> 
-        {{> queries}}
-      </div>
-      <div class="column view-container graph-view"> 
-        <h1>Graph view</h1>
-        {{> cytoscapeContainer}}
-      </div>
-    </div> 
-    -->
+  <!-- Open Graph Button and Loader -->
+  <button id="openGraphButton" class="collapse-button">Open Graph</button>
+  <div id="loadingSpinner" class="loader"></div>
 
-    <button id="openGraphButton">Open Graph</button>
-    <div id="loadingSpinner" class="loader"></div>
-
-    <div class="row" style="height: 50vh;">  
-      <div class="column view-container"> 
-        {{> queries}}
-      </div>
-    </div>
-
-
-</template> 
+</template>

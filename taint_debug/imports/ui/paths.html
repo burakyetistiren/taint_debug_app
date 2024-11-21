@@ -1,25 +1,18 @@
 <head>
   <style>
-    .interactive-button {
-      background-color: #4CAF50; /* Green */
-      border: none;
-      color: white;
-      padding: 15px 32px;
+    .path-container {
+      padding: 20px;
+      background-color: #f5f5f5;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .path-header {
+      font-size: 1.8em;
+      color: #007BFF;
+      margin-bottom: 15px;
       text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      margin: 4px 2px;
-      cursor: pointer;
-      transition-duration: 0.4s;
     }
-
-    .interactive-button:hover {
-      background-color: white;
-      color: black;
-      border: 2px solid #4CAF50;
-    }
-
     .collapse-button {
       cursor: pointer;
       background-color: #007BFF;
@@ -29,23 +22,47 @@
       text-align: center;
       text-decoration: none;
       display: inline-block;
-      font-size: 16px;
+      font-size: 1em;
       margin: 4px 2px;
-      transition-duration: 0.4s;
-      width: 100%;
+      transition: box-shadow 0.3s;
+      border-radius: 8px;
     }
-
     .collapse-button:hover {
-      background-color: white;
-      color: black;
+      background-color: #ffffff;
+      color: #007BFF;
       border: 2px solid #007BFF;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    .path-box {
+      background-color: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+      transition: box-shadow 0.3s;
+    }
+    .path-box:hover {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    .node-info {
+      font-size: 1.25em;
+      color: #333;
+      margin-bottom: 8px;
+    }
+    .inspect-button {
+      padding: 8px;
+      font-size: 1em;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f5f5f5;
+      cursor: pointer;
     }
   </style>
 </head>
 
 <template name="path">
-  <div id="warning_{{warningNumber}}" class="border" style="margin: 10px;">
-    <div style="margin: auto; text-align: center;">
+  <div id="warning_{{warningNumber}}" class="path-container">
+    <div class="path-header">
       <h2>{{{isReported}}} Path {{warningNumber}}: {{warningDescription}}</h2>
     </div>
     <div id="collapse-button-container">
@@ -54,20 +71,22 @@
       </button>
     </div>
     <div id="pathContent_{{warningNumber}}" style="display: none">
-      <div class="pure-g">
-        <div class="pure-u-1-3">
-          <h2>Source</h2>
-          <pre style="overflow: auto; min-width: 100%; width: 0px;" class="node-{{startNodeId}}"><code class="start">{{start}}</code></pre>
-        </div>
-        <div class="pure-u-1-6">
-          <div style="padding-left: 8px; padding-top: 40px;">
-            Passing through {{numIntermediate}} steps to reach 
+      <div class="path-box">
+        <div class="pure-g">
+          <div class="pure-u-1-3">
+            <h2>Source</h2>
+            <pre style="overflow: auto; min-width: 100%; width: 0px;" class="node-{{startNodeId}}"><code class="start">{{start}}</code></pre>
           </div>
-        </div>
-        <div class="pure-u-1-3">
-          <h2>Sink</h2>
-          <pre style="overflow: auto; min-width: 100%; width: 0px;" class="node-{{endNodeId}}"><code class="end">{{end}}</code></pre>
-          <button class="pure-button" id="inspectButton">Inspect</button>
+          <div class="pure-u-1-6">
+            <div style="padding-left: 8px; padding-top: 40px;">
+              Passing through {{numIntermediate}} steps to reach
+            </div>
+          </div>
+          <div class="pure-u-1-3">
+            <h2>Sink</h2>
+            <pre style="overflow: auto; min-width: 100%; width: 0px;" class="node-{{endNodeId}}"><code class="end">{{end}}</code></pre>
+            <button class="inspect-button" id="inspectButton">Inspect</button>
+          </div>
         </div>
       </div>
       {{#if isCurrentlyInspectedWarning}}
@@ -84,7 +103,7 @@
 </template>
 
 <template name="intermediateNodes">
-  <div class="slider border" style="margin: auto; margin-left: 20px;">
+  <div class="path-box" style="margin: auto; margin-left: 20px;">
     <div style="text-align: center;">
       <div>Intermediate Steps:</div>
       {{#each intermediates}}
@@ -103,18 +122,15 @@
 </template>
 
 <template name="questionChoices">
-  <div id="contextMenu" class="context-menu border">
+  <div id="contextMenu" class="path-box">
     <ul>
       <li><button id="toggleButton" class="interactive-button why_node_model">{{buttonText}}</button></li>
-      <!--<li><a href="#why_node_pair_model">Why {{isOrIsNot}} there a taint path from <code>{{start}}</code> to <code>{{end}}</code>?</a></li>-->
-      <!--<li><a href="#why_start_node_model">Why {{isOrIsNot}} there a taint path start at <code>{{end}}</code>?</a></li>-->
     </ul>
   </div>
 </template>
 
-
 <template name="libraryImpact">
-  <div class="library-impact border" style="margin-left: 50px;">
+  <div class="path-box" style="margin-left: 50px;">
     <h3>Other warnings with path {{libStateDescription}} {{displaySelectedLibNode}}</h3>
     {{#each paths}}
       {{> sourceSinkPair}}

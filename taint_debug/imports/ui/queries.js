@@ -320,7 +320,8 @@ Template.queries.onCreated(function() {
               console.error(`Node with ID ${nodeId} not found in nodeMapping`);
               return { id: nodeId, description: 'Unknown' };
             }
-
+            
+            
             nodeToAdd.file = nodeToAdd.file.split('/').pop();
             const nodeDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || nodeId;
             return { id: nodeId, description: nodeDescription };
