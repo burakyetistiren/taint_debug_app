@@ -277,6 +277,9 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
         data: { source: 'node_' + edge.sourceId, target: 'node_' + edge.targetId }
       }));
 
+      console.log("DEBUG! cyNodesToShow", cyNodesToShow);
+      console.log("DEBUG! edgesToKeep", edgesToKeep);
+
     // Open the popup and initialize the graph with nodes and edges
     openGraphPopupWithResults(cyNodesToShow, edgesToKeep);
 
