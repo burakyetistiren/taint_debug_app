@@ -207,24 +207,28 @@ function separatePaths(pathsData, isReported) {
   const result = new Map();
   
   for (const [key, nodes] of pathsData) {
-      const nodeMap = new Map(nodes.map(node => [node.nodeId, node]));
+      const nodeMap = new Map(nodes.map(node => [(node.nodeId, node.step), node]));
       const sink = parseInt(key.split(',')[1]);
+      const source = parseInt(key.split(',')[0]);
       
       result.set(key, []);
       
       const sinkNodes = nodes.filter(node => node.nodeId === sink);
       // console.log(sinkNodes)
-      
+
+
       sinkNodes.forEach(sinkNode => {
           const path = [];
           let currentNode = sinkNode;
-          const visited = new Set();
+          // const visited = new Set();
           
-          while (currentNode && !visited.has(currentNode.nodeId)) {
+          while (currentNode) {
+            // && !visited.has(currentNode.nodeId)) {
+
               path.unshift(currentNode); 
-              visited.add(currentNode.nodeId);
+              // visited.add(currentNode.nodeId);
               
-              currentNode = currentNode.prevNode !== -1 ? nodeMap.get(currentNode.prevNode) : null;
+              currentNode = currentNode.prevNode !== -1 ? nodeMap.get((currentNode.prevNode, currentNode.step - 1)) : null;
               
               if (currentNode && currentNode.step >= path[0].step) {
                   break;
@@ -232,6 +236,7 @@ function separatePaths(pathsData, isReported) {
           }
           
           if (path.length > 0) {
+            
               result.get(key).push({
                   isReported,
                   path
