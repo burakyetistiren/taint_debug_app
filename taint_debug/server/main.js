@@ -211,6 +211,7 @@ function readNodeMapping() {
 
 
       const [nodeId, file, lineNum, column, endLineNum, endColNum, description] = line.trim().split(',');
+      let filename  = file.split('/').pop();
 
       nodeMapping[Number(nodeId)] = {
         nodeId: Number(nodeId),
@@ -219,7 +220,7 @@ function readNodeMapping() {
         column: Number(column),
         end_line: Number(endLineNum),
         end_column: Number(endColNum),
-        description,
+        description: description + ' (' + filename + ':' + lineNum + ')',
       };
     }
   });
@@ -601,6 +602,7 @@ Meteor.methods({
     lines.forEach(line => {
       if (line.trim()) {
         const [nodeId, file, lineNum, column, endLineNum, endColNum, description] = line.trim().split(',');
+        let filename  = file.split('/').pop();
 
         nodeMapping[Number(nodeId)] = {
           nodeId: Number(nodeId),
@@ -609,7 +611,7 @@ Meteor.methods({
           column: Number(column),
           end_line: Number(endLineNum),
           end_column: Number(endColNum),
-          description: description,
+          description: description + ' (' + filename + ':' + lineNum + ')',
         };
       }
     });
