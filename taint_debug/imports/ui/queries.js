@@ -216,8 +216,16 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
     console.log('Query result:', result);
 
     let queryResults;
+    let queryParams = {}
+    if (queryType === 'common_paths') {
+      queryParams = { sourceId, sinkId, selectedAPIId, secondSourceId, secondSinkId };
+    } else if (queryType === 'sinks_affected') {
+      queryParams = { sourceId, selectedAPIId };
+    } else {
+      queryParams = { sourceId, sinkId };
+    }
     for (let attempts = 0; attempts < 5; attempts++) { // max 5 retries
-      queryResults = QueryResults.findOne({ sourceId, sinkId, selectedAPIId });
+      queryResults = QueryResults.findOne(queryParams);
       await new Promise(r => setTimeout(r, 1000)); 
 
       if (queryResults) break;
@@ -394,6 +402,23 @@ Template.queries.helpers({
             description: source.description
           }
         });
+  },
+  sinksAffectedSources() {
+    let selectedApi = Session.get('selectedAPIId');
+    // find paths where some middle node has lib=selectedApi
+    let paths = Paths.find({ 'middle.lib': selectedApi }).fetch();
+    let sources = paths.map(path => path.left.nodeId);
+
+    return [...new Set(sources)].map(sourceId => {
+      const nodeToAdd = nodeMapping[sourceId];
+      if (!nodeToAdd) {
+        console.error(`Node with ID ${sourceId} not found in nodeMapping`);
+        return { id: sourceId, description: 'Unknown' };
+      }
+      nodeToAdd.file = nodeToAdd.file.split('/').pop();
+      const sourceDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || sourceId;
+      return { id: sourceId, description: sourceDescription };
+    });
   },
   whySinks() {
     

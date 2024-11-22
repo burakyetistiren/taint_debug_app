@@ -784,10 +784,14 @@ Meteor.methods({
 
           console.log("nodesOnPath2", nodesOnPath2)
       }
+      if (queryType == 'sinks_affected') {
+        queryResults['selectedAPIId'] = selectedAPIId;
+      }
 
       // remove old QueryResults without the same sourceId 
       QueryResults.remove({ sourceId: { '$ne' : sourceId}  });
 
+      console.log('inserting into query results: ', queryResults);
       QueryResults.insert(queryResults);
 
       
