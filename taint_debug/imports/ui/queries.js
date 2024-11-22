@@ -579,7 +579,7 @@ Template.queries.events({
     Session.set('selectedSourceId', selectedSourceId);
     Session.set('queryType', queryType);
 
-    if (queryType === 'why_node_pair' || queryType === 'common_paths') {
+    if (queryType === 'why_node_pair' || queryType === 'common_paths' || queryType === 'global_impact') {
       Session.set('whySelectedSourceId', selectedSourceId);
     } else if (queryType === 'whynot_node_pairs') {
       Session.set('whynotSelectedSourceId', selectedSourceId);

@@ -1,9 +1,12 @@
 
-.decl warning_paths(source:number, sink:number, node:number, step: number, edge:number, lib: number)
+.decl warning_paths(source:number, sink:number, node:number, step: number, edge:number, prev_node:number, lib: number)
 .input warning_paths
 
 .decl global_impact(query_source : number, query_sink: number)
 .input global_impact
+
+.decl library_flow(edge:number, id:number)
+.input library_flow
 
 .decl library_node(lib:number, node:number)
 .input library_node
@@ -27,14 +30,11 @@
 .output nodes_on_path
 
 
-libs_on_path(query_source, query_sink, lib) :- global_impact(query_source, query_sink), warning_paths(query_source, query_sink, _, _,_, lib).
+libs_on_path(query_source, query_sink, lib) :- global_impact(query_source, query_sink), warning_paths(query_source, query_sink, _, _,_, _,lib).
 
 global_impact_answer(query_source, query_sink, lib, score) :- global_impact(query_source, query_sink), libs_on_path(query_source, query_sink, lib), library_paths_count(lib, cnt), score = cnt.
 
 
-nodes_on_path(query_start, query_end, x, steps, -1) :- 
-        global_impact(query_source, query_end),
-        warning_paths(query_start, query_end, x, steps, _, _),  !library_node(x, _).
-nodes_on_path(query_start, query_end, x, steps, lib) :- 
-        global_impact(query_source, query_end),
-        warning_paths(query_start, query_end, x, steps, _, _),  library_node(x, lib).
+nodes_on_path(query_start, query_end, node, step, -1) :- global_impact(query_start, query_end), warning_paths(query_start, query_end, node, step, e, _, _), !library_flow(e, _).
+nodes_on_path(query_start, query_end, node, step, lib) :- global_impact(query_start, query_end), warning_paths(query_start, query_end, node, step, e, _, lib), library_flow(e, _).
+

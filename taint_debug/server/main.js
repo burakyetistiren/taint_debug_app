@@ -785,7 +785,19 @@ Meteor.methods({
           console.log("nodesOnPath2", nodesOnPath2)
       }
       if (queryType == 'sinks_affected') {
-        queryResults['selectedAPIId'] = selectedAPIId;
+        queryResults['selectedAPIId'] = selectedAPIId; // allow us to fetch the results on the front-end
+
+      }
+      if (queryType == 'global_impact') {
+
+        const libScores = result.split('\n')
+          .filter(row => row.trim())
+          .map(row => row.split('\t').map(Number))
+          .map(row => ({ lib: row[2], score: row[3] }));
+        
+        // TODO HJ to burak: if we look up libScores on the front-end, we can look for nodes where the third element matches a key of libScore, then fetch the appropriate score
+        queryResults['libScores'] = libScores;
+        console.log('libScores', libScores);
       }
 
       // remove old QueryResults without the same sourceId 
