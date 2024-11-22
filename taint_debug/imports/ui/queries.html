@@ -54,6 +54,7 @@
       <h1>Query Options</h1>
     </div>
 
+
     <!-- Dynamic Queries Based on Query Type -->
     {{#each queries}}
       {{#if (eq queryType "why_node_pair")}}
@@ -73,6 +74,16 @@
             {{/each}}
           </select>
           <p>Identifies APIs that contribute to the existance of a specific flow.</p>
+          <button class="query-button" 
+            data-query-type="{{queryType}}" 
+            data-src-dropdown-id="src-{{@index}}" 
+            data-sink-dropdown-id="sink-{{@index}}" 
+            data-second-src-dropdown-id="second-src-{{@index}}" 
+            data-second-sink-dropdown-id="second-sink-{{@index}}" 
+            data-api-dropdown-id="api-{{@index}}">
+            Run Query
+          </button>
+  
         </div>
       {{/if}}
 
@@ -93,6 +104,15 @@
             {{/each}}
           </select>
           <p>Identifies APIs that act as sanitizers in certain flows.</p>
+          <button class="query-button" 
+            data-query-type="{{queryType}}" 
+            data-src-dropdown-id="src-{{@index}}" 
+            data-sink-dropdown-id="sink-{{@index}}" 
+            data-second-src-dropdown-id="second-src-{{@index}}" 
+            data-second-sink-dropdown-id="second-sink-{{@index}}" 
+            data-api-dropdown-id="api-{{@index}}">
+            Run Query
+          </button>
         </div>
       {{/if}}
 
@@ -127,6 +147,15 @@
             {{/each}}
           </select>
           <p>Identifies common subpaths and APIs between two flows.</p>
+          <button class="query-button" 
+            data-query-type="{{queryType}}" 
+            data-src-dropdown-id="src-{{@index}}" 
+            data-sink-dropdown-id="sink-{{@index}}" 
+            data-second-src-dropdown-id="second-src-{{@index}}" 
+            data-second-sink-dropdown-id="second-sink-{{@index}}" 
+            data-api-dropdown-id="api-{{@index}}">
+            Run Query
+          </button>
         </div>
       {{/if}}
 
@@ -147,6 +176,15 @@
             {{/each}}
           </select>
           <p>Identifies sinks that can be affected by the removal specific API.</p>
+          <button class="query-button" 
+            data-query-type="{{queryType}}" 
+            data-src-dropdown-id="src-{{@index}}" 
+            data-sink-dropdown-id="sink-{{@index}}" 
+            data-second-src-dropdown-id="second-src-{{@index}}" 
+            data-second-sink-dropdown-id="second-sink-{{@index}}" 
+            data-api-dropdown-id="api-{{@index}}">
+            Run Query
+          </button>
         </div>
       {{/if}}
 
@@ -167,6 +205,15 @@
             {{/each}}
           </select>
           <p>Rank APIs by frequency across all flows.</p>
+          <button class="query-button" 
+            data-query-type="{{queryType}}" 
+            data-src-dropdown-id="src-{{@index}}" 
+            data-sink-dropdown-id="sink-{{@index}}" 
+            data-second-src-dropdown-id="second-src-{{@index}}" 
+            data-second-sink-dropdown-id="second-sink-{{@index}}" 
+            data-api-dropdown-id="api-{{@index}}">
+            Run Query
+          </button>
         </div>
       {{/if}}
     {{/each}}

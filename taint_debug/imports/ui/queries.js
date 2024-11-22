@@ -224,9 +224,14 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
     } else {
       queryParams = { sourceId, sinkId };
     }
+
+    console.log('Query params:', queryParams);
+
     for (let attempts = 0; attempts < 5; attempts++) { // max 5 retries
-      queryResults = QueryResults.findOne(queryParams);
       await new Promise(r => setTimeout(r, 1000)); 
+      queryResults = QueryResults.findOne(queryParams);
+      console.log('Query results in loop:', queryResults);
+
 
       if (queryResults) break;
       await new Promise(r => setTimeout(r, 500)); 
@@ -239,54 +244,127 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
 
     const nodesToKeep = queryResults.nodesOnPath;
     const cyNodesToShow = [];
+    let edgesToKeep = [];
 
-    nodesToKeep.forEach(nodeOnPathTuple => {
-      const nodeId = nodeOnPathTuple[0];
-      const libNode = nodeOnPathTuple[2];
+    if(queryType === 'common_paths') {
+      // find the common nodes
+      const nodesOnFirstPath = queryResults.nodesOnPath;
+      const nodesOnSecondPath = queryResults.nodesOnPath2;
+      const commonNodes = nodesOnFirstPath.filter(node => nodesOnSecondPath.some(node2 => node[0] === node2[0]));
+      console.log("commonNodes", commonNodes);
 
-      let color = '#0074D9';
-      let textColor = '#FFFFFF';
-      const node = Nodes.findOne({ nodeId });
+      // find the edges that are connecting the common nodes. Some nodes can be not connected to each other, we can end up with a disconnected graph
+      const commonNodeIds = commonNodes.map(node => node[0]); // Adjust if commonNodes is already an array of IDs
+      const allEdges = Edges.find({}).fetch();
+      const edgesOnFirstPath = allEdges.filter(edge => nodesOnFirstPath.some(node => node[0] === parseInt(edge.sourceId)) && nodesOnFirstPath.some(node => node[0] === parseInt(edge.targetId)));
 
-      if (nodeId === sourceId) {
-        return;
-      }
-      if (libNode != -1) {
-        color = '#FF851B';
-      }
+      console.log("allEdges", allEdges);
+      console.log("commonNodeIds", commonNodeIds);
+      edgesToKeep = edgesOnFirstPath
+        .filter(edge => 
+          commonNodeIds.includes(parseInt(edge.sourceId)) && commonNodeIds.includes(parseInt(edge.targetId))
+        )
+        .map(edge => ({
+          group: 'edges',
+          data: { source: 'node_' + edge.sourceId, target: 'node_' + edge.targetId }
+        }));
 
-      cyNodesToShow.push({
-        data: { id: 'node_' + nodeId, description: `${nodeId} ${(node?.description || '')}`, 'original-background-color': color, 'original-text-color': textColor },
-        style: { 'background-color': color, 'color': textColor }
+      // add the common nodes to the nodes to show
+      commonNodes.forEach(nodeOnPathTuple => {
+        const nodeId = nodeOnPathTuple[0];
+        const libNode = nodeOnPathTuple[2];
+
+        let color = '#0074D9';
+        let textColor = '#FFFFFF';
+        const node = Nodes.findOne({ nodeId });
+
+        if (nodeId === sourceId) {
+          return;
+        }
+        if (libNode != -1) {
+          color = '#FF851B';
+        }
+
+        cyNodesToShow.push({
+          data: { id: 'node_' + nodeId, description: `${nodeId} ${(node?.description || '')}`, 'original-background-color': color, 'original-text-color': textColor },
+          style: { 'background-color': color, 'color': textColor }
+        });
       });
-    });
 
-    // Add source and sink nodes
-    if (queryType !== 'common_paths') {
-      cyNodesToShow.push({
-        data: { id: 'node_' + sourceId, description: `${sourceId} Source`, 'original-background-color': '#2ECC40', 'original-text-color': '#FFFFFF' },
-        style: { 'background-color': '#2ECC40', 'color': '#FFFFFF' }
+      // add the common edges to the edges to keep
+      commonNodes.forEach(nodeOnPathTuple => {
+        const nodeId = nodeOnPathTuple[0];
+        const libNode = nodeOnPathTuple[2];
+
+        let color = '#0074D9';
+        let textColor = '#FFFFFF';
+        const node = Nodes.findOne({ nodeId });
+
+        if (nodeId === sourceId) {
+          return;
+        }
+        if (libNode != -1) {
+          color = '#FF851B';
+        }
+
+        cyNodesToShow.push({
+          data: { id: 'node_' + nodeId, description: `${nodeId} ${(node?.description || '')}`, 'original-background-color': color, 'original-text-color': textColor },
+          style: { 'background-color': color, 'color': textColor }
+        });
       });
-      cyNodesToShow.push({
-        data: { id: 'node_' + sinkId, description: `${sinkId} Sink`, 'original-background-color': '#FF4136', 'original-text-color': '#FFFFFF' },
-        style: { 'background-color': '#FF4136', 'color': '#FFFFFF' }
-      });
+
+
     }
+    else if(queryType === 'sinks_affected') {}
+    else {
+      nodesToKeep.forEach(nodeOnPathTuple => {
+        const nodeId = nodeOnPathTuple[0];
+        const libNode = nodeOnPathTuple[2];
 
-    console.log('Nodes:', cyNodesToShow);
+        let color = '#0074D9';
+        let textColor = '#FFFFFF';
+        const node = Nodes.findOne({ nodeId });
 
-    const nodeIdsToKeep = cyNodesToShow.map(node => node.data.id);
+        if (nodeId === sourceId) {
+          return;
+        }
+        if (libNode != -1) {
+          color = '#FF851B';
+        }
 
-    const allEdges = Edges.find({}).fetch();
-    const edgesToKeep = allEdges
-      .filter(edge => nodeIdsToKeep.includes('node_' + edge.sourceId) && nodeIdsToKeep.includes('node_' + edge.targetId))
-      .map(edge => ({
-        group: 'edges',
-        data: { source: 'node_' + edge.sourceId, target: 'node_' + edge.targetId }
-      }));
+        cyNodesToShow.push({
+          data: { id: 'node_' + nodeId, description: `${nodeId} ${(node?.description || '')}`, 'original-background-color': color, 'original-text-color': textColor },
+          style: { 'background-color': color, 'color': textColor }
+        });
+      });
 
-      console.log("DEBUG! cyNodesToShow", cyNodesToShow);
-      console.log("DEBUG! edgesToKeep", edgesToKeep);
+      // Add source and sink nodes
+      if (queryType !== 'common_paths') {
+        cyNodesToShow.push({
+          data: { id: 'node_' + sourceId, description: `${sourceId} Source`, 'original-background-color': '#2ECC40', 'original-text-color': '#FFFFFF' },
+          style: { 'background-color': '#2ECC40', 'color': '#FFFFFF' }
+        });
+        cyNodesToShow.push({
+          data: { id: 'node_' + sinkId, description: `${sinkId} Sink`, 'original-background-color': '#FF4136', 'original-text-color': '#FFFFFF' },
+          style: { 'background-color': '#FF4136', 'color': '#FFFFFF' }
+        });
+      }
+
+      console.log('Nodes:', cyNodesToShow);
+
+      const nodeIdsToKeep = cyNodesToShow.map(node => node.data.id);
+
+      const allEdges = Edges.find({}).fetch();
+      edgesToKeep = allEdges
+        .filter(edge => nodeIdsToKeep.includes('node_' + edge.sourceId) && nodeIdsToKeep.includes('node_' + edge.targetId))
+        .map(edge => ({
+          group: 'edges',
+          data: { source: 'node_' + edge.sourceId, target: 'node_' + edge.targetId }
+        }));
+      }
+
+    console.log("DEBUG! cyNodesToShow", cyNodesToShow);
+    console.log("DEBUG! edgesToKeep", edgesToKeep);
 
     // Open the popup and initialize the graph with nodes and edges
     openGraphPopupWithResults(cyNodesToShow, edgesToKeep);
@@ -297,8 +375,6 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
     loader.style.display = 'none';  // Hide loader
   }
 }
-
-
 
 let nodeMapping = {};
 
@@ -533,6 +609,29 @@ Template.queries.events({
     }
   },
 
+  'click .query-button'(event) {
+    const button = event.currentTarget;
+    const queryType = button.getAttribute('data-query-type');
+
+    // Get associated dropdown values
+    const sourceId = document.getElementById(button.getAttribute('data-src-dropdown-id'))?.value;
+    const sinkId = document.getElementById(button.getAttribute('data-sink-dropdown-id'))?.value;
+    const secondSourceId = document.getElementById(button.getAttribute('data-second-src-dropdown-id'))?.value;
+    const secondSinkId = document.getElementById(button.getAttribute('data-second-sink-dropdown-id'))?.value;
+    const selectedAPIId = document.getElementById(button.getAttribute('data-api-dropdown-id'))?.value;
+
+    console.log('Run Query Button Clicked');
+    console.log('Query Type:', queryType);
+    console.log('Source ID:', sourceId);
+    console.log('Sink ID:', sinkId);
+    console.log('Second Source ID:', secondSourceId);
+    console.log('Second Sink ID:', secondSinkId);
+    console.log('API ID:', selectedAPIId);
+
+    // Call the query function
+    callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId);
+  },
+
   'change .focus-dropdown-edge'(event) {
     const selectedEdgeId = event.target.value;
     const cy = window.cyInstance;
@@ -594,7 +693,7 @@ Template.queries.events({
 
     let selectedApiId = $(event.target).closest('.query-box').find('.api-dropdown').val();
 
-    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, selectedApiId);
+    //callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, selectedApiId);
   },
   'change .sink-dropdown'(event) {
     const selectedSinkId = $(event.target).val();
@@ -616,7 +715,7 @@ Template.queries.events({
 
     let selectedApiId = $(event.target).closest('.query-box').find('.api-dropdown').val();
 
-    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, selectedApiId);
+    //callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, selectedApiId);
   },
   'change .second-src-dropdown'(event) {
     const selectedSecondSourceId = $(event.target).val();
@@ -629,7 +728,7 @@ Template.queries.events({
     const selectedSourceId = $(event.target).closest('.query-box').find('.src-dropdown').val();
     const selectedSinkId = $(event.target).closest('.query-box').find('.sink-dropdown').val();
 
-    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, null);
+    //callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, null);
   },
   'change .second-sink-dropdown'(event) {
     const selectedSecondSinkId = $(event.target).val();
@@ -643,7 +742,7 @@ Template.queries.events({
     const selectedSourceId = $(event.target).closest('.query-box').find('.src-dropdown').val();
     const selectedSinkId = $(event.target).closest('.query-box').find('.sink-dropdown').val();
 
-    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, null);
+    //callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, selectedSecondSourceId, selectedSecondSinkId, null);
   },
   'change .api-dropdown'(event) {
     const selectedAPIId = $(event.target).val();
@@ -655,7 +754,7 @@ Template.queries.events({
     const selectedSourceId = $(event.target).closest('.query-box').find('.src-dropdown').val();
     const selectedSinkId = $(event.target).closest('.query-box').find('.sink-dropdown').val();
 
-    callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, null, null, selectedAPIId);
+    //callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, null, null, selectedAPIId);
   },
 });
 

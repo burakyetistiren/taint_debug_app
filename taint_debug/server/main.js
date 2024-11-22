@@ -771,6 +771,9 @@ Meteor.methods({
 
       // different result for different query types
       if (queryType === 'common_paths') {
+        queryResults['secondSourceId'] = secondSourceId;
+        queryResults['secondSinkId'] = secondSinkId;
+        
         console.log('common_paths:');
         // read the 2nd nodes_on_path
         const resultNodes2 = fs.readFileSync(`${QUERY_RESULT_PATH}/nodes_on_path2.csv`, 'utf8');
