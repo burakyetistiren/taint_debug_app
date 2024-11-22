@@ -761,10 +761,34 @@ Meteor.methods({
         .filter(row => row.length == 3);
       console.log("nodesOnPath", nodesOnPath)
 
+      let queryResults = {};
+
+        queryResults['queryType'] = queryType; 
+        queryResults['sourceId'] = sourceId; 
+        queryResults['sinkId'] = sinkId;
+        queryResults['libNodes'] = libNodes;
+        queryResults['nodesOnPath'] = nodesOnPath;
+
+      // different result for different query types
+      if (queryType === 'common_paths') {
+        console.log('common_paths:');
+        // read the 2nd nodes_on_path
+        const resultNodes2 = fs.readFileSync(`${QUERY_RESULT_PATH}/nodes_on_path2.csv`, 'utf8');
+        const nodesOnPath2 = resultNodes2.split('\n')
+          .map(row => row.split('\t').map(Number))
+          .map(row => row.slice(-3))
+          .filter(row => row.length == 3);
+
+          // TODO burak
+          queryResults['nodesOnPath2'] = nodesOnPath2;
+
+          console.log("nodesOnPath2", nodesOnPath2)
+      }
+
       // remove old QueryResults without the same sourceId 
       QueryResults.remove({ sourceId: { '$ne' : sourceId}  });
 
-      QueryResults.insert({ queryType, sourceId, sinkId, libNodes, nodesOnPath });
+      QueryResults.insert(queryResults);
 
       
     }));
