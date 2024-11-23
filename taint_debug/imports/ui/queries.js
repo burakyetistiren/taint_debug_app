@@ -315,7 +315,66 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
 
 
     }
-    else if(queryType === 'sinks_affected') {}
+    else if(queryType === 'sinks_affected') {
+      const sinksNonReachable = queryResults.libNodes;
+      const sourceId = parseInt(queryResults.sourceId);
+
+      const allPaths = queryResults.nodesOnPath;
+
+      // we will define distinct paths where we will parse through allPaths, our sourceId defines where we start and end. i.e., nodesOnPath: [ 18, 0, -1 ], [ 464, 4, -1 ], [ 1386, 7, -1 ], [ 18, 0, -1 ], [ 1388, 7, -1 ]: We have two paths here, 18 -> 464 -> 1386 and 18 -> 1388
+      let distinctPaths = [];
+      let currentPath = [];
+      allPaths.forEach(path => {
+        if (path[0] === sourceId) {
+          if (currentPath.length > 0) {
+            distinctPaths.push(currentPath);
+          }
+          currentPath = [];
+        }
+        currentPath.push(path);
+      });
+
+      if (currentPath.length > 0) {
+        distinctPaths.push(currentPath);
+      }
+
+      console.log("distinctPaths", distinctPaths);
+
+      // now let's push all distinct paths to the cyNodesToShow
+      distinctPaths.forEach(path => {
+        path.forEach(nodeOnPathTuple => {
+          const nodeId = nodeOnPathTuple[0];
+          const libNode = nodeOnPathTuple[2];
+
+          let color = '#0074D9';
+          let textColor = '#FFFFFF';
+          const node = Nodes.findOne({ nodeId });
+
+          if (nodeId === sourceId) {
+            return;
+          }
+          if (libNode != -1) {
+            color = '#FF851B';
+          }
+
+          cyNodesToShow.push({
+            data: { id: 'node_' + nodeId, description: `${nodeId} ${(node?.description || '')}`, 'original-background-color': color, 'original-text-color': textColor },
+            style: { 'background-color': color, 'color': textColor }
+          });
+        });
+      });
+
+      // edges to keep (do it in a loop iterating through each distinct path)
+      const allEdges = Edges.find({}).fetch();
+      edgesToKeep = allEdges
+        .filter(edge => cyNodesToShow.some(node => node.data.id === 'node_' + edge.sourceId) && cyNodesToShow.some(node => node.data.id === 'node_' + edge.targetId))
+        .map(edge => ({
+          group: 'edges',
+          data: { source: 'node_' + edge.sourceId, target: 'node_' + edge.targetId }
+        }));
+
+        
+    }
     else {
       nodesToKeep.forEach(nodeOnPathTuple => {
         const nodeId = nodeOnPathTuple[0];
@@ -337,18 +396,6 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
           style: { 'background-color': color, 'color': textColor }
         });
       });
-
-      // Add source and sink nodes
-      if (queryType !== 'common_paths') {
-        cyNodesToShow.push({
-          data: { id: 'node_' + sourceId, description: `${sourceId} Source`, 'original-background-color': '#2ECC40', 'original-text-color': '#FFFFFF' },
-          style: { 'background-color': '#2ECC40', 'color': '#FFFFFF' }
-        });
-        cyNodesToShow.push({
-          data: { id: 'node_' + sinkId, description: `${sinkId} Sink`, 'original-background-color': '#FF4136', 'original-text-color': '#FFFFFF' },
-          style: { 'background-color': '#FF4136', 'color': '#FFFFFF' }
-        });
-      }
 
       console.log('Nodes:', cyNodesToShow);
 
