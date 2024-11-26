@@ -782,7 +782,6 @@ Meteor.methods({
           .map(row => row.slice(-3))
           .filter(row => row.length == 3);
 
-          // TODO burak
           queryResults['nodesOnPath2'] = nodesOnPath2;
 
           console.log("nodesOnPath2", nodesOnPath2)

@@ -251,6 +251,11 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
       const nodesOnFirstPath = queryResults.nodesOnPath;
       const nodesOnSecondPath = queryResults.nodesOnPath2;
       const commonNodes = nodesOnFirstPath.filter(node => nodesOnSecondPath.some(node2 => node[0] === node2[0]));
+      const firstSource = parseInt(queryResults.sourceId);
+      const secondSource = parseInt(queryResults.secondSourceId);
+      const firstSink = parseInt(queryResults.sinkId);
+      const secondSink = parseInt(queryResults.secondSinkId);
+
       console.log("commonNodes", commonNodes);
 
       // find the edges that are connecting the common nodes. Some nodes can be not connected to each other, we can end up with a disconnected graph
@@ -278,11 +283,14 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
         let textColor = '#FFFFFF';
         const node = Nodes.findOne({ nodeId });
 
-        if (nodeId === sourceId) {
-          return;
-        }
         if (libNode != -1) {
           color = '#FF851B';
+        }
+        if (nodeId === firstSource || nodeId === secondSource) {
+          color = '#2ECC40'; // Green for source
+        }
+        if (nodeId === firstSink || nodeId === secondSink) {
+          color = '#FF4136'; // Red for sink
         }
 
         cyNodesToShow.push({
@@ -350,11 +358,14 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
           let textColor = '#FFFFFF';
           const node = Nodes.findOne({ nodeId });
 
-          if (nodeId === sourceId) {
-            return;
-          }
           if (libNode != -1) {
             color = '#FF851B';
+          }
+          if (nodeId === sourceId) {
+            color = '#2ECC40'; // Green for source
+          }
+          else if (sinksNonReachable.includes(nodeId)) {
+            color = '#FF4136'; // Red for sink
           }
 
           cyNodesToShow.push({
@@ -375,21 +386,90 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
 
         
     }
+    else if (queryType === 'global_impact') {
+      console.log("DEBUG! queryResults", queryResults);
+      
+      const libNodes = queryResults.libNodes;
+      const libScores = queryResults.libScores;
+
+      const allPaths = queryResults.nodesOnPath;
+      const sourceId = parseInt(queryResults.sourceId);
+      const sinkId = parseInt(queryResults.sinkId);
+
+      // libScores: Array [ {…}, {…} ] 0: Object { lib: 9753, score: 42 }, 1: Object { lib: 9771, score: 3 }
+      // We will use the scores to set the sizes of the lib nodes
+      const maxScore = Math.max(...libScores.map(lib => lib.score));
+      const minScore = Math.min(...libScores.map(lib => lib.score));
+      const maxNodeSize = 100;
+      const minNodeSize = 20;
+
+      // The library node id from libNodes is the 3rd index of the nodesOnPath tuple (if it is a library node)
+      allPaths.forEach(path => {
+        const nodeId = path[0];
+        const libNode = path[2];
+
+        let color = '#0074D9';
+        let textColor = '#FFFFFF';
+
+        const node = Nodes.findOne({ nodeId });
+
+        if(libNode != -1) {
+          color = '#FF851B';
+          const libScore = libScores.find(lib => lib.lib === libNode).score;
+          const nodeSize = minNodeSize + ((libScore - minScore) / (maxScore - minScore)) * (maxNodeSize - minNodeSize);
+          cyNodesToShow.push({
+            data: { id: 'node_' + nodeId, description: `${nodeId} ${(node?.description || '')}`, 'original-background-color': color, 'original-text-color': textColor },
+            style: { 'background-color': color, 'color': textColor, 'width': nodeSize, 'height': nodeSize }
+          });
+          return;
+        } 
+        if (nodeId === sourceId) {
+          color = '#2ECC40'; // Green for source
+          console.log("Color src", sourceId);
+        } else if (nodeId === sinkId) {
+          color = '#FF4136'; // Red for sink
+          console.log("Color sink", sinkId);
+        } 
+        cyNodesToShow.push({
+          data: { id: 'node_' + nodeId, description: `${nodeId} ${(node?.description || '')}`, 'original-background-color': color, 'original-text-color': textColor },
+          style: { 'background-color': color, 'color': textColor }
+        });
+      });
+
+      // edges to keep
+      const allEdges = Edges.find({}).fetch();
+
+      edgesToKeep = allEdges
+        .filter(edge => cyNodesToShow.some(node => node.data.id === 'node_' + edge.sourceId) && cyNodesToShow.some(node => node.data.id === 'node_' + edge.targetId))
+        .map(edge => ({
+          group: 'edges',
+          data: { source: 'node_' + edge.sourceId, target: 'node_' + edge.targetId }
+        }));
+
+        
+    }
     else {
       nodesToKeep.forEach(nodeOnPathTuple => {
         const nodeId = nodeOnPathTuple[0];
         const libNode = nodeOnPathTuple[2];
+        
+        const sourceId = parseInt(queryResults.sourceId);
+        const sinkId = parseInt(queryResults.sinkId);
 
         let color = '#0074D9';
         let textColor = '#FFFFFF';
         const node = Nodes.findOne({ nodeId });
 
-        if (nodeId === sourceId) {
-          return;
-        }
-        if (libNode != -1) {
+        if(libNode != -1) {
           color = '#FF851B';
-        }
+        } 
+        if (nodeId === sourceId) {
+          color = '#2ECC40'; // Green for source
+          console.log("Color src", sourceId);
+        } else if (nodeId === sinkId) {
+          color = '#FF4136'; // Red for sink
+          console.log("Color sink", sinkId);
+        } 
 
         cyNodesToShow.push({
           data: { id: 'node_' + nodeId, description: `${nodeId} ${(node?.description || '')}`, 'original-background-color': color, 'original-text-color': textColor },

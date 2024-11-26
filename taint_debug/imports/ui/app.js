@@ -195,6 +195,7 @@ Meteor.startup(() => {
           console.log('Sanitizers:', sanitizers);
           console.log('APIs:', apiNodes);
 
+          /** 
           Object.keys(result.nodes).forEach(nodeId => {
             const node = result.nodes[nodeId];
             let color = '#0074D9'; // Default color
@@ -231,7 +232,7 @@ Meteor.startup(() => {
               style: { 'background-color': color, 'color': textColor }
             });
           });
-
+          */
           // For easy debugging, limit to only nodes under 100
           //nodes = nodes.filter(node => parseInt(node.data.id.replace('node_', '')) < 500);
 
