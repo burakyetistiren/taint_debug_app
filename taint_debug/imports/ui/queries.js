@@ -79,6 +79,7 @@ function openGraphPopupWithResults(nodes, edges) {
 
     nodes.forEach(node => {
       const option = popup.document.createElement('option');
+      console.log("node", node);
       option.value = node.data.id;
       option.textContent = `${node.data.id} - ${node.data.description}`;
       nodeDropdown.appendChild(option);
@@ -198,11 +199,36 @@ function openGraphPopupWithResults(nodes, edges) {
   };
 }
 
+const formatNodeDescription = (nodeToAdd, nodeId) => {
+  //console.log("nodeToAdd", nodeToAdd);
+  if (!nodeToAdd || !nodeToAdd.file) return `Unknown, ${nodeId}`;
+
+  let filename = '';
+  if (nodeToAdd.file.includes('/src/main/java/')) {
+    filename = nodeToAdd.file.split('/src/main/java/')[1];
+  } else if (nodeToAdd.file.includes('/src/test/java/')) {
+    filename = nodeToAdd.file.split('/src/test/java/')[1];
+  }
+
+  if (filename) {
+    filename = filename.replace(/\//g, '.');
+  } else {
+    filename = nodeToAdd.file.split('/').pop();
+  }
+
+  nodeToAdd.file = filename;
+  console.log("nodeToAdd", nodeToAdd);
+
+  return `${nodeToAdd.description || nodeId}`;
+};
+
 async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId) {
   console.log('Running query:', queryType, sourceId, sinkId);
   
   const loader = document.getElementById('loadingSpinner');
   loader.style.display = 'block';  // Show loader
+
+
 
   try {
     // Using Promise for async call to ensure we wait for the result
@@ -472,7 +498,7 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
         } 
 
         cyNodesToShow.push({
-          data: { id: 'node_' + nodeId, description: `${nodeId} ${(node?.description || '')}`, 'original-background-color': color, 'original-text-color': textColor },
+          data: { id: 'node_' + nodeId, description: formatNodeDescription(node, nodeId), 'original-background-color': color, 'original-text-color': textColor },
           style: { 'background-color': color, 'color': textColor }
         });
       });
@@ -515,13 +541,15 @@ Template.queries.onCreated(function() {
   
   Meteor.defer(() => {
     Meteor.call('readNodeNames', (error, result) => {
+      console.log('Node mapping:', result);
       if (error) {
         console.error('Error reading node mapping:', error);
         return;
       }
-
-      nodeMapping = result;  // Store the node mapping globally
-
+  
+      nodeMapping = result; // Store the node mapping globally
+      console.log("mapping", nodeMapping);
+  
       Meteor.call('getFactNodes', (error, factNodesResult) => {
         if (error) {
           console.error('Error reading graph data:', error);
@@ -529,46 +557,53 @@ Template.queries.onCreated(function() {
           const nodes = factNodesResult.nodes.map(node => {
             const nodeId = node.nodeId;
             const nodeToAdd = nodeMapping[nodeId];
-
             if (!nodeToAdd) {
               console.error(`Node with ID ${nodeId} not found in nodeMapping`);
-              return { id: nodeId, description: 'Unknown' };
+              return { id: nodeId, description: `Unknown, ${nodeId}` };
             }
-            
-            
-            nodeToAdd.file = nodeToAdd.file.split('/').pop();
-            const nodeDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || nodeId;
-            return { id: nodeId, description: nodeDescription };
+            console.log("mapping", nodeMapping);
+            return {
+              id: nodeId,
+              description: formatNodeDescription(nodeToAdd, nodeId),
+            };
           });
-          const edges = factNodesResult.edges.map(edge => ({
-            id: edge.edgeId,
-            description: edge.description,
-          }));
+  
           const sources = factNodesResult.sources.map(sourceId => {
             const nodeToAdd = nodeMapping[sourceId];
-            nodeToAdd.file = nodeToAdd.file.split('/').pop();
-            const sourceDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || sourceId;
-            return { id: sourceId, description: sourceDescription };
+            if (!nodeToAdd) {
+              console.error(`Source with ID ${sourceId} not found in nodeMapping`);
+              return { id: sourceId, description: `Unknown, ${sourceId}` };
+            }
+            return {
+              id: sourceId,
+              description: formatNodeDescription(nodeToAdd, sourceId),
+            };
           });
+  
           const sinks = factNodesResult.sinks.map(sinkId => {
             const nodeToAdd = nodeMapping[sinkId];
-            nodeToAdd.file = nodeToAdd.file.split('/').pop();
-            const sinkDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || sinkId;
-            return { id: sinkId, description: sinkDescription };
+            if (!nodeToAdd) {
+              console.error(`Sink with ID ${sinkId} not found in nodeMapping`);
+              return { id: sinkId, description: `Unknown, ${sinkId}` };
+            }
+            return {
+              id: sinkId,
+              description: formatNodeDescription(nodeToAdd, sinkId),
+            };
           });
-
+  
           this.nodes.set(nodes);
-          this.edges.set(edges);
           this.sources.set(sources);
           this.sinks.set(sinks);
-          this.libraryNodes.set(factNodesResult.apis);
-          this.libraries.set(factNodesResult.apiLibs);
-
-          console.log('Library Nodes:', this.libraryNodes);
+          this.edges.set(factNodesResult.edges.map(edge => ({
+            id: edge.edgeId,
+            description: edge.description,
+          })));
         }
       });
     });
   });
+  
 });
 
 Template.registerHelper('eq', (a, b) => {
@@ -893,43 +928,29 @@ Template.queries.onRendered(function() {
 });
 
 function fetchSinks(queryType, selectedSourceId) {
-  let isReported = true;
-  if (queryType === 'whynot_node_pairs' || queryType === 'whatif_relax') {
-    isReported = { $in: [false] };
-  }
-
-  const paths = Paths.find({ 'left.nodeId': parseInt(selectedSourceId), 'reported': isReported }).fetch();
+  const paths = Paths.find({ 'left.nodeId': parseInt(selectedSourceId) }).fetch();
   const sinks = paths.map(path => path.right.nodeId);
 
   return [...new Set(sinks)].map(sinkId => {
     const nodeToAdd = nodeMapping[sinkId];
     if (!nodeToAdd) {
-      console.error(`Node with ID ${sinkId} not found in nodeMapping`);
-      return { id: sinkId, description: 'Unknown' };
+      console.error(`Sink with ID ${sinkId} not found in nodeMapping`);
+      return { id: sinkId, description: `Unknown, ${sinkId}` };
     }
-    nodeToAdd.file = nodeToAdd.file.split('/').pop();
-    const sinkDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || sinkId;
-    return { id: sinkId, description: sinkDescription };
+    return { id: sinkId, description: formatNodeDescription(nodeToAdd, sinkId) };
   });
 }
 
 function fetchSources(queryType, selectedSinkId) {
-  let isReported = true;
-  if (queryType === 'whynot_node_pairs' || queryType === 'whatif_relax') {
-    isReported = { $in: [true, false] };
-  }
-
-  const paths = Paths.find({ 'right.nodeId': parseInt(selectedSinkId), 'reported': isReported }).fetch();
+  const paths = Paths.find({ 'right.nodeId': parseInt(selectedSinkId) }).fetch();
   const sources = paths.map(path => path.left.nodeId);
 
   return [...new Set(sources)].map(sourceId => {
     const nodeToAdd = nodeMapping[sourceId];
     if (!nodeToAdd) {
-      console.error(`Node with ID ${sourceId} not found in nodeMapping`);
-      return { id: sourceId, description: 'Unknown' };
+      console.error(`Source with ID ${sourceId} not found in nodeMapping`);
+      return { id: sourceId, description: `Unknown, ${sourceId}` };
     }
-    nodeToAdd.file = nodeToAdd.file.split('/').pop();
-    const sourceDescription = nodeToAdd.file + ", " + nodeToAdd.line + ", " + nodeToAdd.column + ", " + nodeToAdd.end_line + ", " + nodeToAdd.end_column + ", " + nodeToAdd.description || sourceId;
-    return { id: sourceId, description: sourceDescription };
+    return { id: sourceId, description: formatNodeDescription(nodeToAdd, sourceId) };
   });
 }

@@ -208,10 +208,20 @@ function readNodeMapping() {
   const lines = fs.readFileSync(path.join(ANALYSIS_PATH, 'souffle_files/nodes.debug'), 'utf8').split('\n');
   lines.forEach(line => {
     if (line.trim()) {
-
-
       const [nodeId, file, lineNum, column, endLineNum, endColNum, description] = line.trim().split(',');
-      let filename  = file.split('/').pop();
+
+      let filename = '';
+      if(file.includes('/src/main/java/')) {
+        filename = file.split('/src/main/java/')[1];
+      } else if (file.includes('/src/test/java/')) {
+        filename = file.split('/src/test/java/')[1];
+      } 
+
+      if (filename) {
+        filename = filename.replace(/\//g, '.');
+      } else {
+        filename = file.split('/').pop();
+      }
 
       nodeMapping[Number(nodeId)] = {
         nodeId: Number(nodeId),
@@ -220,7 +230,7 @@ function readNodeMapping() {
         column: Number(column),
         end_line: Number(endLineNum),
         end_column: Number(endColNum),
-        description: description + ' (' + filename + ':' + lineNum + ')',
+        description: description + ' ' + filename + ':' + lineNum,
       };
     }
   });
@@ -602,16 +612,28 @@ Meteor.methods({
     lines.forEach(line => {
       if (line.trim()) {
         const [nodeId, file, lineNum, column, endLineNum, endColNum, description] = line.trim().split(',');
-        let filename  = file.split('/').pop();
+
+        let filename = '';
+        if(file.includes('/src/main/java/')) {
+          filename = file.split('/src/main/java/')[1];
+        } else if (file.includes('/src/test/java/')) {
+          filename = file.split('/src/test/java/')[1];
+        } 
+  
+        if (filename) {
+          filename = filename.replace(/\//g, '.');
+        } else {
+          filename = file.split('/').pop();
+        }
 
         nodeMapping[Number(nodeId)] = {
           nodeId: Number(nodeId),
-          file,
+          file: SOURCE_CODE_ROOT_DIR + file,
           line: Number(lineNum),
           column: Number(column),
           end_line: Number(endLineNum),
           end_column: Number(endColNum),
-          description: description + ' (' + filename + ':' + lineNum + ')',
+          description: description + ' ' + filename + ':' + lineNum,
         };
       }
     });
