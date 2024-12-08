@@ -241,13 +241,18 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
 
     console.log('Query result:', result);
 
+    console.log(queryType)
+
     let queryResults;
     let queryParams = {}
     if (queryType === 'common_paths') {
       queryParams = { sourceId, sinkId, selectedAPIId, secondSourceId, secondSinkId };
     } else if (queryType === 'sinks_affected') {
+      console.log("entered sinks affected")
       queryParams = { sourceId, selectedAPIId };
     } else {
+      console.log("entered else")
+
       queryParams = { sourceId, sinkId };
     }
 
@@ -272,7 +277,7 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
     const cyNodesToShow = [];
     let edgesToKeep = [];
 
-    if(queryType === 'common_paths') {
+    if(queryType === 'common_paths' || queryType === 'divergent_sinks' || queryType === 'divergent_sources') {
       // find the common nodes
       const nodesOnFirstPath = queryResults.nodesOnPath;
       const nodesOnSecondPath = queryResults.nodesOnPath2;
@@ -617,9 +622,12 @@ Template.queries.helpers({
     return [
       { description: "WhyFlow: Which APIs are intermediaries from a source to a sink?", queryType: "why_node_pair" , showSource : true, showSink: true},
       { description: "WhyNotFlow: Which APIs are sanitizers that disconnect a flow from a source to a sink?", queryType: "whynot_node_pairs" , showSource: true, showSink: true},
-      { description: "CommonFlows: which intermediaries are common between two pairs of a source and a sink?", queryType: "common_paths", showSource: true, showSink: true, pairedQuery: true},
       { description: "AffectedSinks: What are sinks that would be no longer reachable if this API X becomes a sanitizer?", queryType: "sinks_affected", selectAPI: true, showSource: true},
-      { description: "GlobalImpact: Rank the global impact of intermediary APIs from a source and a sink based on frequency.", queryType: "global_impact", showSource : true, showSink: true},,
+      { description: "GlobalImpact: Rank the global impact of intermediary APIs from a source and a sink based on frequency.", queryType: "global_impact", showSource : true, showSink: true},
+      { description: "CommonFlows: which intermediaries are common between two pairs of a source and a sink?", queryType: "common_paths", showSource: true, showSink: true, pairedQuery: true},
+      { description: "DivergentSinks: which intermediaries are common between a source and a pair of sinks?", queryType: "divergent_sinks", showSource: true, showSink: true},
+      { description: "DivergentSources: which intermediaries are common between a pair of sources and a sink?", queryType: "divergent_sources", showSource: true, showSink: true},
+
     ];
   },
   whySources() {
@@ -773,13 +781,13 @@ Template.queries.events({
 
   'click .query-button'(event) {
     const button = event.currentTarget;
-    const queryType = button.getAttribute('data-query-type');
+    let queryType = button.getAttribute('data-query-type');
 
     // Get associated dropdown values
     const sourceId = document.getElementById(button.getAttribute('data-src-dropdown-id'))?.value;
     const sinkId = document.getElementById(button.getAttribute('data-sink-dropdown-id'))?.value;
-    const secondSourceId = document.getElementById(button.getAttribute('data-second-src-dropdown-id'))?.value;
-    const secondSinkId = document.getElementById(button.getAttribute('data-second-sink-dropdown-id'))?.value;
+    let secondSourceId = document.getElementById(button.getAttribute('data-second-src-dropdown-id'))?.value;
+    let secondSinkId = document.getElementById(button.getAttribute('data-second-sink-dropdown-id'))?.value;
     const selectedAPIId = document.getElementById(button.getAttribute('data-api-dropdown-id'))?.value;
 
     console.log('Run Query Button Clicked');
@@ -789,6 +797,15 @@ Template.queries.events({
     console.log('Second Source ID:', secondSourceId);
     console.log('Second Sink ID:', secondSinkId);
     console.log('API ID:', selectedAPIId);
+
+    if(queryType === 'divergent_sinks'){
+      secondSourceId = sourceId;
+      queryType = 'common_paths';
+    }
+    if(queryType === 'divergent_sources'){
+      secondSinkId = sinkId;
+      queryType = 'common_paths';
+    }
 
     // Call the query function
     callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondSourceId, secondSinkId, selectedAPIId);
@@ -874,6 +891,7 @@ Template.queries.events({
       selectedSecondSourceId = $(event.target).closest('.query-box').find('.second-src-dropdown').val();
       selectedSecondSinkId = $(event.target).closest('.query-box').find('.second-sink-dropdown').val();
     }
+
 
     let selectedApiId = $(event.target).closest('.query-box').find('.api-dropdown').val();
 

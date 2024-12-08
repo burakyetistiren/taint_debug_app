@@ -116,49 +116,6 @@
         </div>
       {{/if}}
 
-      {{#if (eq queryType "common_paths")}}
-        <div class="query-box" data-query="common_paths">
-          <h3>{{description}}</h3>
-          <label for="src-{{@index}}">First Source Node:</label>
-          <select id="src-{{@index}}" class="src-dropdown">
-            {{#each whySources}}
-              <option value="{{id}}">{{id}} - {{description}}</option>
-            {{/each}}
-          </select>
-          <span>to</span>
-          <label for="sink-{{@index}}">First Sink Node:</label>
-          <select id="sink-{{@index}}" class="sink-dropdown">
-            {{#each whySinks}}
-              <option value="{{id}}">{{id}} - {{description}}</option>
-            {{/each}}
-          </select>
-          <span>and</span>
-          <label for="second-src-{{@index}}">Second Source Node:</label>
-          <select id="second-src-{{@index}}" class="second-src-dropdown">
-            {{#each secondPairSources}}
-              <option value="{{id}}">{{id}} - {{description}}</option>
-            {{/each}}
-          </select>
-          <span>to</span>
-          <label for="second-sink-{{@index}}">Second Sink Node:</label>
-          <select id="second-sink-{{@index}}" class="second-sink-dropdown">
-            {{#each secondPairSinks}}
-              <option value="{{id}}">{{id}} - {{description}}</option>
-            {{/each}}
-          </select>
-          <p>Identifies common subpaths and APIs between two flows.</p>
-          <button class="query-button" 
-            data-query-type="{{queryType}}" 
-            data-src-dropdown-id="src-{{@index}}" 
-            data-sink-dropdown-id="sink-{{@index}}" 
-            data-second-src-dropdown-id="second-src-{{@index}}" 
-            data-second-sink-dropdown-id="second-sink-{{@index}}" 
-            data-api-dropdown-id="api-{{@index}}">
-            Run Query
-          </button>
-        </div>
-      {{/if}}
-
       {{#if (eq queryType "sinks_affected")}}
         <div class="query-box" data-query="sinks_affected">
           <h3>{{description}}</h3>
@@ -215,6 +172,124 @@
             Run Query
           </button>
         </div>
+      {{/if}}
+
+      {{#if (eq queryType "common_paths")}}
+      <div class="query-box" data-query="common_paths">
+        <h3>{{description}}</h3>
+        <label for="src-{{@index}}">First Source Node:</label>
+        <select id="src-{{@index}}" class="src-dropdown">
+          {{#each whySources}}
+            <option value="{{id}}">{{id}} - {{description}}</option>
+          {{/each}}
+        </select>
+        <span>to</span>
+        <label for="sink-{{@index}}">First Sink Node:</label>
+        <select id="sink-{{@index}}" class="sink-dropdown">
+          {{#each whySinks}}
+            <option value="{{id}}">{{id}} - {{description}}</option>
+          {{/each}}
+        </select>
+        <span>and</span>
+        <label for="second-src-{{@index}}">Second Source Node:</label>
+        <select id="second-src-{{@index}}" class="second-src-dropdown">
+          {{#each secondPairSources}}
+            <option value="{{id}}">{{id}} - {{description}}</option>
+          {{/each}}
+        </select>
+        <span>to</span>
+        <label for="second-sink-{{@index}}">Second Sink Node:</label>
+        <select id="second-sink-{{@index}}" class="second-sink-dropdown">
+          {{#each secondPairSinks}}
+            <option value="{{id}}">{{id}} - {{description}}</option>
+          {{/each}}
+        </select>
+        <p>Identifies common subpaths and APIs between two flows.</p>
+        <button class="query-button" 
+          data-query-type="{{queryType}}" 
+          data-src-dropdown-id="src-{{@index}}" 
+          data-sink-dropdown-id="sink-{{@index}}" 
+          data-second-src-dropdown-id="second-src-{{@index}}" 
+          data-second-sink-dropdown-id="second-sink-{{@index}}" 
+          data-api-dropdown-id="api-{{@index}}">
+          Run Query
+        </button>
+      </div>
+      {{/if}}
+
+      {{#if (eq queryType "divergent_sinks")}}
+      <div class="query-box" data-query="common_paths">
+        <h3>{{description}}</h3>
+        <label for="src-{{@index}}">Source Node:</label>
+        <select id="src-{{@index}}" class="src-dropdown">
+          {{#each whySources}}
+            <option value="{{id}}">{{id}} - {{description}}</option>
+          {{/each}}
+        </select>
+        <span>to</span>
+        <label for="sink-{{@index}}">First Sink Node:</label>
+        <select id="sink-{{@index}}" class="sink-dropdown">
+          {{#each whySinks}}
+            <option value="{{id}}">{{id}} - {{description}}</option>
+          {{/each}}
+        </select>
+        <span>and</span>
+        <span>to</span>
+        <label for="second-sink-{{@index}}">Second Sink Node:</label>
+        <select id="second-sink-{{@index}}" class="second-sink-dropdown">
+          {{#each whySinks}}
+            <option value="{{id}}">{{id}} - {{description}}</option>
+          {{/each}}
+        </select>
+        <p>Identifies common subpaths and APIs between two flows.</p>
+        <button class="query-button" 
+          data-query-type="{{queryType}}" 
+          data-src-dropdown-id="src-{{@index}}" 
+          data-sink-dropdown-id="sink-{{@index}}" 
+          data-second-src-dropdown-id="second-src-{{@index}}" 
+          data-second-sink-dropdown-id="second-sink-{{@index}}" 
+          data-api-dropdown-id="api-{{@index}}">
+          Run Query
+        </button>
+      </div>
+      {{/if}}
+
+      {{#if (eq queryType "divergent_sources")}}
+      <div class="query-box" data-query="common_paths">
+        <h3>{{description}}</h3>
+        <span>to</span>
+        <label for="sink-{{@index}}">First Sink Node:</label>
+        <select id="sink-{{@index}}" class="sink-dropdown">
+          {{#each whySinks}}
+            <option value="{{id}}">{{id}} - {{description}}</option>
+          {{/each}}
+        </select>
+        
+        <label for="src-{{@index}}">First Source Node:</label>
+        <select id="src-{{@index}}" class="src-dropdown">
+          {{#each whySources}}
+            <option value="{{id}}">{{id}} - {{description}}</option>
+          {{/each}}
+        </select>
+
+        <span>and</span>
+        <label for="second-src-{{@index}}">Second Source Node:</label>
+        <select id="second-src-{{@index}}" class="second-src-dropdown">
+          {{#each whySources}}
+            <option value="{{id}}">{{id}} - {{description}}</option>
+          {{/each}}
+        </select>
+        <p>Identifies common subpaths and APIs between two flows.</p>
+        <button class="query-button" 
+          data-query-type="{{queryType}}" 
+          data-src-dropdown-id="src-{{@index}}" 
+          data-sink-dropdown-id="sink-{{@index}}" 
+          data-second-src-dropdown-id="second-src-{{@index}}" 
+          data-second-sink-dropdown-id="second-sink-{{@index}}" 
+          data-api-dropdown-id="api-{{@index}}">
+          Run Query
+        </button>
+      </div>
       {{/if}}
     {{/each}}
   </div>
