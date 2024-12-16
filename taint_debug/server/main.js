@@ -230,6 +230,7 @@ function readNodeMapping() {
         column: Number(column),
         end_line: Number(endLineNum),
         end_column: Number(endColNum),
+        location: SOURCE_CODE_ROOT_DIR + file + ':' + lineNum,
         description: description + ' ' + filename + ':' + lineNum,
       };
     }
@@ -633,6 +634,7 @@ Meteor.methods({
           column: Number(column),
           end_line: Number(endLineNum),
           end_column: Number(endColNum),
+          location: SOURCE_CODE_ROOT_DIR + file + ':' + lineNum,
           description: description + ' ' + filename + ':' + lineNum,
         };
       }

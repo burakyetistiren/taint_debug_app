@@ -97,7 +97,7 @@ function openGraphPopup() {
             {
               selector: 'node',
               style: {
-                'label': 'data(description)',
+                'label': 'data(var)',
                 'text-valign': 'center',
                 'text-halign': 'center',
                 'background-color': 'data(background-color)', 

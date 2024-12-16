@@ -255,27 +255,27 @@
       {{/if}}
 
       {{#if (eq queryType "divergent_sources")}}
-      <div class="query-box" data-query="common_paths">
+      <div class="query-box" data-query="divergent_sources">
         <h3>{{description}}</h3>
-        <span>to</span>
-        <label for="sink-{{@index}}">First Sink Node:</label>
+        <span>From</span>
+        <label for="sink-{{@index}}">Sink Node:</label>
         <select id="sink-{{@index}}" class="sink-dropdown">
-          {{#each whySinks}}
+          {{#each allSinks}}
             <option value="{{id}}">{{id}} - {{description}}</option>
           {{/each}}
         </select>
-        
+        <span>to</span>
         <label for="src-{{@index}}">First Source Node:</label>
         <select id="src-{{@index}}" class="src-dropdown">
-          {{#each whySources}}
+          {{#each divergentSources}}
             <option value="{{id}}">{{id}} - {{description}}</option>
           {{/each}}
         </select>
-
+      
         <span>and</span>
         <label for="second-src-{{@index}}">Second Source Node:</label>
         <select id="second-src-{{@index}}" class="second-src-dropdown">
-          {{#each whySources}}
+          {{#each divergentSources}}
             <option value="{{id}}">{{id}} - {{description}}</option>
           {{/each}}
         </select>
@@ -291,6 +291,9 @@
         </button>
       </div>
       {{/if}}
+      
+      
+      
     {{/each}}
   </div>
 </template>
