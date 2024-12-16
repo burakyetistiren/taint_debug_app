@@ -601,81 +601,130 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
       const sourceId = parseInt(queryResults.sourceId);
       const sinkId = parseInt(queryResults.sinkId);
     
-      let foundAPI = false;
-      const postApiNodeIds = new Set(); // To store node IDs after the API node is found
+      // STEP 1: Create the graph normally (no dotted styling yet)
+      let firstApiNodeId = null;
+      let firstApiIndex = -1;
     
-      nodesToKeep.forEach(nodeOnPathTuple => {
+      // Build cyNodesToShow with initial styling
+      nodesToKeep.forEach((nodeOnPathTuple, i) => {
         const nodeId = nodeOnPathTuple[0];
         const libNode = nodeOnPathTuple[2];
     
-        let color = '#0074D9';
-        let textColor = '#FFFFFF';
+        let color = '#0074D9'; // Default blue
+        let textColor = '#FFFFFF'; // White text
         const node = Nodes.findOne({ nodeId });
     
-        // Check if this is an API node
-        if (libNode != -1) {
-          color = '#FF851B';
-          // Once API node is found, mark subsequent nodes as post-API
-          foundAPI = true;
-        } 
+        // Highlight special nodes
         if (nodeId === sourceId) {
           color = '#2ECC40'; // Green for source
-          console.log("Color src", sourceId);
         } else if (nodeId === sinkId) {
           color = '#FF4136'; // Red for sink
-          console.log("Color sink", sinkId);
-        } 
+        } else if (libNode != -1 && firstApiIndex === -1) {
+          // First API node encountered
+          color = '#FF851B'; // Orange for API node
+          firstApiIndex = i;
+          firstApiNodeId = nodeId;
+        } else if (libNode != -1) {
+          // Other API nodes (not the first one)
+          color = '#FF851B';
+        }
     
         const nodeDescription = formatNodeDescription(node, nodeId);
         const varname = nodeDescription.split(' ')[0];
     
-        // Determine if this node should be dotted (if we have already passed the API node)
-        const nodeStyle = {
-          'background-color': color,
-          'color': textColor
-        };
-        if (foundAPI) {
-          // If we've passed the API node, make this node dotted
-          // Cytoscape doesn't have a 'border-style' for nodes, but we can use a shape or additional style.
-          // We'll simulate "dotted" by using a node outline pattern. For simplicity, let's give the node a dashed outline:
-          nodeStyle['border-width'] = 2;
-          nodeStyle['border-style'] = 'dashed';
-          nodeStyle['border-color'] = '#000000';
-    
-          // Record this node as post-API
-          postApiNodeIds.add('node_' + nodeId);
-        }
-    
         cyNodesToShow.push({
-          data: { id: 'node_' + nodeId, description: nodeDescription, var: varname, location: node.location, 'original-background-color': color, 'original-text-color': textColor },
-          style: nodeStyle
+          data: {
+            id: 'node_' + nodeId,
+            description: nodeDescription,
+            var: varname,
+            location: node.location,
+            'original-background-color': color,
+            'original-text-color': textColor
+          },
+          style: {
+            'background-color': color,
+            'color': textColor
+          }
         });
       });
     
-      console.log('Nodes:', cyNodesToShow);
-    
-      const nodeIdsToKeep = cyNodesToShow.map(node => node.data.id);
-    
+      const nodeIdsToKeep = cyNodesToShow.map(n => n.data.id);
       const allEdges = Edges.find({}).fetch();
       edgesToKeep = allEdges
-        .filter(edge => nodeIdsToKeep.includes('node_' + edge.sourceId) && nodeIdsToKeep.includes('node_' + edge.targetId))
-        .map(edge => {
-          const edgeData = { source: 'node_' + edge.sourceId, target: 'node_' + edge.targetId };
+        .filter(e => nodeIdsToKeep.includes('node_' + e.sourceId) && nodeIdsToKeep.includes('node_' + e.targetId))
+        .map(e => ({
+          group: 'edges',
+          data: {
+            source: 'node_' + e.sourceId,
+            target: 'node_' + e.targetId
+          },
+          style: {}
+        }));
     
-          // If both edge endpoints are in post-API zone, make the edge dotted
-          const edgeStyle = {};
-          if (postApiNodeIds.has(edgeData.source) && postApiNodeIds.has(edgeData.target)) {
-            // 'line-style': 'dashed' for a dotted line look
-            edgeStyle['line-style'] = 'dashed';
-            edgeStyle['line-dash-pattern'] = [4, 2]; // optional, if supported
+      // If no API node found, nothing to dot
+      if (firstApiIndex === -1 || firstApiNodeId === null) {
+        console.log("No API node found, no dotted styling needed.");
+        return;
+      }
+    
+      // STEP 2: Determine direction and build adjacency list
+      // We assume edges represent a direction from source to sink.
+      // If nodesToKeep is in order from source to sink, we can assume that edges follow that direction.
+      // Here, we simply rely on edges as given (assuming they represent forward direction).
+      const adjacencyList = new Map();
+      for (const nodeObj of cyNodesToShow) {
+        adjacencyList.set(nodeObj.data.id, []);
+      }
+    
+      for (const edgeObj of edgesToKeep) {
+        const { source, target } = edgeObj.data;
+        // Add edge in forward direction
+        adjacencyList.get(source).push(target);
+      }
+    
+      // STEP 3: BFS/DFS from the first API node
+      const startNode = 'node_' + firstApiNodeId;
+      const visited = new Set();
+      const queue = [startNode];
+      visited.add(startNode);
+    
+      while (queue.length > 0) {
+        const current = queue.shift();
+        const neighbors = adjacencyList.get(current) || [];
+        for (const neigh of neighbors) {
+          if (!visited.has(neigh)) {
+            visited.add(neigh);
+            queue.push(neigh);
           }
+        }
+      }
     
-          return {
-            group: 'edges',
-            data: edgeData,
-            style: edgeStyle
-          };
-        });
+      // visited now contains all nodes reachable from the first API node, including the first API node itself.
+    
+      // STEP 4: Apply dotted styling to all visited nodes and edges
+      // The user wants everything from (and including) the first API node dotted.
+      // That means all visited nodes and edges connecting visited nodes.
+    
+      const visitedNodes = new Set(visited); // For quick lookup
+      for (const nodeObj of cyNodesToShow) {
+        if (visitedNodes.has(nodeObj.data.id)) {
+          nodeObj.style['border-width'] = 2;
+          nodeObj.style['border-style'] = 'dashed';
+          nodeObj.style['border-color'] = '#000000';
+        }
+      }
+    
+      for (const edgeObj of edgesToKeep) {
+        const { source, target } = edgeObj.data;
+        if (visitedNodes.has(source) && visitedNodes.has(target)) {
+          edgeObj.style['line-style'] = 'dashed';
+        }
+      }
+    
+      console.log("First API node:", firstApiNodeId);
+      console.log("Visited (post-API) nodes:", visitedNodes);
+      console.log("Final Nodes:", cyNodesToShow);
+      console.log("Final Edges:", edgesToKeep);
     }
     else {
       nodesToKeep.forEach(nodeOnPathTuple => {
@@ -822,11 +871,10 @@ Template.queries.helpers({
       { description: "WhyFlow: Which APIs are intermediaries from a source to a sink?", queryType: "why_node_pair" , showSource : true, showSink: true},
       { description: "WhyNotFlow: Which APIs are sanitizers that disconnect a flow from a source to a sink?", queryType: "whynot_node_pairs" , showSource: true, showSink: true},
       { description: "AffectedSinks: What are sinks that would be no longer reachable if this API X becomes a sanitizer?", queryType: "sinks_affected", selectAPI: true, showSource: true},
-      { description: "GlobalImpact: Rank the global impact of intermediary APIs from a source and a sink based on frequency.", queryType: "global_impact", showSource : true, showSink: true},
-      //{ description: "CommonFlows: which intermediaries are common between two pairs of a source and a sink?", queryType: "common_paths", showSource: true, showSink: true, pairedQuery: true},
       { description: "DivergentSinks: Which intermediaries are common between a source and a pair of sinks?", queryType: "divergent_sinks", showSource: true, showSink: true},
       { description: "DivergentSources: Which intermediaries are common between a pair of sources and a sink?", queryType: "divergent_sources", showSource: true, showSink: true},
-
+      { description: "GlobalImpact: Rank the global impact of intermediary APIs from a source and a sink based on frequency.", queryType: "global_impact", showSource : true, showSink: true},
+      //{ description: "CommonFlows: which intermediaries are common between two pairs of a source and a sink?", queryType: "common_paths", showSource: true, showSink: true, pairedQuery: true},
     ];
   },
   whySources() {
