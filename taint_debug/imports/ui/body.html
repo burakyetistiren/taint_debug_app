@@ -128,30 +128,51 @@
         background-color: #cc7000;
       }
 
-      /* Loader Styles */
-      .loader {
+      /* Loading Overlay Styles */
+      .loading-overlay {
+        display: none; /* Hide by default */
         position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        border: 8px solid #f3f3f3;
-        border-top: 8px solid #3498db;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 1s linear infinite;
-        z-index: 1000;
-        display: none;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.2); /* Slightly dim the background */
+        z-index: 9999; /* Ensure it's on top of other elements */
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
 
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+      .loading-box {
+        background-color: #fff;
+        border: 2px solid #ffffff;
+        border-radius: 12px;
+        padding: 40px 60px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        text-align: center;
+      }
+
+      .whyflow-loading {
+        font-size: 3em; /* Increased font size */
+        font-weight: bold;
+        -webkit-text-stroke: 4px #007BFF;
+        color: #ffffff;
+        font-family: Verdana, sans-serif ;
+        animation: glow 0.28s infinite alternate;
+      }
+
+      @keyframes glow {
+        from {
+          text-shadow: 0 0 10px #fdfeff, 0 0 20px #007BFF, 0 0 30px #007BFF;
+        }
+        to {
+          text-shadow: 0 0 20px #007BFF, 0 0 30px #007BFF, 0 0 40px #007BFF;
+        }
       }
   </style>
 
   <!-- Open Graph Button and Loader -->
   <button id="openGraphButton" class="collapse-button">Open Graph</button>
-  <div id="loadingSpinner" class="loader"></div>
-
+  <div id="loadingSpinner" class="loading-overlay" style="display: none;">
+    <div class="loading-box">
+      <div class="whyflow-loading">WhyFlow</div>
+    </div>
+  </div>
 </template>

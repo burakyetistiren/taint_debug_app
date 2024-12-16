@@ -269,9 +269,7 @@ async function callSouffleAndDisplayResults(queryType, sourceId, sinkId, secondS
   console.log('Running query:', queryType, sourceId, sinkId);
   
   const loader = document.getElementById('loadingSpinner');
-  loader.style.display = 'block';  // Show loader
-
-
+  loader.style.display = 'flex';  // Show loader as flex to maintain centering
 
   try {
     // Using Promise for async call to ensure we wait for the result
@@ -1132,7 +1130,7 @@ Template.queries.events({
     const selectedSinkId = $(event.target).closest('.query-box').find('.sink-dropdown').val();
 
     //callSouffleAndDisplayResults(queryType, selectedSourceId, selectedSinkId, null, null, selectedAPIId);
-  },
+  }
 });
 
 Template.queries.onRendered(function() {

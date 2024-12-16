@@ -46,6 +46,25 @@
       font-size: 1.2em;
       color: #007BFF;
     }
+    .query-button {
+      background-color: #007BFF; /* A nice blue background */
+      color: #FFFFFF; /* White text for contrast */
+      border: none; /* Remove default border */
+      border-radius: 5px; /* Rounded corners */
+      padding: 10px 15px; /* Some padding for a better look */
+      font-size: 1em; /* Slightly larger text */
+      cursor: pointer; /* Show a pointer cursor on hover */
+      transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transitions */
+    }
+
+    .query-button:hover {
+      background-color: #0056b3; /* A darker shade of blue on hover */
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2); /* Add a subtle shadow on hover */
+    }
+
+    .query-button:active {
+      background-color: #004080; /* Even darker shade when clicked */
+    }
   </style>
 
   <div class="query-container">
@@ -291,9 +310,6 @@
         </button>
       </div>
       {{/if}}
-      
-      
-      
     {{/each}}
   </div>
 </template>
