@@ -1194,6 +1194,8 @@ function fetchSinks(queryType, selectedSourceId) {
     if (queryType === 'why_node_pair') {
       // fetch only sinks from `reported` paths
       var pathsToFetchSinksFrom = Paths.find({reported: true}).fetch();
+    } if (queryType === 'whynot_node_pairs') {
+      var pathsToFetchSinksFrom = Paths.find({reported: false}).fetch();
     } else {
       var pathsToFetchSinksFrom = Paths.find({}).fetch();
     }
@@ -1215,6 +1217,8 @@ function fetchSinks(queryType, selectedSourceId) {
   if (queryType === 'why_node_pair') {
     // fetch only sinks from `reported` paths
     var pathsToFetchSinksFrom = Paths.find({ 'left.nodeId': parseInt(selectedSourceId), reported: true }).fetch();
+  } if (queryType === 'whynot_node_pairs') {
+    var pathsToFetchSinksFrom = Paths.find({reported: false}).fetch();
   } else {
     var pathsToFetchSinksFrom = Paths.find({ 'left.nodeId': parseInt(selectedSourceId) }).fetch();
   }
