@@ -1191,8 +1191,14 @@ Template.queries.onRendered(function() {
 function fetchSinks(queryType, selectedSourceId) {
   // If no selectedSourceId is provided, return all sinks
   if (!selectedSourceId) {
-    const allPaths = Paths.find({}).fetch();
-    const allSinks = allPaths.map(path => path.right.nodeId);
+    if (queryType === 'why_node_pair') {
+      // fetch only sinks from `reported` paths
+      var pathsToFetchSinksFrom = Paths.find({reported: true}).fetch();
+    } else {
+      var pathsToFetchSinksFrom = Paths.find({}).fetch();
+    }
+
+    const allSinks = pathsToFetchSinksFrom.map(path => path.right.nodeId);
     const uniqueSortedSinks = [...new Set(allSinks)].sort((a, b) => a - b);
 
     return uniqueSortedSinks.map(sinkId => {
@@ -1206,8 +1212,15 @@ function fetchSinks(queryType, selectedSourceId) {
   }
 
   // Original logic when selectedSourceId is available
-  const paths = Paths.find({ 'left.nodeId': parseInt(selectedSourceId) }).fetch();
-  const sinks = paths.map(path => path.right.nodeId);
+  if (queryType === 'why_node_pair') {
+    // fetch only sinks from `reported` paths
+    var pathsToFetchSinksFrom = Paths.find({ 'left.nodeId': parseInt(selectedSourceId), reported: true }).fetch();
+  } else {
+    var pathsToFetchSinksFrom = Paths.find({ 'left.nodeId': parseInt(selectedSourceId) }).fetch();
+  }
+
+  
+  const sinks = pathsToFetchSinksFrom.map(path => path.right.nodeId);
   const uniqueSortedSinks = [...new Set(sinks)].sort((a, b) => a - b);
 
   return uniqueSortedSinks.map(sinkId => {
