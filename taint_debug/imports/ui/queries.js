@@ -983,7 +983,7 @@ Template.queries.helpers({
   },
   allSinks() {
     // Call fetchSinks with no selectedSourceId
-    return fetchSinks(null, null);
+    return fetchSinks('divergent_sources', null);
   },
 });
 
@@ -1189,8 +1189,7 @@ Template.queries.onRendered(function() {
 });
 
 function fetchSinks(queryType, selectedSourceId) {
-  // If no selectedSourceId is provided, return all sinks
-  if (!selectedSourceId) {
+  if (queryType === 'divergent_sources') {
     const allPaths = Paths.find({}).fetch();
     const allSinks = allPaths.map(path => path.right.nodeId);
     const uniqueSortedSinks = [...new Set(allSinks)].sort((a, b) => a - b);
@@ -1205,12 +1204,10 @@ function fetchSinks(queryType, selectedSourceId) {
     });
   }
 
-  // Original logic when selectedSourceId is available
   const paths = Paths.find({ 'left.nodeId': parseInt(selectedSourceId) }).fetch();
   const sinks = paths.map(path => path.right.nodeId);
-  const uniqueSortedSinks = [...new Set(sinks)].sort((a, b) => a - b);
 
-  return uniqueSortedSinks.map(sinkId => {
+  return [...new Set(sinks)].map(sinkId => {
     const nodeToAdd = nodeMapping[sinkId];
     if (!nodeToAdd) {
       console.error(`Sink with ID ${sinkId} not found in nodeMapping`);
